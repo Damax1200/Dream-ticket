@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+MyReactNativeApp/node_modules/
+DreamTicket/node_modules/
+
+# Build outputs
+build/
+dist/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# React Native
+.expo/
+.expo-shared/
+
+# Package manager
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
