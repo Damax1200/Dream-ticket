@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -82,9 +83,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
         >
           {/* Header */}
           <View style={styles.header}>
-            <View style={styles.iconContainer}>
-              <Text style={styles.icon}>✨</Text>
-            </View>
+            <Image 
+              source={require('../../assets/images/logo.jpg')} 
+              style={styles.logo}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>
               Join Dream Ticket and start your journey
@@ -193,13 +196,13 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             </View>
 
             {/* Social Sign Up Buttons */}
-            <TouchableOpacity style={styles.socialButton}>
-              <Text style={styles.socialIcon}>🔵</Text>
-              <Text style={styles.socialButtonText}>Continue with Facebook</Text>
+            <TouchableOpacity style={[styles.socialButton, styles.facebookButton]}>
+              <Text style={[styles.socialIcon, { color: '#fff' }]}>f</Text>
+              <Text style={[styles.socialButtonText, { color: '#fff' }]}>Continue with Facebook</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.socialButton}>
-              <Text style={styles.socialIcon}>🔴</Text>
+            <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
+              <Text style={[styles.socialIcon, { color: '#4285F4' }]}>G</Text>
               <Text style={styles.socialButtonText}>Continue with Google</Text>
             </TouchableOpacity>
 
@@ -233,6 +236,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 32,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
   iconContainer: {
     width: 80,
@@ -394,9 +402,22 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#e5e7eb',
   },
+  facebookButton: {
+    backgroundColor: '#1877F2',
+    borderColor: '#1877F2',
+  },
+  googleButton: {
+    backgroundColor: '#fff',
+    borderColor: '#e5e7eb',
+  },
   socialIcon: {
     fontSize: 20,
+    fontWeight: 'bold',
     marginRight: 12,
+    width: 24,
+    height: 24,
+    textAlign: 'center',
+    lineHeight: 24,
   },
   socialButtonText: {
     fontSize: 15,
