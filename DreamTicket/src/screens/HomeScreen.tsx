@@ -46,19 +46,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Logo in top right corner */}
-      <View style={styles.logoContainer}>
-        <Image 
-          source={require('../../assets/images/logo.jpg')} 
-          style={styles.logo}
-          resizeMode="cover"
-        />
+      {/* Header with Logo */}
+      <View style={styles.header}>
+        <View style={styles.logoContainer}>
+          <Image 
+            source={require('../../assets/images/logo.jpg')} 
+            style={styles.logo}
+            resizeMode="cover"
+          />
+        </View>
+        <Text style={styles.headerTitle}>Dream Ticket</Text>
       </View>
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Hero Section */}
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Dream Ticket</Text>
           <Text style={styles.heroSubtitle}>
             Create your lucky ticket with AI magic
           </Text>
@@ -198,30 +200,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f23',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: '#1a1a2e',
+    borderBottomWidth: 2,
+    borderBottomColor: '#8b5cf6',
+  },
   logoContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     overflow: 'hidden',
-    zIndex: 1000,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: '#8b5cf6',
     backgroundColor: '#ffffff',
-    shadowColor: '#8b5cf6',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 10,
+    marginRight: 12,
   },
   logo: {
     width: '100%',
     height: '100%',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    letterSpacing: 1,
   },
   scrollContent: {
     padding: 20,
@@ -230,7 +236,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
     paddingVertical: 20,
-    paddingTop: 30,
   },
   heroTitle: {
     fontSize: 36,
