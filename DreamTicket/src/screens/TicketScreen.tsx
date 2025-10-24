@@ -156,7 +156,11 @@ const TicketScreen: React.FC<TicketScreenProps> = ({ navigation }) => {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerIcon}>🎫</Text>
+          <Image 
+            source={require('../../assets/images/logo.jpg')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.title}>My DreamTickets</Text>
           <Text style={styles.subtitle}>
             Your collection of lucky tickets
@@ -212,8 +216,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  headerIcon: {
-    fontSize: 60,
+  logo: {
+    width: 100,
+    height: 100,
     marginBottom: 10,
   },
   title: {

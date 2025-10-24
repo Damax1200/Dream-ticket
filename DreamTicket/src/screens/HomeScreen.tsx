@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeScreenProps } from '../types/navigation';
@@ -48,7 +49,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Hero Section */}
         <View style={styles.hero}>
-          <Text style={styles.heroIcon}>🎫</Text>
+          <Image 
+            source={require('../../assets/images/logo.jpg')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.heroTitle}>DreamTicket</Text>
           <Text style={styles.heroSubtitle}>
             Create your lucky ticket with AI magic
@@ -197,8 +202,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingVertical: 20,
   },
-  heroIcon: {
-    fontSize: 80,
+  logo: {
+    width: 120,
+    height: 120,
     marginBottom: 16,
   },
   heroTitle: {

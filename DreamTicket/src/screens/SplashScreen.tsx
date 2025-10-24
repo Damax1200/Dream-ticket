@@ -52,8 +52,8 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         - File size: Under 5MB
       */}
       
-      {/* Uncomment this when video is added: */}
-      {/* <Video
+      {/* DreamTicket Splash Video */}
+      <Video
         ref={videoRef}
         source={require('../../assets/videos/splash.mp4')}
         style={styles.video}
@@ -63,14 +63,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
         volume={1.0}
         isMuted={false}
-      /> */}
-      
-      {/* Temporary placeholder - Remove when using video */}
-      <View style={styles.placeholderBackground}>
-        <View style={styles.placeholderContent}>
-          {/* This will be replaced by your video */}
-        </View>
-      </View>
+      />
     </View>
   );
 };
