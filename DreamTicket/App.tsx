@@ -76,7 +76,7 @@ const headerStyles = StyleSheet.create({
     borderColor: '#8b5cf6',
     backgroundColor: '#ffffff',
     marginRight: 12,
-    marginBottom: -10,
+    marginBottom: -5,
   },
   logo: {
     width: '100%',
