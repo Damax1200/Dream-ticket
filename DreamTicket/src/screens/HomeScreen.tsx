@@ -46,15 +46,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Logo in top right corner */}
+      <View style={styles.logoContainer}>
+        <Image 
+          source={require('../../assets/images/logo.jpg')} 
+          style={styles.logo}
+          resizeMode="cover"
+        />
+      </View>
+      
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Hero Section */}
         <View style={styles.hero}>
-          <Image 
-            source={require('../../assets/images/logo.jpg')} 
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.heroTitle}>DreamTicket</Text>
+          <Text style={styles.heroTitle}>Dream Ticket</Text>
           <Text style={styles.heroSubtitle}>
             Create your lucky ticket with AI magic
           </Text>
@@ -194,6 +198,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f23',
   },
+  logoContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: 'hidden',
+    zIndex: 1000,
+    borderWidth: 3,
+    borderColor: '#8b5cf6',
+    backgroundColor: '#ffffff',
+    shadowColor: '#8b5cf6',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+  },
   scrollContent: {
     padding: 20,
   },
@@ -201,11 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
     paddingVertical: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 16,
+    paddingTop: 30,
   },
   heroTitle: {
     fontSize: 36,
