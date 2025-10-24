@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { Text, View, Image, StyleSheet } from 'react-native';
-import { ThemeProvider } from './src/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { LanguageProvider } from './src/contexts/LanguageContext';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
@@ -44,17 +44,25 @@ const TabBarIcon: React.FC<{ emoji: string; focused?: boolean }> = ({ emoji, foc
 // Custom Header with Logo
 const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
   
   return (
-    <View style={[headerStyles.container, { paddingTop: insets.top + 12 }]}>
-      <View style={headerStyles.logoContainer}>
+    <View style={[
+      headerStyles.container, 
+      { 
+        paddingTop: insets.top + 12,
+        backgroundColor: theme.colors.card,
+        borderBottomColor: theme.colors.cardBorder,
+      }
+    ]}>
+      <View style={[headerStyles.logoContainer, { borderColor: theme.colors.accent }]}>
         <Image 
           source={require('./assets/images/logo.jpg')} 
           style={headerStyles.logo}
           resizeMode="cover"
         />
       </View>
-      <Text style={headerStyles.title}>{title}</Text>
+      <Text style={[headerStyles.title, { color: theme.colors.text }]}>{title}</Text>
     </View>
   );
 };
@@ -63,11 +71,9 @@ const headerStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
     paddingHorizontal: 16,
     paddingBottom: 8,
     borderBottomWidth: 2,
-    borderBottomColor: '#8b5cf6',
   },
   logoContainer: {
     width: 50,
@@ -75,7 +81,6 @@ const headerStyles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: '#8b5cf6',
     backgroundColor: '#ffffff',
     marginRight: 12,
     marginBottom: -5,
@@ -87,7 +92,6 @@ const headerStyles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ffffff',
     letterSpacing: 0.5,
   },
 });
@@ -112,22 +116,24 @@ const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
 
 // Main Bottom Tab Navigator
 const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  const { theme } = useTheme();
+  
   return (
     <Tab.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#1a1a2e',
+          backgroundColor: theme.colors.card,
         },
-        headerTintColor: '#ffffff',
+        headerTintColor: theme.colors.text,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
         tabBarStyle: {
-          backgroundColor: '#1a1a2e',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(139, 92, 246, 0.3)',
+          backgroundColor: theme.colors.card,
+          borderTopWidth: 2,
+          borderTopColor: theme.colors.cardBorder,
           elevation: 20,
-          shadowColor: '#8b5cf6',
+          shadowColor: theme.colors.accent,
           shadowOffset: {
             width: 0,
             height: -4,
@@ -138,8 +144,8 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           paddingBottom: 10,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: '#8b5cf6',
-        tabBarInactiveTintColor: '#a0a0c0',
+        tabBarActiveTintColor: theme.colors.accent,
+        tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
