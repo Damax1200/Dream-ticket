@@ -11,9 +11,13 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { SparkleAnimation } from '../components/SparkleAnimation';
 
 const { width } = Dimensions.get('window');
 
@@ -27,9 +31,12 @@ interface DreamTicket {
 }
 
 const AITicketGeneratorScreen: React.FC = () => {
+  const { theme } = useTheme();
+  const { t } = useLanguage();
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [showSparkles, setShowSparkles] = useState<boolean>(false);
   const [generatedTicket, setGeneratedTicket] = useState<DreamTicket | null>(null);
   const [dailyCount, setDailyCount] = useState<number>(0);
   const [isPremium, setIsPremium] = useState<boolean>(false);
@@ -190,14 +197,14 @@ const AITicketGeneratorScreen: React.FC = () => {
 
   const getLuckyMessage = (): string => {
     const messages = [
-      "Your luck shines today! ✨",
-      "Dream Ticket activated! 🎫",
-      "Fortune favors you! 🍀",
-      "Your lucky moment is here! 🌟",
-      "Dreams come true! 💫",
-      "Magic is in the air! ✨",
-      "Your stars are aligned! ⭐",
-      "Luck is on your side! 🎰",
+      t.luckShines,
+      t.dreamActivated,
+      t.fortuneFavors,
+      t.luckyMoment,
+      t.dreamsComeTrue,
+      t.magicInAir,
+      t.starsAligned,
+      t.luckOnSide,
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
@@ -209,6 +216,7 @@ const AITicketGeneratorScreen: React.FC = () => {
     }
 
     setIsGenerating(true);
+    setShowSparkles(true);
 
     // Simulate AI processing
     setTimeout(async () => {
@@ -223,6 +231,9 @@ const AITicketGeneratorScreen: React.FC = () => {
 
       setGeneratedTicket(ticket);
       setIsGenerating(false);
+      
+      // Keep sparkles showing for a bit longer
+      setTimeout(() => setShowSparkles(false), 2000);
 
       // Update daily count
       const newCount = dailyCount + 1;
@@ -284,8 +295,10 @@ const AITicketGeneratorScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <LinearGradient colors={theme.colors.background} style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <SparkleAnimation isAnimating={showSparkles} />
+        <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
           <Image 
@@ -293,12 +306,12 @@ const AITicketGeneratorScreen: React.FC = () => {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.title}>DreamTicket Generator</Text>
-          <Text style={styles.subtitle}>
-            Create your lucky ticket with AI magic
+          <Text style={[styles.title, { color: theme.colors.text }]}>{t.dreamTicketGenerator}</Text>
+          <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+            {t.createLuckyTicket}
           </Text>
-          <View style={styles.limitBadge}>
-            <Text style={styles.limitText}>
+          <View style={[styles.limitBadge, { backgroundColor: theme.colors.accent + '30', borderColor: theme.colors.accent }]}>
+            <Text style={[styles.limitText, { color: theme.colors.text }]}>
               {isPremium ? '⭐ Premium' : '🆓 Free'} • {dailyCount}/{isPremium ? '3' : '1'} today
             </Text>
           </View>
@@ -446,13 +459,16 @@ const AITicketGeneratorScreen: React.FC = () => {
         )}
       </ScrollView>
     </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f23',
+  },
+  safeArea: {
+    flex: 1,
   },
   scrollContent: {
     padding: 20,

@@ -12,8 +12,11 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../types/navigation';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -23,6 +26,8 @@ interface LoginScreenProps {
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
+  const { theme } = useTheme();
+  const { t } = useLanguage();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -61,38 +66,39 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+    <LinearGradient colors={theme.colors.background} style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <Image 
-              source={require('../../assets/images/logo.jpg')} 
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>Welcome Back!</Text>
-            <Text style={styles.subtitle}>
-              Sign in to continue to Dream Ticket
-            </Text>
-          </View>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <Image 
+                source={require('../../assets/images/logo.jpg')} 
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={[styles.title, { color: theme.colors.text }]}>{t.welcomeBack}</Text>
+              <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+                {t.signInToContinue}
+              </Text>
+            </View>
 
           {/* Form */}
           <View style={styles.form}>
             {/* Email Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email Address</Text>
-              <View style={styles.inputContainer}>
+              <Text style={[styles.label, { color: theme.colors.text }]}>{t.email}</Text>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Enter your email"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={theme.colors.textSecondary}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -104,12 +110,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
 
             {/* Password Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.inputContainer}>
+              <Text style={[styles.label, { color: theme.colors.text }]}>{t.password}</Text>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Enter your password"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={theme.colors.textSecondary}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -128,13 +134,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
 
             {/* Login Button */}
             <TouchableOpacity
-              style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
               onPress={handleLogin}
               disabled={isLoading}
+              style={styles.loginButtonContainer}
             >
-              <Text style={styles.loginButtonText}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
-              </Text>
+              <LinearGradient
+                colors={isLoading ? ['#9ca3af', '#9ca3af'] : theme.colors.primary}
+                style={styles.loginButton}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.loginButtonText}>
+                  {isLoading ? 'Signing In...' : t.signIn}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
 
             {/* Divider */}
@@ -157,22 +170,25 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
 
             {/* Sign Up Link */}
             <View style={styles.signupContainer}>
-              <Text style={styles.signupText}>Don't have an account? </Text>
+              <Text style={[styles.signupText, { color: theme.colors.textSecondary }]}>{t.dontHaveAccount} </Text>
               <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                <Text style={styles.signupLink}>Sign Up</Text>
+                <Text style={[styles.signupLink, { color: theme.colors.accent }]}>{t.createAccount}</Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+  },
+  safeArea: {
+    flex: 1,
   },
   keyboardView: {
     flex: 1,
@@ -237,10 +253,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#e5e7eb',
     paddingHorizontal: 16,
     shadowColor: '#000',
     shadowOffset: {
@@ -270,9 +284,11 @@ const styles = StyleSheet.create({
     color: '#6366f1',
     fontWeight: '600',
   },
+  loginButtonContainer: {
+    marginBottom: 12,
+  },
   loginButton: {
-    backgroundColor: '#6366f1',
-    borderRadius: 12,
+    borderRadius: 16,
     paddingVertical: 16,
     alignItems: 'center',
     shadowColor: '#6366f1',
@@ -283,9 +299,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-  },
-  loginButtonDisabled: {
-    backgroundColor: '#9ca3af',
   },
   loginButtonText: {
     color: '#fff',

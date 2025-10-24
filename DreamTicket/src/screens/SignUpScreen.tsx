@@ -12,8 +12,11 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../types/navigation';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type SignUpScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'SignUp'>;
 
@@ -23,6 +26,8 @@ interface SignUpScreenProps {
 }
 
 const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => {
+  const { theme } = useTheme();
+  const { t } = useLanguage();
   const [fullName, setFullName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -71,28 +76,29 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+    <LinearGradient colors={theme.colors.background} style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <Image 
-              source={require('../../assets/images/logo.jpg')} 
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>
-              Join Dream Ticket and start your journey
-            </Text>
-          </View>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <Image 
+                source={require('../../assets/images/logo.jpg')} 
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={[styles.title, { color: theme.colors.text }]}>{t.createAccount}</Text>
+              <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+                Join Dream Ticket and start your journey
+              </Text>
+            </View>
 
           {/* Form */}
           <View style={styles.form}>
@@ -179,13 +185,20 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
 
             {/* Sign Up Button */}
             <TouchableOpacity
-              style={[styles.signupButton, isLoading && styles.signupButtonDisabled]}
               onPress={handleSignUp}
               disabled={isLoading}
+              style={styles.signupButtonContainer}
             >
-              <Text style={styles.signupButtonText}>
-                {isLoading ? 'Creating Account...' : 'Create Account'}
-              </Text>
+              <LinearGradient
+                colors={isLoading ? ['#9ca3af', '#9ca3af'] : theme.colors.secondary}
+                style={styles.signupButton}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.signupButtonText}>
+                  {isLoading ? 'Creating Account...' : t.createAccount}
+                </Text>
+              </LinearGradient>
             </TouchableOpacity>
 
             {/* Divider */}
@@ -208,22 +221,25 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
 
             {/* Login Link */}
             <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>Already have an account? </Text>
+              <Text style={[styles.loginText, { color: theme.colors.textSecondary }]}>{t.alreadyHaveAccount} </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginLink}>Sign In</Text>
+                <Text style={[styles.loginLink, { color: theme.colors.accent }]}>{t.signIn}</Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+  },
+  safeArea: {
+    flex: 1,
   },
   keyboardView: {
     flex: 1,
@@ -352,9 +368,11 @@ const styles = StyleSheet.create({
     color: '#6366f1',
     fontWeight: '600',
   },
+  signupButtonContainer: {
+    marginBottom: 12,
+  },
   signupButton: {
-    backgroundColor: '#10b981',
-    borderRadius: 12,
+    borderRadius: 16,
     paddingVertical: 16,
     alignItems: 'center',
     shadowColor: '#10b981',
@@ -365,9 +383,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-  },
-  signupButtonDisabled: {
-    backgroundColor: '#9ca3af',
   },
   signupButtonText: {
     color: '#fff',

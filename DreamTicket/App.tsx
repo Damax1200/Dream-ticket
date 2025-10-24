@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { Text, View, Image, StyleSheet } from 'react-native';
+import { ThemeProvider } from './src/contexts/ThemeContext';
+import { LanguageProvider } from './src/contexts/LanguageContext';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -248,15 +250,19 @@ const App: React.FC = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        {isAuthenticated ? (
-          <MainTabNavigator onLogout={handleLogout} />
-        ) : (
-          <AuthNavigator onLogin={handleLogin} />
-        )}
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            {isAuthenticated ? (
+              <MainTabNavigator onLogout={handleLogout} />
+            ) : (
+              <AuthNavigator onLogin={handleLogin} />
+            )}
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 
