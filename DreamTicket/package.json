@@ -21,6 +21,7 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^7.5.0",
     "@react-navigation/native": "^6.1.0",
     "@react-navigation/stack": "^6.3.0",
     "expo": "~54.0.20",

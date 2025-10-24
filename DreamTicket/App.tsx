@@ -1,21 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreenExpo from 'expo-splash-screen';
+import { Text, View } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
-import { RootStackParamList, AuthStackParamList } from './src/types/navigation';
+import AITicketGeneratorScreen from './src/screens/AITicketGeneratorScreen';
+import { AuthStackParamList, MainTabParamList } from './src/types/navigation';
 
-const Stack = createStackNavigator<RootStackParamList>();
 const AuthStack = createStackNavigator<AuthStackParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Keep the splash screen visible while we fetch resources
 SplashScreenExpo.preventAutoHideAsync();
+
+// Custom Tab Bar Icon Component
+const TabBarIcon: React.FC<{ emoji: string; focused: boolean }> = ({ emoji, focused }) => {
+  return (
+    <View style={{
+      width: 60,
+      height: 60,
+      justifyContent: 'center',
+      alignItems: 'center',
+      transform: [{ scale: focused ? 1.1 : 1 }],
+    }}>
+      <Text style={{
+        fontSize: focused ? 28 : 24,
+      }}>
+        {emoji}
+      </Text>
+    </View>
+  );
+};
 
 // Auth Stack Navigator
 const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
@@ -35,11 +57,10 @@ const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   );
 };
 
-// Main App Stack Navigator
-const MainNavigator: React.FC = () => {
+// Main Bottom Tab Navigator
+const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
+    <Tab.Navigator
       screenOptions={{
         headerStyle: {
           backgroundColor: '#6366f1',
@@ -48,24 +69,86 @@ const MainNavigator: React.FC = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        tabBarStyle: {
+          backgroundColor: '#ffffff',
+          borderTopWidth: 0,
+          elevation: 20,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -4,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          height: 70,
+          paddingBottom: 10,
+          paddingTop: 10,
+        },
+        tabBarActiveTintColor: '#6366f1',
+        tabBarInactiveTintColor: '#9ca3af',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginTop: -5,
+        },
+        tabBarIconStyle: {
+          marginTop: 5,
+        },
       }}
     >
-      <Stack.Screen 
-        name="Home" 
-        component={HomeScreen} 
-        options={{ title: 'Dream Ticket' }}
+      <Tab.Screen
+        name="HomeTab"
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <TabBarIcon emoji="🏠" focused={focused} />
+          ),
+          headerTitle: 'Dream Ticket',
+        }}
       />
-      <Stack.Screen 
-        name="Ticket" 
-        component={TicketScreen} 
-        options={{ title: 'My Tickets' }}
+      <Tab.Screen
+        name="AIGenerator"
+        component={AITicketGeneratorScreen}
+        options={{
+          title: 'AI Generator',
+          tabBarLabel: 'AI Ticket',
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <TabBarIcon emoji="🤖" focused={focused} />
+          ),
+          headerTitle: 'AI Ticket Generator',
+          headerStyle: {
+            backgroundColor: '#8b5cf6',
+          },
+        }}
       />
-      <Stack.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
-        options={{ title: 'Profile' }}
+      <Tab.Screen
+        name="MyTickets"
+        component={TicketScreen}
+        options={{
+          title: 'My Tickets',
+          tabBarLabel: 'My Tickets',
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <TabBarIcon emoji="🎫" focused={focused} />
+          ),
+          headerTitle: 'My Tickets',
+        }}
       />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="ProfileTab"
+        options={{
+          title: 'Profile',
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <TabBarIcon emoji="👤" focused={focused} />
+          ),
+          headerTitle: 'Profile',
+        }}
+      >
+        {(props: any) => <ProfileScreen {...props} onLogout={onLogout} />}
+      </Tab.Screen>
+    </Tab.Navigator>
   );
 };
 
@@ -119,7 +202,7 @@ const App: React.FC = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         {isAuthenticated ? (
-          <MainNavigator />
+          <MainTabNavigator onLogout={handleLogout} />
         ) : (
           <AuthNavigator onLogin={handleLogin} />
         )}

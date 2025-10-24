@@ -34,16 +34,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <View style={styles.actionsContainer}>
             <TouchableOpacity
               style={styles.primaryButton}
-              onPress={() => navigation.navigate('Ticket')}
+              onPress={() => navigation.navigate('AIGenerator')}
             >
-              <Text style={styles.primaryButtonText}>View My Tickets</Text>
+              <Text style={styles.primaryButtonText}>🤖 Generate AI Ticket</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.secondaryButton}
-              onPress={() => navigation.navigate('Profile')}
+              onPress={() => navigation.navigate('MyTickets')}
             >
-              <Text style={styles.secondaryButtonText}>My Profile</Text>
+              <Text style={styles.secondaryButtonText}>🎫 View My Tickets</Text>
             </TouchableOpacity>
           </View>
 

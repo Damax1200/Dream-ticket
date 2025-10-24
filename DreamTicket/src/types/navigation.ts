@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 
 // Authentication Stack
@@ -7,40 +8,44 @@ export type AuthStackParamList = {
   SignUp: undefined;
 };
 
-// Main App Stack
-export type RootStackParamList = {
-  Home: undefined;
-  Ticket: undefined;
-  Profile: undefined;
+// Bottom Tab Navigator
+export type MainTabParamList = {
+  HomeTab: undefined;
+  AIGenerator: undefined;
+  MyTickets: undefined;
+  ProfileTab: undefined;
 };
 
 // Auth Screen Navigation Props
 export type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 export type SignUpScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'SignUp'>;
 
-// Main Screen Navigation Props
-export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
-export type TicketScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Ticket'>;
-export type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
+// Bottom Tab Navigation Props
+export type HomeTabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'HomeTab'>;
+export type AIGeneratorNavigationProp = BottomTabNavigationProp<MainTabParamList, 'AIGenerator'>;
+export type MyTicketsNavigationProp = BottomTabNavigationProp<MainTabParamList, 'MyTickets'>;
+export type ProfileTabNavigationProp = BottomTabNavigationProp<MainTabParamList, 'ProfileTab'>;
 
 // Route Props
-export type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
-export type TicketScreenRouteProp = RouteProp<RootStackParamList, 'Ticket'>;
-export type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
+export type HomeTabRouteProp = RouteProp<MainTabParamList, 'HomeTab'>;
+export type AIGeneratorRouteProp = RouteProp<MainTabParamList, 'AIGenerator'>;
+export type MyTicketsRouteProp = RouteProp<MainTabParamList, 'MyTickets'>;
+export type ProfileTabRouteProp = RouteProp<MainTabParamList, 'ProfileTab'>;
 
 // Screen Props Interfaces
 export interface HomeScreenProps {
-  navigation: HomeScreenNavigationProp;
-  route: HomeScreenRouteProp;
+  navigation: HomeTabNavigationProp;
+  route: HomeTabRouteProp;
 }
 
 export interface TicketScreenProps {
-  navigation: TicketScreenNavigationProp;
-  route: TicketScreenRouteProp;
+  navigation: MyTicketsNavigationProp;
+  route: MyTicketsRouteProp;
 }
 
 export interface ProfileScreenProps {
-  navigation: ProfileScreenNavigationProp;
-  route: ProfileScreenRouteProp;
+  navigation: ProfileTabNavigationProp;
+  route: ProfileTabRouteProp;
+  onLogout?: () => void;
 }
 
