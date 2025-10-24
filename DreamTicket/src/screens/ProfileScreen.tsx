@@ -18,7 +18,11 @@ interface MenuItem {
   onPress: () => void;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+interface ProfileScreenPropsExtended extends ProfileScreenProps {
+  onLogout?: () => void;
+}
+
+const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLogout }) => {
   const [name, setName] = useState<string>('John Doe');
   const [email, setEmail] = useState<string>('john.doe@example.com');
   const [phone, setPhone] = useState<string>('+1 (555) 123-4567');
