@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreenExpo from 'expo-splash-screen';
-import { Text, View } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -38,6 +38,54 @@ const TabBarIcon: React.FC<{ emoji: string; focused?: boolean }> = ({ emoji, foc
     </View>
   );
 };
+
+// Custom Header with Logo
+const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
+  return (
+    <View style={headerStyles.container}>
+      <View style={headerStyles.logoContainer}>
+        <Image 
+          source={require('./assets/images/logo.jpg')} 
+          style={headerStyles.logo}
+          resizeMode="cover"
+        />
+      </View>
+      <Text style={headerStyles.title}>{title}</Text>
+    </View>
+  );
+};
+
+const headerStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a2e',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#8b5cf6',
+  },
+  logoContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#8b5cf6',
+    backgroundColor: '#ffffff',
+    marginRight: 12,
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    letterSpacing: 0.5,
+  },
+});
 
 // Auth Stack Navigator
 const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
@@ -106,7 +154,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon emoji="🏠" focused={!!focused} />
           ),
-          headerTitle: 'Dream Ticket',
+          header: () => <CustomHeader title="Dream Ticket" />,
         }}
       />
       <Tab.Screen
@@ -118,7 +166,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon emoji="🤖" focused={!!focused} />
           ),
-          headerTitle: 'AI Ticket Generator',
+          header: () => <CustomHeader title="AI Ticket Generator" />,
         }}
       />
       <Tab.Screen
@@ -130,7 +178,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon emoji="🎫" focused={!!focused} />
           ),
-          headerTitle: 'My Tickets',
+          header: () => <CustomHeader title="My Tickets" />,
         }}
       />
       <Tab.Screen
@@ -141,7 +189,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           tabBarIcon: ({ focused }) => (
             <TabBarIcon emoji="👤" focused={!!focused} />
           ),
-          headerTitle: 'Profile',
+          header: () => <CustomHeader title="Profile" />,
         }}
       >
         {(props: any) => <ProfileScreen {...props} onLogout={onLogout} />}

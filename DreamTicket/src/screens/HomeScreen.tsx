@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeScreenProps } from '../types/navigation';
@@ -45,19 +44,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header with Logo */}
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image 
-            source={require('../../assets/images/logo.jpg')} 
-            style={styles.logo}
-            resizeMode="cover"
-          />
-        </View>
-        <Text style={styles.headerTitle}>Dream Ticket</Text>
-      </View>
-      
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Hero Section */}
         <View style={styles.hero}>
@@ -200,35 +187,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f23',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: '#1a1a2e',
-    borderBottomWidth: 2,
-    borderBottomColor: '#8b5cf6',
-  },
-  logoContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#8b5cf6',
-    backgroundColor: '#ffffff',
-    marginRight: 12,
-  },
-  logo: {
-    width: '100%',
-    height: '100%',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    letterSpacing: 1,
-  },
   scrollContent: {
     padding: 20,
   },
@@ -236,13 +194,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
     paddingVertical: 20,
-  },
-  heroTitle: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 8,
-    letterSpacing: 1,
   },
   heroSubtitle: {
     fontSize: 16,
