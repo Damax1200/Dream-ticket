@@ -86,7 +86,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email Address</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>✉️</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
@@ -104,7 +103,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>🔒</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your password"

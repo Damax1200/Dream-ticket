@@ -97,7 +97,6 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Full Name</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>👤</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your full name"
@@ -113,7 +112,6 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email Address</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>✉️</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
@@ -131,7 +129,6 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>🔒</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Create a password"
@@ -149,7 +146,6 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Confirm Password</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>🔐</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Confirm your password"
