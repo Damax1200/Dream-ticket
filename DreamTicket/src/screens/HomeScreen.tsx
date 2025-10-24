@@ -7,11 +7,16 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { HomeScreenProps } from '../types/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { theme } = useTheme();
+  const { t } = useLanguage();
   const [ticketCount, setTicketCount] = useState(0);
   const [dailyCount, setDailyCount] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
@@ -44,105 +49,110 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Hero Section */}
-        <View style={styles.hero}>
-          <Text style={styles.heroSubtitle}>
-            Create your lucky ticket with AI magic
-          </Text>
-          <View style={styles.statusBadge}>
-            <Text style={styles.statusText}>
-              {isPremium ? '⭐ Premium Member' : '🆓 Free User'}
+    <LinearGradient colors={theme.colors.background} style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Hero Section */}
+          <View style={styles.hero}>
+            <Text style={[styles.heroSubtitle, { color: theme.colors.textSecondary }]}>
+              {t.createLuckyTicketAI}
             </Text>
+            <View style={[styles.statusBadge, { backgroundColor: theme.colors.accent + '30', borderColor: theme.colors.accent }]}>
+              <Text style={[styles.statusText, { color: theme.colors.text }]}>
+                {isPremium ? t.premiumMember : t.freeUser}
+              </Text>
+            </View>
           </View>
-        </View>
 
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
+          <View style={[styles.statCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
             <Text style={styles.statIcon}>🎫</Text>
-            <Text style={styles.statNumber}>{ticketCount}</Text>
-            <Text style={styles.statLabel}>Total Tickets</Text>
+            <Text style={[styles.statNumber, { color: theme.colors.accent }]}>{ticketCount}</Text>
+            <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>{t.totalTickets}</Text>
           </View>
-          <View style={styles.statCard}>
+          <View style={[styles.statCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
             <Text style={styles.statIcon}>📅</Text>
-            <Text style={styles.statNumber}>{dailyCount}/{isPremium ? '3' : '1'}</Text>
-            <Text style={styles.statLabel}>Today</Text>
+            <Text style={[styles.statNumber, { color: theme.colors.accent }]}>{dailyCount}/{isPremium ? '3' : '1'}</Text>
+            <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>{t.today}</Text>
           </View>
         </View>
 
         {/* Quick Actions */}
         <View style={styles.actionsSection}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.quickActions}</Text>
           
-          <TouchableOpacity
+          <LinearGradient
+            colors={theme.colors.primary}
             style={styles.primaryAction}
-            onPress={() => navigation.navigate('AIGenerator')}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
           >
-            <View style={styles.actionContent}>
-              <View style={styles.actionLeft}>
-                <Text style={styles.actionIcon}>✨</Text>
-                <View>
-                  <Text style={styles.actionTitle}>Create Lucky Ticket</Text>
-                  <Text style={styles.actionSubtext}>Upload photo or video</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('AIGenerator')}>
+              <View style={styles.actionContent}>
+                <View style={styles.actionLeft}>
+                  <Text style={styles.actionIcon}>✨</Text>
+                  <View>
+                    <Text style={[styles.actionTitle, { color: theme.colors.text }]}>{t.createLuckyTicketAction}</Text>
+                    <Text style={[styles.actionSubtext, { color: theme.colors.textSecondary }]}>{t.uploadPhotoVideo}</Text>
+                  </View>
                 </View>
+                <Text style={[styles.actionArrow, { color: theme.colors.text }]}>→</Text>
               </View>
-              <Text style={styles.actionArrow}>→</Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </LinearGradient>
 
           <TouchableOpacity
-            style={styles.secondaryAction}
+            style={[styles.secondaryAction, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
             onPress={() => navigation.navigate('MyTickets')}
           >
             <View style={styles.actionContent}>
               <View style={styles.actionLeft}>
                 <Text style={styles.actionIcon}>🎫</Text>
                 <View>
-                  <Text style={styles.actionTitle}>My Tickets</Text>
-                  <Text style={styles.actionSubtext}>{ticketCount} saved tickets</Text>
+                  <Text style={[styles.actionTitle, { color: theme.colors.text }]}>{t.myTickets}</Text>
+                  <Text style={[styles.actionSubtext, { color: theme.colors.textSecondary }]}>{ticketCount} {t.savedTickets}</Text>
                 </View>
               </View>
-              <Text style={styles.actionArrow}>→</Text>
+              <Text style={[styles.actionArrow, { color: theme.colors.text }]}>→</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         {/* Features Grid */}
         <View style={styles.featuresSection}>
-          <Text style={styles.sectionTitle}>How It Works</Text>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.howItWorks}</Text>
           
           <View style={styles.featuresGrid}>
-            <View style={styles.featureCard}>
+            <View style={[styles.featureCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <Text style={styles.featureIcon}>📸</Text>
-              <Text style={styles.featureTitle}>Upload Media</Text>
-              <Text style={styles.featureText}>
-                Photo or video (5-10 seconds)
+              <Text style={[styles.featureTitle, { color: theme.colors.text }]}>{t.uploadMedia}</Text>
+              <Text style={[styles.featureText, { color: theme.colors.textSecondary }]}>
+                {t.photoOrVideo}
               </Text>
             </View>
 
-            <View style={styles.featureCard}>
+            <View style={[styles.featureCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <Text style={styles.featureIcon}>🤖</Text>
-              <Text style={styles.featureTitle}>AI Magic</Text>
-              <Text style={styles.featureText}>
-                Generates lucky number
+              <Text style={[styles.featureTitle, { color: theme.colors.text }]}>{t.aiMagic}</Text>
+              <Text style={[styles.featureText, { color: theme.colors.textSecondary }]}>
+                {t.generatesLuckyNumber}
               </Text>
             </View>
 
-            <View style={styles.featureCard}>
+            <View style={[styles.featureCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <Text style={styles.featureIcon}>🎫</Text>
-              <Text style={styles.featureTitle}>Get Ticket</Text>
-              <Text style={styles.featureText}>
-                Personalized DreamTicket
+              <Text style={[styles.featureTitle, { color: theme.colors.text }]}>{t.getTicket}</Text>
+              <Text style={[styles.featureText, { color: theme.colors.textSecondary }]}>
+                {t.personalizedDreamTicket}
               </Text>
             </View>
 
-            <View style={styles.featureCard}>
+            <View style={[styles.featureCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <Text style={styles.featureIcon}>📤</Text>
-              <Text style={styles.featureTitle}>Share</Text>
-              <Text style={styles.featureText}>
-                Save and share with friends
+              <Text style={[styles.featureTitle, { color: theme.colors.text }]}>{t.shareAction}</Text>
+              <Text style={[styles.featureText, { color: theme.colors.textSecondary }]}>
+                {t.saveShareFriends}
               </Text>
             </View>
           </View>
@@ -151,41 +161,44 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         {/* Premium CTA */}
         {!isPremium && (
           <View style={styles.premiumSection}>
-            <View style={styles.premiumCard}>
+            <View style={[styles.premiumCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.accent }]}>
               <Text style={styles.premiumIcon}>⭐</Text>
-              <Text style={styles.premiumTitle}>Upgrade to Premium</Text>
-              <Text style={styles.premiumText}>
-                • 3 video tickets per day (5-10 seconds){'\n'}
-                • Unlimited image tickets{'\n'}
-                • Priority AI processing{'\n'}
-                • Exclusive visual effects
+              <Text style={[styles.premiumTitle, { color: theme.colors.accent }]}>{t.upgradeToPremium}</Text>
+              <Text style={[styles.premiumText, { color: theme.colors.text }]}>
+                • {t.premiumFeature1}{'\n'}
+                • {t.premiumFeature2}{'\n'}
+                • {t.premiumFeature3}{'\n'}
+                • {t.premiumFeature4}
               </Text>
               <View style={styles.premiumPrice}>
-                <Text style={styles.priceAmount}>$9.99</Text>
-                <Text style={styles.priceText}>/month</Text>
+                <Text style={[styles.priceAmount, { color: theme.colors.accent }]}>$9.99</Text>
+                <Text style={[styles.priceText, { color: theme.colors.textSecondary }]}>{t.perMonth}</Text>
               </View>
-              <TouchableOpacity style={styles.upgradeButton}>
-                <Text style={styles.upgradeButtonText}>Upgrade Now</Text>
+              <TouchableOpacity style={[styles.upgradeButton, { backgroundColor: theme.colors.accent }]}>
+                <Text style={styles.upgradeButtonText}>{t.upgradeNow}</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
 
         {/* Info */}
-        <View style={styles.infoBox}>
-          <Text style={styles.infoText}>
-            💡 DreamTicket is a visual entertainment app. All tickets are symbolic and for fun only. No real lottery or prizes.
+        <View style={[styles.infoBox, { backgroundColor: theme.colors.accent + '20', borderColor: theme.colors.accent }]}>
+          <Text style={[styles.infoText, { color: theme.colors.text }]}>
+            {t.disclaimerText}
           </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f23',
+  },
+  safeArea: {
+    flex: 1,
   },
   scrollContent: {
     padding: 20,
