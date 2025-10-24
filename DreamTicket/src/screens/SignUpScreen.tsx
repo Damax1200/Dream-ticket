@@ -5,12 +5,12 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../types/navigation';
 
@@ -36,7 +36,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
       return;
     }
 
-    if (!email.includes('@')) {
+    if (!email || !email.includes('@')) {
       Alert.alert('Error', 'Please enter a valid email address');
       return;
     }

@@ -1,73 +1,285 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   Alert,
   ActivityIndicator,
+  Image,
+  Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
+import * as Sharing from 'expo-sharing';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface GeneratedTicket {
+const { width } = Dimensions.get('window');
+
+interface DreamTicket {
   id: string;
-  eventName: string;
-  date: string;
-  time: string;
-  venue: string;
-  price: string;
-  category: string;
+  luckyNumber: string;
+  imageUri: string;
+  createdAt: string;
+  message: string;
+  type: 'image' | 'video';
 }
 
 const AITicketGeneratorScreen: React.FC = () => {
-  const [prompt, setPrompt] = useState<string>('');
+  const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [generatedTicket, setGeneratedTicket] = useState<GeneratedTicket | null>(null);
+  const [generatedTicket, setGeneratedTicket] = useState<DreamTicket | null>(null);
+  const [dailyCount, setDailyCount] = useState<number>(0);
+  const [isPremium, setIsPremium] = useState<boolean>(false);
 
-  const handleGenerate = async () => {
-    if (!prompt.trim()) {
-      Alert.alert('Error', 'Please describe the event you want to attend');
+  useEffect(() => {
+    checkDailyLimit();
+    checkPremiumStatus();
+  }, []);
+
+  const checkDailyLimit = async () => {
+    try {
+      const today = new Date().toDateString();
+      const storedDate = await AsyncStorage.getItem('lastTicketDate');
+      const storedCount = await AsyncStorage.getItem('dailyTicketCount');
+
+      if (storedDate === today) {
+        setDailyCount(parseInt(storedCount || '0'));
+      } else {
+        await AsyncStorage.setItem('lastTicketDate', today);
+        await AsyncStorage.setItem('dailyTicketCount', '0');
+        setDailyCount(0);
+      }
+    } catch (error) {
+      console.error('Error checking daily limit:', error);
+    }
+  };
+
+  const checkPremiumStatus = async () => {
+    try {
+      const premium = await AsyncStorage.getItem('isPremium');
+      setIsPremium(premium === 'true');
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+    }
+  };
+
+  const canCreateTicket = () => {
+    if (isPremium) {
+      return dailyCount < 3; // Premium: 3 tickets per day
+    }
+    return dailyCount < 1; // Free: 1 ticket per day
+  };
+
+  const requestPermissions = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Please grant camera roll permissions to upload photos/videos.');
+      return false;
+    }
+    return true;
+  };
+
+  const pickImage = async () => {
+    if (!canCreateTicket()) {
+      Alert.alert(
+        'Daily Limit Reached',
+        isPremium
+          ? 'You have reached your daily limit of 3 tickets. Try again tomorrow!'
+          : 'Free users can create 1 ticket per day. Upgrade to Premium for 3 tickets daily!',
+        [
+          { text: 'OK' },
+          !isPremium && { text: 'Upgrade to Premium', onPress: () => handleUpgrade() }
+        ].filter(Boolean) as any
+      );
+      return;
+    }
+
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [9, 16],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setSelectedMedia(result.assets[0].uri);
+      setMediaType('image');
+      setGeneratedTicket(null);
+    }
+  };
+
+  const pickVideo = async () => {
+    if (!canCreateTicket()) {
+      Alert.alert(
+        'Daily Limit Reached',
+        isPremium
+          ? 'You have reached your daily limit of 3 tickets. Try again tomorrow!'
+          : 'Free users can create 1 image ticket per day. Upgrade to Premium for video tickets!',
+        [
+          { text: 'OK' },
+          { text: 'Upgrade to Premium', onPress: () => handleUpgrade() }
+        ]
+      );
+      return;
+    }
+
+    if (!isPremium) {
+      Alert.alert(
+        'Premium Feature',
+        'Video tickets are available for Premium users only. Upgrade now for $9.99/month!',
+        [
+          { text: 'Maybe Later' },
+          { text: 'Upgrade Now', onPress: () => handleUpgrade() }
+        ]
+      );
+      return;
+    }
+
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      videoMaxDuration: 10, // 10 seconds max
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setSelectedMedia(result.assets[0].uri);
+      setMediaType('video');
+      setGeneratedTicket(null);
+    }
+  };
+
+  const takePhoto = async () => {
+    if (!canCreateTicket()) {
+      Alert.alert('Daily Limit Reached', 'You have reached your daily ticket limit.');
+      return;
+    }
+
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Please grant camera permissions.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [9, 16],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setSelectedMedia(result.assets[0].uri);
+      setMediaType('image');
+      setGeneratedTicket(null);
+    }
+  };
+
+  const generateLuckyNumber = (): string => {
+    // Generate a 6-digit lucky number
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  const getLuckyMessage = (): string => {
+    const messages = [
+      "Your luck shines today! ✨",
+      "Dream Ticket activated! 🎫",
+      "Fortune favors you! 🍀",
+      "Your lucky moment is here! 🌟",
+      "Dreams come true! 💫",
+      "Magic is in the air! ✨",
+      "Your stars are aligned! ⭐",
+      "Luck is on your side! 🎰",
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
+  const handleGenerateTicket = async () => {
+    if (!selectedMedia) {
+      Alert.alert('No Media Selected', 'Please upload a photo or video first.');
       return;
     }
 
     setIsGenerating(true);
 
-    // Simulate AI generation (replace with real AI API call)
-    setTimeout(() => {
-      const ticket: GeneratedTicket = {
+    // Simulate AI processing
+    setTimeout(async () => {
+      const ticket: DreamTicket = {
         id: Date.now().toString(),
-        eventName: prompt.includes('concert') ? 'Live Music Concert' : 
-                   prompt.includes('sports') ? 'Championship Game' :
-                   prompt.includes('movie') ? 'Movie Premiere' :
-                   'Amazing Event Experience',
-        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric'
-        }),
-        time: '7:00 PM',
-        venue: 'Dream Arena',
-        price: '$' + (Math.floor(Math.random() * 100) + 20),
-        category: prompt.includes('VIP') ? 'VIP' : 'General Admission'
+        luckyNumber: generateLuckyNumber(),
+        imageUri: selectedMedia,
+        createdAt: new Date().toISOString(),
+        message: getLuckyMessage(),
+        type: mediaType || 'image',
       };
 
       setGeneratedTicket(ticket);
       setIsGenerating(false);
-    }, 2000);
+
+      // Update daily count
+      const newCount = dailyCount + 1;
+      setDailyCount(newCount);
+      await AsyncStorage.setItem('dailyTicketCount', newCount.toString());
+
+      // Save ticket to storage
+      await saveTicketToGallery(ticket);
+    }, 3000);
   };
 
-  const handleSaveTicket = () => {
+  const saveTicketToGallery = async (ticket: DreamTicket) => {
+    try {
+      const existingTickets = await AsyncStorage.getItem('savedTickets');
+      const tickets = existingTickets ? JSON.parse(existingTickets) : [];
+      tickets.unshift(ticket);
+      await AsyncStorage.setItem('savedTickets', JSON.stringify(tickets));
+    } catch (error) {
+      console.error('Error saving ticket:', error);
+    }
+  };
+
+  const handleShareTicket = async () => {
+    if (!generatedTicket) return;
+
+    try {
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(generatedTicket.imageUri, {
+          dialogTitle: 'Share your DreamTicket',
+        });
+      } else {
+        Alert.alert('Sharing not available', 'Sharing is not available on this device.');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      Alert.alert('Error', 'Failed to share ticket.');
+    }
+  };
+
+  const handleUpgrade = () => {
     Alert.alert(
-      'Ticket Saved!',
-      'Your AI-generated ticket has been saved to My Tickets',
-      [{ text: 'OK' }]
+      'Upgrade to Premium',
+      'Premium Features:\n• 3 video tickets per day (5-10 seconds)\n• Unlimited image tickets\n• Priority AI processing\n• Exclusive effects\n\nPrice: $9.99/month',
+      [
+        { text: 'Cancel' },
+        { text: 'Subscribe Now', onPress: () => {
+          // TODO: Implement Stripe/PayPal payment
+          Alert.alert('Coming Soon', 'Payment integration will be available soon!');
+        }}
+      ]
     );
   };
 
   const handleClear = () => {
-    setPrompt('');
+    setSelectedMedia(null);
+    setMediaType(null);
     setGeneratedTicket(null);
   };
 
@@ -76,149 +288,158 @@ const AITicketGeneratorScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerIcon}>🤖</Text>
-          <Text style={styles.title}>AI Ticket Generator</Text>
+          <Text style={styles.headerIcon}>🎫</Text>
+          <Text style={styles.title}>DreamTicket Generator</Text>
           <Text style={styles.subtitle}>
-            Describe your dream event and let AI create the perfect ticket
+            Create your lucky ticket with AI magic
           </Text>
+          <View style={styles.limitBadge}>
+            <Text style={styles.limitText}>
+              {isPremium ? '⭐ Premium' : '🆓 Free'} • {dailyCount}/{isPremium ? '3' : '1'} today
+            </Text>
+          </View>
         </View>
 
-        {/* Input Section */}
-        <View style={styles.inputSection}>
-          <Text style={styles.label}>What event would you like to attend?</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="E.g., A rock concert with VIP seating, A football game, A movie premiere..."
-              placeholderTextColor="#9ca3af"
-              value={prompt}
-              onChangeText={setPrompt}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
+        {/* Upload Options */}
+        {!selectedMedia && !generatedTicket && (
+          <View style={styles.uploadSection}>
+            <Text style={styles.sectionTitle}>Choose Your Media</Text>
+            
+            <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+              <Text style={styles.uploadIcon}>📸</Text>
+              <Text style={styles.uploadButtonText}>Upload Photo</Text>
+              <Text style={styles.uploadSubtext}>From Gallery</Text>
+            </TouchableOpacity>
 
-          {/* Suggestions */}
-          <View style={styles.suggestions}>
-            <Text style={styles.suggestionsTitle}>💡 Try these:</Text>
-            <View style={styles.suggestionButtons}>
-              <TouchableOpacity
-                style={styles.suggestionChip}
-                onPress={() => setPrompt('A rock concert with VIP backstage pass')}
-              >
-                <Text style={styles.suggestionText}>🎸 Rock Concert</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.suggestionChip}
-                onPress={() => setPrompt('A championship sports game with premium seats')}
-              >
-                <Text style={styles.suggestionText}>⚽ Sports Game</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.suggestionChip}
-                onPress={() => setPrompt('A movie premiere with exclusive VIP access')}
-              >
-                <Text style={styles.suggestionText}>🎬 Movie Premiere</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.suggestionChip}
-                onPress={() => setPrompt('A comedy show with meet and greet')}
-              >
-                <Text style={styles.suggestionText}>😂 Comedy Show</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+            <TouchableOpacity style={styles.uploadButton} onPress={takePhoto}>
+              <Text style={styles.uploadIcon}>📷</Text>
+              <Text style={styles.uploadButtonText}>Take Photo</Text>
+              <Text style={styles.uploadSubtext}>Use Camera</Text>
+            </TouchableOpacity>
 
-          {/* Generate Button */}
-          <TouchableOpacity
-            style={[styles.generateButton, isGenerating && styles.generateButtonDisabled]}
-            onPress={handleGenerate}
-            disabled={isGenerating}
-          >
-            {isGenerating ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator color="#fff" />
-                <Text style={styles.buttonText}>Generating with AI...</Text>
-              </View>
-            ) : (
-              <Text style={styles.buttonText}>✨ Generate Ticket</Text>
+            <TouchableOpacity 
+              style={[styles.uploadButton, !isPremium && styles.uploadButtonPremium]} 
+              onPress={pickVideo}
+            >
+              <Text style={styles.uploadIcon}>🎥</Text>
+              <Text style={styles.uploadButtonText}>Upload Video</Text>
+              <Text style={styles.uploadSubtext}>
+                {isPremium ? '5-10 seconds' : '⭐ Premium Only'}
+              </Text>
+            </TouchableOpacity>
+
+            {!isPremium && (
+              <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
+                <Text style={styles.upgradeButtonText}>⭐ Upgrade to Premium</Text>
+              </TouchableOpacity>
             )}
-          </TouchableOpacity>
-        </View>
+          </View>
+        )}
 
-        {/* Generated Ticket Display */}
-        {generatedTicket && (
-          <View style={styles.ticketContainer}>
-            <View style={styles.ticketHeader}>
-              <Text style={styles.ticketHeaderIcon}>🎫</Text>
-              <Text style={styles.ticketHeaderText}>Your AI-Generated Ticket</Text>
+        {/* Preview Selected Media */}
+        {selectedMedia && !generatedTicket && (
+          <View style={styles.previewSection}>
+            <Text style={styles.sectionTitle}>Preview</Text>
+            <View style={styles.previewContainer}>
+              <Image source={{ uri: selectedMedia }} style={styles.previewImage} />
+              <View style={styles.previewOverlay}>
+                <Text style={styles.previewType}>
+                  {mediaType === 'video' ? '🎥 Video' : '📸 Photo'}
+                </Text>
+              </View>
             </View>
 
-            <View style={styles.ticket}>
-              {/* Ticket Top Section */}
-              <View style={styles.ticketTop}>
-                <Text style={styles.eventName}>{generatedTicket.eventName}</Text>
-                <View style={styles.categoryBadge}>
-                  <Text style={styles.categoryText}>{generatedTicket.category}</Text>
+            <TouchableOpacity
+              style={styles.generateButton}
+              onPress={handleGenerateTicket}
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator color="#fff" size="small" />
+                  <Text style={styles.buttonText}>Creating Magic...</Text>
+                </View>
+              ) : (
+                <Text style={styles.buttonText}>✨ Generate Lucky Ticket</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
+              <Text style={styles.clearButtonText}>🔄 Choose Different Media</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Generated Ticket */}
+        {generatedTicket && (
+          <View style={styles.ticketSection}>
+            <Text style={styles.sectionTitle}>Your DreamTicket</Text>
+            
+            <View style={styles.ticketCard}>
+              {/* Ticket Header */}
+              <View style={styles.ticketHeader}>
+                <Text style={styles.ticketLogo}>🎫 DreamTicket</Text>
+                <Text style={styles.ticketDate}>
+                  {new Date(generatedTicket.createdAt).toLocaleDateString()}
+                </Text>
+              </View>
+
+              {/* Lucky Number */}
+              <View style={styles.luckyNumberContainer}>
+                <Text style={styles.luckyNumberLabel}>Your Lucky Number</Text>
+                <Text style={styles.luckyNumber}>{generatedTicket.luckyNumber}</Text>
+                <Text style={styles.luckyMessage}>{generatedTicket.message}</Text>
+              </View>
+
+              {/* Ticket Image */}
+              <View style={styles.ticketImageContainer}>
+                <Image 
+                  source={{ uri: generatedTicket.imageUri }} 
+                  style={styles.ticketImage}
+                />
+                <View style={styles.ticketImageOverlay}>
+                  <Text style={styles.overlayNumber}>{generatedTicket.luckyNumber}</Text>
                 </View>
               </View>
 
-              {/* Ticket Details */}
-              <View style={styles.ticketDetails}>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>📅 Date</Text>
-                  <Text style={styles.detailValue}>{generatedTicket.date}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>🕐 Time</Text>
-                  <Text style={styles.detailValue}>{generatedTicket.time}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>📍 Venue</Text>
-                  <Text style={styles.detailValue}>{generatedTicket.venue}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>💰 Price</Text>
-                  <Text style={[styles.detailValue, styles.price]}>{generatedTicket.price}</Text>
-                </View>
-              </View>
-
-              {/* Ticket Actions */}
+              {/* Actions */}
               <View style={styles.ticketActions}>
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={handleSaveTicket}
-                >
-                  <Text style={styles.saveButtonText}>💾 Save Ticket</Text>
+                <TouchableOpacity style={styles.shareButton} onPress={handleShareTicket}>
+                  <Text style={styles.shareButtonText}>📤 Share</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.clearButton}
-                  onPress={handleClear}
-                >
-                  <Text style={styles.clearButtonText}>🔄 Generate New</Text>
+                <TouchableOpacity style={styles.newTicketButton} onPress={handleClear}>
+                  <Text style={styles.newTicketButtonText}>✨ Create New</Text>
                 </TouchableOpacity>
               </View>
+            </View>
+
+            {/* Info */}
+            <View style={styles.infoBox}>
+              <Text style={styles.infoText}>
+                💡 This is a symbolic lucky ticket for entertainment only. No real lottery or prizes.
+              </Text>
             </View>
           </View>
         )}
 
-        {/* Info Section */}
-        <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>How It Works</Text>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoIcon}>1️⃣</Text>
-            <Text style={styles.infoText}>Describe your dream event in detail</Text>
+        {/* How It Works */}
+        {!selectedMedia && !generatedTicket && (
+          <View style={styles.howItWorks}>
+            <Text style={styles.howItWorksTitle}>How It Works</Text>
+            <View style={styles.step}>
+              <Text style={styles.stepNumber}>1</Text>
+              <Text style={styles.stepText}>Upload a photo or video (5-10 seconds)</Text>
+            </View>
+            <View style={styles.step}>
+              <Text style={styles.stepNumber}>2</Text>
+              <Text style={styles.stepText}>AI creates your personalized lucky ticket</Text>
+            </View>
+            <View style={styles.step}>
+              <Text style={styles.stepNumber}>3</Text>
+              <Text style={styles.stepText}>View, save, and share your DreamTicket</Text>
+            </View>
           </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoIcon}>2️⃣</Text>
-            <Text style={styles.infoText}>AI generates a personalized ticket</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoIcon}>3️⃣</Text>
-            <Text style={styles.infoText}>Save it to your collection or generate a new one</Text>
-          </View>
-        </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -227,7 +448,7 @@ const AITicketGeneratorScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#0f0f23',
   },
   scrollContent: {
     padding: 20,
@@ -243,90 +464,111 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1e293b',
+    color: '#ffffff',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: '#64748b',
+    color: '#a0a0c0',
     textAlign: 'center',
-    paddingHorizontal: 20,
-    lineHeight: 22,
-  },
-  inputSection: {
-    marginBottom: 30,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
     marginBottom: 12,
   },
-  inputContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#e5e7eb',
-    padding: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  textInput: {
-    fontSize: 15,
-    color: '#1e293b',
-    padding: 12,
-    minHeight: 100,
-  },
-  suggestions: {
-    marginTop: 20,
-  },
-  suggestionsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#64748b',
-    marginBottom: 12,
-  },
-  suggestionButtons: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  suggestionChip: {
-    backgroundColor: '#f1f5f9',
+  limitBadge: {
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    paddingHorizontal: 16,
     paddingVertical: 8,
-    paddingHorizontal: 14,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: '#8b5cf6',
   },
-  suggestionText: {
+  limitText: {
+    color: '#c4b5fd',
     fontSize: 13,
-    color: '#475569',
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+  uploadSection: {
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  uploadButton: {
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#8b5cf6',
+  },
+  uploadButtonPremium: {
+    borderColor: '#fbbf24',
+    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+  },
+  uploadIcon: {
+    fontSize: 40,
+    marginBottom: 8,
+  },
+  uploadButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  uploadSubtext: {
+    color: '#a0a0c0',
+    fontSize: 13,
+  },
+  upgradeButton: {
+    backgroundColor: '#fbbf24',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  upgradeButtonText: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  previewSection: {
+    marginBottom: 30,
+  },
+  previewContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 20,
+    position: 'relative',
+  },
+  previewImage: {
+    width: '100%',
+    height: width * 1.5,
+    backgroundColor: '#1a1a2e',
+  },
+  previewOverlay: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  previewType: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   generateButton: {
     backgroundColor: '#8b5cf6',
     borderRadius: 12,
-    paddingVertical: 16,
+    padding: 16,
     alignItems: 'center',
-    marginTop: 20,
-    shadowColor: '#8b5cf6',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  generateButtonDisabled: {
-    backgroundColor: '#9ca3af',
+    marginBottom: 12,
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -334,152 +576,177 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  ticketContainer: {
-    marginBottom: 30,
-  },
-  ticketHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  ticketHeaderIcon: {
-    fontSize: 28,
-    marginRight: 10,
-  },
-  ticketHeaderText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1e293b',
-  },
-  ticket: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-    borderLeftWidth: 6,
-    borderLeftColor: '#8b5cf6',
-  },
-  ticketTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 2,
-    borderBottomColor: '#f1f5f9',
-    borderStyle: 'dashed',
-  },
-  eventName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    flex: 1,
-    marginRight: 10,
-  },
-  categoryBadge: {
-    backgroundColor: '#8b5cf6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  categoryText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  ticketDetails: {
-    marginBottom: 20,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  detailLabel: {
-    fontSize: 15,
-    color: '#64748b',
-    fontWeight: '500',
-  },
-  detailValue: {
-    fontSize: 15,
-    color: '#1e293b',
-    fontWeight: '600',
-  },
-  price: {
-    color: '#10b981',
-    fontSize: 18,
-  },
-  ticketActions: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  saveButton: {
-    flex: 1,
-    backgroundColor: '#10b981',
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontSize: 15,
     fontWeight: 'bold',
   },
   clearButton: {
-    flex: 1,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 10,
-    paddingVertical: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   clearButtonText: {
-    color: '#475569',
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  ticketSection: {
+    marginBottom: 30,
+  },
+  ticketCard: {
+    backgroundColor: '#1a1a2e',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#8b5cf6',
+  },
+  ticketHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  ticketLogo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#8b5cf6',
+  },
+  ticketDate: {
+    fontSize: 12,
+    color: '#a0a0c0',
+  },
+  luckyNumberContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  luckyNumberLabel: {
+    fontSize: 14,
+    color: '#a0a0c0',
+    marginBottom: 8,
+  },
+  luckyNumber: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#fbbf24',
+    letterSpacing: 4,
+    marginBottom: 8,
+  },
+  luckyMessage: {
+    fontSize: 16,
+    color: '#c4b5fd',
+    fontStyle: 'italic',
+  },
+  ticketImageContainer: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 20,
+    position: 'relative',
+  },
+  ticketImage: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#0f0f23',
+  },
+  ticketImageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 12,
+    alignItems: 'center',
+  },
+  overlayNumber: {
+    color: '#fbbf24',
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  ticketActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  shareButton: {
+    flex: 1,
+    backgroundColor: '#10b981',
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+  },
+  shareButtonText: {
+    color: '#ffffff',
     fontSize: 15,
     fontWeight: 'bold',
   },
-  infoSection: {
-    backgroundColor: '#ede9fe',
+  newTicketButton: {
+    flex: 1,
+    backgroundColor: '#8b5cf6',
     borderRadius: 12,
-    padding: 20,
-    marginTop: 10,
+    padding: 14,
+    alignItems: 'center',
   },
-  infoTitle: {
-    fontSize: 16,
+  newTicketButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#5b21b6',
-    marginBottom: 16,
   },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: 12,
-    marginTop: 2,
+  infoBox: {
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
   },
   infoText: {
+    color: '#93c5fd',
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  howItWorks: {
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  howItWorksTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#c4b5fd',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  step: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  stepNumber: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#8b5cf6',
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 32,
+    marginRight: 12,
+  },
+  stepText: {
     flex: 1,
+    color: '#e0e0ff',
     fontSize: 14,
-    color: '#6b21a8',
     lineHeight: 20,
   },
 });
 
 export default AITicketGeneratorScreen;
-
