@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { Text, View, Image, StyleSheet } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
@@ -41,8 +41,10 @@ const TabBarIcon: React.FC<{ emoji: string; focused?: boolean }> = ({ emoji, foc
 
 // Custom Header with Logo
 const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
+  const insets = useSafeAreaInsets();
+  
   return (
-    <View style={headerStyles.container}>
+    <View style={[headerStyles.container, { paddingTop: insets.top + 12 }]}>
       <View style={headerStyles.logoContainer}>
         <Image 
           source={require('./assets/images/logo.jpg')} 
@@ -61,7 +63,6 @@ const headerStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1a1a2e',
     paddingHorizontal: 16,
-    paddingTop: 12,
     paddingBottom: 8,
     borderBottomWidth: 2,
     borderBottomColor: '#8b5cf6',
