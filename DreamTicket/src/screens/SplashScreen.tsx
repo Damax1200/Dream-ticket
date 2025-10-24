@@ -1,11 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  Animated,
   Dimensions,
-  ImageBackground,
 } from 'react-native';
+import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 
 interface SplashScreenProps {
   onFinish: () => void;
@@ -14,58 +13,64 @@ interface SplashScreenProps {
 const { width, height } = Dimensions.get('window');
 
 const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const videoRef = useRef<Video>(null);
+  const [videoEnded, setVideoEnded] = useState(false);
 
   useEffect(() => {
-    // Fade in animation
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-
-    // Navigate to main app after 3 seconds
+    // Auto-finish after video ends or after 5 seconds (whichever comes first)
     const timer = setTimeout(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => onFinish());
-    }, 3000);
+      if (!videoEnded) {
+        onFinish();
+      }
+    }, 5000);
 
     return () => clearTimeout(timer);
-  }, [fadeAnim, onFinish]);
+  }, [videoEnded, onFinish]);
+
+  const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    if (status.isLoaded && status.didJustFinish) {
+      setVideoEnded(true);
+      // Small delay before transitioning
+      setTimeout(() => {
+        onFinish();
+      }, 300);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.imageContainer,
-          {
-            opacity: fadeAnim,
-          },
-        ]}
-      >
-        {/* 
-          To use the image:
-          1. Save your DreamTicket splash image as: assets/images/splash-bg.png
-          2. Uncomment the ImageBackground below and comment out the placeholder View
-        */}
+      {/* 
+        To use the video:
+        1. Save your DreamTicket splash video as: assets/videos/splash.mp4
+        2. Uncomment the Video component below
+        3. Comment out the placeholder View
         
-        {/* Uncomment this when image is added: */}
-        {/* <ImageBackground
-          source={require('../../assets/images/splash-bg.png')}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        /> */}
-        
-        {/* Temporary placeholder - Remove when using image */}
-        <View style={styles.placeholderBackground}>
-          <View style={styles.placeholderContent}>
-            {/* This mimics the image colors until you add the actual image */}
-          </View>
+        Recommended video specs:
+        - Duration: 3-5 seconds
+        - Resolution: 1080x1920 (portrait) or 1920x1080 (landscape)
+        - Format: MP4 (H.264 codec)
+        - File size: Under 5MB
+      */}
+      
+      {/* Uncomment this when video is added: */}
+      {/* <Video
+        ref={videoRef}
+        source={require('../../assets/videos/splash.mp4')}
+        style={styles.video}
+        resizeMode={ResizeMode.COVER}
+        shouldPlay
+        isLooping={false}
+        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+        volume={1.0}
+        isMuted={false}
+      /> */}
+      
+      {/* Temporary placeholder - Remove when using video */}
+      <View style={styles.placeholderBackground}>
+        <View style={styles.placeholderContent}>
+          {/* This will be replaced by your video */}
         </View>
-      </Animated.View>
+      </View>
     </View>
   );
 };
@@ -73,19 +78,13 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#003d5c', // Deep blue from the image
+    backgroundColor: '#003d5c', // Deep blue from your branding
   },
-  imageContainer: {
-    flex: 1,
+  video: {
     width: width,
     height: height,
   },
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  // Temporary placeholder styles - Remove when using actual image
+  // Temporary placeholder styles - Remove when using actual video
   placeholderBackground: {
     flex: 1,
     backgroundColor: '#003d5c', // Deep blue background
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   placeholderContent: {
     width: '100%',
     height: '100%',
-    // This will be replaced by your actual image
+    // This will be replaced by your actual video
   },
 });
 
