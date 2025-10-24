@@ -39,7 +39,15 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
       'Are you sure you want to logout?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', style: 'destructive', onPress: () => console.log('Logged out') },
+        { 
+          text: 'Logout', 
+          style: 'destructive', 
+          onPress: () => {
+            if (onLogout) {
+              onLogout();
+            }
+          }
+        },
       ]
     );
   };
