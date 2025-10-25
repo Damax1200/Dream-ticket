@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -87,18 +86,13 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {/* Header */}
-            <View style={styles.header}>
-              <Image 
-                source={require('../../assets/images/logo.jpg')} 
-                style={styles.logo}
-                resizeMode="contain"
-              />
-              <Text style={[styles.title, { color: theme.colors.text }]}>{t.createAccount}</Text>
-              <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-                Join Dream Ticket and start your journey
-              </Text>
-            </View>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: theme.colors.text }]}>{t.createAccount}</Text>
+            <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+              Join Dream Ticket and start your journey
+            </Text>
+          </View>
 
           {/* Form */}
           <View style={styles.form}>

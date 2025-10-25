@@ -301,11 +301,6 @@ const AITicketGeneratorScreen: React.FC = () => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Image 
-            source={require('../../assets/images/logo.jpg')} 
-            style={styles.logo}
-            resizeMode="contain"
-          />
           <Text style={[styles.title, { color: theme.colors.text }]}>{t.dreamTicketGenerator}</Text>
           <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
             {t.createLuckyTicket}

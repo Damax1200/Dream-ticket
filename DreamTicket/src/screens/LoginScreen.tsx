@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -76,18 +75,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Header */}
-            <View style={styles.header}>
-              <Image 
-                source={require('../../assets/images/logo.jpg')} 
-                style={styles.logo}
-                resizeMode="contain"
-              />
-              <Text style={[styles.title, { color: theme.colors.text }]}>{t.welcomeBack}</Text>
-              <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-                {t.signInToContinue}
-              </Text>
-            </View>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: theme.colors.text }]}>{t.welcomeBack}</Text>
+            <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+              {t.signInToContinue}
+            </Text>
+          </View>
 
           {/* Form */}
           <View style={styles.form}>
