@@ -272,6 +272,7 @@ const AITicketGeneratorScreen: React.FC = () => {
             };
 
             setGeneratedTicket(ticket);
+            setWinnerTicketData(null); // Hide the preview after capture
 
             // Update daily count
             const newCount = dailyCount + 1;
@@ -284,8 +285,9 @@ const AITicketGeneratorScreen: React.FC = () => {
         } catch (error) {
           console.error('Error capturing winner ticket:', error);
           Alert.alert('Error', 'Failed to generate winner ticket image');
+          setWinnerTicketData(null); // Hide preview on error
         }
-      }, 500);
+      }, 1500); // Increased timeout to ensure view is fully rendered
     }, 3000);
   };
 
@@ -393,15 +395,18 @@ const AITicketGeneratorScreen: React.FC = () => {
           </View>
         )}
 
-        {/* Hidden Winner Ticket Display for Capture */}
-        {winnerTicketData && (
-          <View style={{ position: 'absolute', left: -10000 }}>
-            <WinnerTicketDisplay ref={winnerTicketRef} ticketData={winnerTicketData} />
+        {/* Winner Ticket Display for Capture - Shown during generation */}
+        {winnerTicketData && !generatedTicket && (
+          <View style={styles.winnerTicketPreview}>
+            <Text style={styles.capturingText}>✨ Creating your winner image...</Text>
+            <View style={styles.captureContainer}>
+              <WinnerTicketDisplay ref={winnerTicketRef} ticketData={winnerTicketData} />
+            </View>
           </View>
         )}
 
         {/* Preview Selected Media */}
-        {selectedMedia && !generatedTicket && !winnerTicketData && (
+        {selectedMedia && !generatedTicket && !winnerTicketData && !isGenerating && (
           <View style={styles.previewSection}>
             <Text style={styles.sectionTitle}>Preview</Text>
             <View style={styles.previewContainer}>
@@ -815,6 +820,21 @@ const styles = StyleSheet.create({
     color: '#e0e0ff',
     fontSize: 14,
     lineHeight: 20,
+  },
+  winnerTicketPreview: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  capturingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fbbf24',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  captureContainer: {
+    width: width - 40,
+    alignSelf: 'center',
   },
 });
 
