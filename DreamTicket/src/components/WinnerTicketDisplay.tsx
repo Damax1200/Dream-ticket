@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TicketData, themeBackgrounds, themeColors, formatPrizeAmount, getTemplateDisplayName } from '../utils/TicketImageGenerator';
+import { TicketData, themeBackgrounds, themeColors, themeIcons, formatPrizeAmount, getTemplateDisplayName } from '../utils/TicketImageGenerator';
 
 const { width } = Dimensions.get('window');
 
@@ -72,39 +72,63 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
             </View>
           </View>
 
-          {/* Winner Photo Section */}
-          <View style={styles.photoSection}>
-            <Image
-              source={{ uri: userPhotoUri }}
-              style={styles.winnerPhoto}
-              resizeMode="cover"
-            />
+          {/* Three People Holding Check Scene */}
+          <View style={styles.winnersScene}>
+            {/* Left Person Silhouette */}
+            <View style={styles.sidePerson}>
+              <View style={styles.personSilhouette}>
+                <Text style={styles.silhouetteText}>👤</Text>
+              </View>
+            </View>
+
+            {/* Middle Person - User Photo */}
+            <View style={styles.centerPerson}>
+              <Image
+                source={{ uri: userPhotoUri }}
+                style={styles.userPhoto}
+                resizeMode="cover"
+              />
+            </View>
+
+            {/* Right Person Silhouette */}
+            <View style={styles.sidePerson}>
+              <View style={styles.personSilhouette}>
+                <Text style={styles.silhouetteText}>👤</Text>
+              </View>
+            </View>
           </View>
 
-          {/* Motivational Quote */}
+          {/* Motivational Quote Above Check */}
           <View style={styles.quoteContainer}>
             <Text style={styles.quoteText}>{motivationalQuote}</Text>
           </View>
 
-          {/* Winner Check/Banner */}
+          {/* Giant Winning Check/Banner */}
           <View style={styles.checkContainer}>
             <LinearGradient
               colors={[colors.primary, colors.primary]}
-              style={styles.checkGradient}
+              style={styles.giantCheck}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
             >
-              <View style={styles.checkHeader}>
+              {/* Check Header with Template Icon */}
+              <View style={styles.checkTopRow}>
+                <Text style={styles.templateIcon}>{themeIcons[templateTheme]}</Text>
                 <Text style={styles.checkTitle}>{templateName}</Text>
               </View>
 
+              {/* Winner Name Section */}
               <View style={styles.nameSection}>
-                <Text style={styles.nameLabel}>WINNER NAME</Text>
+                <Text style={styles.nameLabel}>YOUR NAME</Text>
                 <Text style={styles.winnerName}>{userName.toUpperCase()}</Text>
               </View>
 
+              {/* Prize Amount - Big and Bold */}
               <View style={styles.amountSection}>
                 <Text style={styles.prizeAmount}>{formatPrizeAmount(luckyNumber)}</Text>
               </View>
 
+              {/* Disclaimer */}
               <View style={styles.disclaimerSection}>
                 <Text style={styles.disclaimerText}>FOR VISUALIZATION ONLY</Text>
               </View>
@@ -192,22 +216,48 @@ const styles = StyleSheet.create({
   bedEmoji: {
     fontSize: 32,
   },
-  photoSection: {
-    alignItems: 'center',
+  winnersScene: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-end',
     marginVertical: 20,
+    paddingHorizontal: 10,
     zIndex: 10,
   },
-  winnerPhoto: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
+  sidePerson: {
+    alignItems: 'center',
+    width: 90,
+  },
+  personSilhouette: {
+    width: 80,
+    height: 100,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  silhouetteText: {
+    fontSize: 48,
+    opacity: 0.6,
+  },
+  centerPerson: {
+    alignItems: 'center',
+    width: 140,
+    marginHorizontal: 5,
+  },
+  userPhoto: {
+    width: 130,
+    height: 160,
+    borderRadius: 16,
     borderWidth: 6,
     borderColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 10,
+    shadowRadius: 12,
+    elevation: 15,
   },
   quoteContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -227,26 +277,33 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   checkContainer: {
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 30,
     zIndex: 10,
   },
-  checkGradient: {
+  giantCheck: {
     borderRadius: 20,
-    padding: 20,
+    padding: 18,
     borderWidth: 8,
     borderColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 12,
+    shadowOpacity: 0.5,
+    shadowRadius: 15,
+    elevation: 15,
   },
-  checkHeader: {
+  checkTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 12,
   },
+  templateIcon: {
+    fontSize: 32,
+    marginRight: 8,
+  },
   checkTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
