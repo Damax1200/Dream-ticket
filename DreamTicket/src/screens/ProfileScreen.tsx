@@ -62,21 +62,21 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
   };
 
   const menuItems: MenuItem[] = [
-    { icon: '🎫', title: 'My Tickets', onPress: () => navigation.navigate('Ticket') },
-    { icon: '💳', title: 'Payment Methods', onPress: () => Alert.alert('Coming Soon', 'Payment methods feature coming soon!') },
-    { icon: '🔔', title: 'Notifications', onPress: () => Alert.alert('Coming Soon', 'Notification settings coming soon!') },
-    { icon: '❓', title: 'Help & Support', onPress: () => Alert.alert('Coming Soon', 'Help & support coming soon!') },
-    { icon: '⚙️', title: 'Settings', onPress: () => Alert.alert('Coming Soon', 'Settings coming soon!') },
+    { icon: '🎫', title: t.myTickets, onPress: () => navigation.navigate('MyTickets') },
+    { icon: '💳', title: t.paymentMethods, onPress: () => Alert.alert(t.comingSoon, t.paymentMethodsComingSoon) },
+    { icon: '🔔', title: t.notifications, onPress: () => Alert.alert(t.comingSoon, t.notificationSettingsComingSoon) },
+    { icon: '❓', title: t.helpSupport, onPress: () => Alert.alert(t.comingSoon, t.helpSupportComingSoon) },
+    { icon: '⚙️', title: t.settings, onPress: () => Alert.alert(t.comingSoon, t.settingsComingSoon) },
   ];
 
   return (
-    <LinearGradient colors={theme.colors.background} style={styles.container}>
+    <LinearGradient colors={theme.colors.background as any} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
             {/* Profile Header */}
             <View style={styles.profileHeader}>
-              <LinearGradient colors={theme.colors.primary} style={styles.avatar}>
+              <LinearGradient colors={theme.colors.primary as any} style={styles.avatar}>
                 <Text style={styles.avatarText}>
                   {name.split(' ').map(n => n[0]).join('')}
                 </Text>
@@ -122,40 +122,40 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
           {/* Personal Information */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Personal Information</Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.personalInfo}</Text>
             
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Full Name</Text>
+              <Text style={[styles.label, { color: theme.colors.text }]}>{t.fullName}</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                 value={name}
                 onChangeText={setName}
                 placeholder="Enter your full name"
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={theme.colors.textSecondary}
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email Address</Text>
+              <Text style={[styles.label, { color: theme.colors.text }]}>{t.email}</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                 value={email}
                 onChangeText={setEmail}
                 placeholder="Enter your email"
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={theme.colors.textSecondary}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Phone Number</Text>
+              <Text style={[styles.label, { color: theme.colors.text }]}>Phone Number</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                 value={phone}
                 onChangeText={setPhone}
                 placeholder="Enter your phone number"
-                placeholderTextColor="#9ca3af"
+                placeholderTextColor={theme.colors.textSecondary}
                 keyboardType="phone-pad"
               />
             </View>
@@ -163,30 +163,30 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
           {/* Preferences */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Preferences</Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.preferences}</Text>
             
             <View style={styles.preferenceRow}>
               <View style={styles.preferenceInfo}>
-                <Text style={styles.preferenceTitle}>Push Notifications</Text>
-                <Text style={styles.preferenceSubtitle}>Receive updates about your tickets</Text>
+                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.notifications}</Text>
+                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>Receive updates about your tickets</Text>
               </View>
               <Switch
                 value={notifications}
                 onValueChange={setNotifications}
-                trackColor={{ false: '#e5e7eb', true: '#6366f1' }}
+                trackColor={{ false: '#e5e7eb', true: theme.colors.accent }}
                 thumbColor={notifications ? '#fff' : '#f3f4f6'}
               />
             </View>
 
             <View style={styles.preferenceRow}>
               <View style={styles.preferenceInfo}>
-                <Text style={styles.preferenceTitle}>Email Updates</Text>
-                <Text style={styles.preferenceSubtitle}>Receive promotional emails</Text>
+                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.emailUpdates}</Text>
+                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>Receive promotional emails</Text>
               </View>
               <Switch
                 value={emailUpdates}
                 onValueChange={setEmailUpdates}
-                trackColor={{ false: '#e5e7eb', true: '#6366f1' }}
+                trackColor={{ false: '#e5e7eb', true: theme.colors.accent }}
                 thumbColor={emailUpdates ? '#fff' : '#f3f4f6'}
               />
             </View>
@@ -194,7 +194,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
           {/* Menu Items */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Account</Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.account}</Text>
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -287,7 +287,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                   }}
                 >
                   <LinearGradient
-                    colors={themes[themeKey].colors.primary}
+                    colors={themes[themeKey].colors.primary as any}
                     style={styles.themePreview}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
