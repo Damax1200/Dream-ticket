@@ -91,10 +91,12 @@ const AITicketGeneratorScreen: React.FC = () => {
   };
 
   const canCreateTicket = () => {
-    if (isPremium) {
-      return dailyCount < 3; // Premium: 3 tickets per day
-    }
-    return dailyCount < 1; // Free: 1 ticket per day
+    // Temporarily disabled daily limit
+    return true;
+    // if (isPremium) {
+    //   return dailyCount < 3; // Premium: 3 tickets per day
+    // }
+    // return dailyCount < 1; // Free: 1 ticket per day
   };
 
   const requestPermissions = async () => {
@@ -352,11 +354,12 @@ const AITicketGeneratorScreen: React.FC = () => {
           <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
             {t.createLuckyTicket}
           </Text>
-          <View style={[styles.limitBadge, { backgroundColor: theme.colors.accent + '30', borderColor: theme.colors.accent }]}>
+          {/* Daily limit badge temporarily hidden */}
+          {/* <View style={[styles.limitBadge, { backgroundColor: theme.colors.accent + '30', borderColor: theme.colors.accent }]}>
             <Text style={[styles.limitText, { color: theme.colors.text }]}>
               {isPremium ? '⭐ Premium' : '🆓 Free'} • {dailyCount}/{isPremium ? '3' : '1'} today
             </Text>
-          </View>
+          </View> */}
         </View>
 
         {/* Upload Options */}
