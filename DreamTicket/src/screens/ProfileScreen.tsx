@@ -328,6 +328,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 20,
+    paddingBottom: 120,
   },
   profileHeader: {
     alignItems: 'center',

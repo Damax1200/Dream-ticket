@@ -70,15 +70,13 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
           // For side buttons
           const getIcon = () => {
             if (index === 0) return '🏠';
-            if (index === 2) return '🎫';
-            if (index === 3) return '👤';
+            if (index === 2) return '👤';
             return '•';
           };
 
           const getLabel = () => {
             if (index === 0) return 'HOME';
-            if (index === 2) return 'TICKETS';
-            if (index === 3) return 'PROFILE';
+            if (index === 2) return 'PROFILE';
             return String(label);
           };
 

@@ -149,14 +149,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         }}
       />
       <Tab.Screen
-        name="MyTickets"
-        component={TicketScreen}
-        options={{
-          title: 'My Tickets',
-          header: () => <CustomHeader title="My Tickets" />,
-        }}
-      />
-      <Tab.Screen
         name="ProfileTab"
         options={{
           title: 'Profile',

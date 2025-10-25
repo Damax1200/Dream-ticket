@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 24,
+    paddingBottom: 120,
   },
   header: {
     alignItems: 'center',
@@ -290,7 +291,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
-    flex: 1,
+    width: '100%',
   },
   inputGroup: {
     marginBottom: 20,
