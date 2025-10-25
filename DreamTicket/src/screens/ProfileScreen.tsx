@@ -95,10 +95,11 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
           {/* Settings Section */}
           <View style={styles.settingsSection}>
-            {/* Language Selection */}
+            {/* Language Selection Card */}
             <TouchableOpacity
-              style={styles.settingsItem}
+              style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
               onPress={() => setShowLanguageModal(true)}
+              activeOpacity={0.7}
             >
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
@@ -112,10 +113,11 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               <Text style={styles.settingsArrow}>›</Text>
             </TouchableOpacity>
 
-            {/* Theme Selection */}
+            {/* Theme Selection Card */}
             <TouchableOpacity
-              style={styles.settingsItem}
+              style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
               onPress={() => setShowThemeModal(true)}
+              activeOpacity={0.7}
             >
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
@@ -129,8 +131,8 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               <Text style={styles.settingsArrow}>›</Text>
             </TouchableOpacity>
 
-            {/* Notifications Toggle */}
-            <View style={styles.settingsItem}>
+            {/* Notifications Toggle Card */}
+            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
                   <Text style={styles.cardIcon}>🔔</Text>
@@ -148,8 +150,8 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               />
             </View>
 
-            {/* Email Updates Toggle */}
-            <View style={styles.settingsItem}>
+            {/* Email Updates Toggle Card */}
+            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
                   <Text style={styles.cardIcon}>📧</Text>
@@ -173,8 +175,9 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={styles.menuItem}
+                style={[styles.menuCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                 onPress={item.onPress}
+                activeOpacity={0.7}
               >
                 <View style={styles.menuItemLeft}>
                   <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
@@ -397,6 +400,21 @@ const styles = StyleSheet.create({
   settingsSection: {
     marginBottom: 20,
   },
+  settingsCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   settingsItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -429,6 +447,21 @@ const styles = StyleSheet.create({
   },
   menuSection: {
     marginBottom: 20,
+  },
+  menuCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   menuItem: {
     flexDirection: 'row',
