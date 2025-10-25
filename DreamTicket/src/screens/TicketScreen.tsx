@@ -94,35 +94,21 @@ const TicketScreen: React.FC<TicketScreenProps> = ({ navigation }) => {
 
   const renderTicket = (ticket: DreamTicket) => (
     <View key={ticket.id} style={styles.ticketCard}>
-      {/* Ticket Header */}
-      <View style={styles.ticketHeader}>
-        <View style={styles.ticketHeaderLeft}>
-          <Text style={styles.ticketLogo}>🎫 DreamTicket</Text>
-          <Text style={styles.ticketType}>
-            {ticket.type === 'video' ? '🎥 Video' : '📸 Photo'}
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => handleDeleteTicket(ticket.id)}
-        >
-          <Text style={styles.deleteButtonText}>🗑️</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Delete Button - Top Right */}
+      <TouchableOpacity
+        style={styles.deleteButtonTop}
+        onPress={() => handleDeleteTicket(ticket.id)}
+      >
+        <Text style={styles.deleteButtonText}>🗑️</Text>
+      </TouchableOpacity>
 
-      {/* Lucky Number */}
-      <View style={styles.luckyNumberSection}>
-        <Text style={styles.luckyNumberLabel}>Lucky Number</Text>
-        <Text style={styles.luckyNumber}>{ticket.luckyNumber}</Text>
-        <Text style={styles.luckyMessage}>{ticket.message}</Text>
-      </View>
-
-      {/* Ticket Image */}
-      <View style={styles.ticketImageContainer}>
-        <Image source={{ uri: ticket.imageUri }} style={styles.ticketImage} />
-        <View style={styles.imageOverlay}>
-          <Text style={styles.overlayNumber}>{ticket.luckyNumber}</Text>
-        </View>
+      {/* Winner Image - Full Display */}
+      <View style={styles.winnerImageContainer}>
+        <Image 
+          source={{ uri: ticket.imageUri }} 
+          style={styles.winnerImage}
+          resizeMode="contain"
+        />
       </View>
 
       {/* Ticket Footer */}
@@ -286,7 +272,7 @@ const styles = StyleSheet.create({
   ticketCard: {
     backgroundColor: '#1a1a2e',
     borderRadius: 20,
-    padding: 20,
+    padding: 16,
     borderWidth: 2,
     borderColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
@@ -297,90 +283,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-  },
-  ticketHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(139, 92, 246, 0.3)',
-  },
-  ticketHeaderLeft: {
-    flex: 1,
-  },
-  ticketLogo: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#8b5cf6',
-    marginBottom: 4,
-  },
-  ticketType: {
-    fontSize: 12,
-    color: '#a0a0c0',
-  },
-  deleteButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.5)',
-  },
-  deleteButtonText: {
-    fontSize: 18,
-  },
-  luckyNumberSection: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  luckyNumberLabel: {
-    fontSize: 12,
-    color: '#a0a0c0',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  luckyNumber: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fbbf24',
-    letterSpacing: 4,
-    marginBottom: 8,
-  },
-  luckyMessage: {
-    fontSize: 14,
-    color: '#c4b5fd',
-    fontStyle: 'italic',
-  },
-  ticketImageContainer: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 16,
     position: 'relative',
   },
-  ticketImage: {
-    width: '100%',
-    height: 250,
+  deleteButtonTop: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(239, 68, 68, 0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  deleteButtonText: {
+    fontSize: 20,
+  },
+  winnerImageContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 16,
     backgroundColor: '#0f0f23',
   },
-  imageOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 12,
-    alignItems: 'center',
-  },
-  overlayNumber: {
-    color: '#fbbf24',
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 2,
+  winnerImage: {
+    width: '100%',
+    aspectRatio: 0.714, // Portrait aspect ratio (1:1.4) matching the winner ticket
+    backgroundColor: '#0f0f23',
   },
   ticketFooter: {
     flexDirection: 'row',
