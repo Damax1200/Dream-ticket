@@ -18,6 +18,7 @@ import SignUpScreen from './src/screens/SignUpScreen';
 import AITicketGeneratorScreen from './src/screens/AITicketGeneratorScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import NotificationScreen from './src/screens/NotificationScreen';
+import EditProfileScreen from './src/screens/EditProfileScreen';
 import { AuthStackParamList, MainTabParamList } from './src/types/navigation';
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
@@ -218,6 +219,15 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         options={{
           title: 'Notifications',
           header: () => <CustomHeader title="Notifications" />,
+          tabBarButton: () => null, // Hide from tab bar
+        }}
+      />
+      <Tab.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{
+          title: 'Edit Profile',
+          header: () => <CustomHeader title="Edit Profile" />,
           tabBarButton: () => null, // Hide from tab bar
         }}
       />

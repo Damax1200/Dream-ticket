@@ -9,11 +9,11 @@ const { width } = Dimensions.get('window');
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { theme } = useTheme();
   
-  // Filter out hidden tabs (like MyTickets, Settings, Notifications)
+  // Filter out hidden tabs (like MyTickets, Settings, Notifications, EditProfile)
   const visibleRoutes = state.routes.filter((route) => {
     const { options } = descriptors[route.key];
     return options.tabBarButton !== null && options.tabBarButton !== undefined ? true : options.tabBarButton !== (() => null);
-  }).filter((route) => !['MyTickets', 'Settings', 'Notifications'].includes(route.name)); // Explicitly hide these screens
+  }).filter((route) => !['MyTickets', 'Settings', 'Notifications', 'EditProfile'].includes(route.name)); // Explicitly hide these screens
   
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.card }]}>

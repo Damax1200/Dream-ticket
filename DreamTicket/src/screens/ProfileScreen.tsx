@@ -84,13 +84,13 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               <Text style={[styles.profileName, { color: '#ffffff' }]}>{name}</Text>
               <Text style={[styles.profileEmail, { color: 'rgba(255, 255, 255, 0.7)' }]}>{email}</Text>
               
-              {/* Edit Profile Button */}
-              <TouchableOpacity 
-                style={[styles.editProfileButton, { backgroundColor: theme.colors.accent }]}
-                onPress={handleSave}
-              >
-                <Text style={styles.editProfileText}>✏️ Edit Profile</Text>
-              </TouchableOpacity>
+                  {/* Edit Profile Button */}
+                  <TouchableOpacity
+                    style={[styles.editProfileButton, { backgroundColor: theme.colors.accent }]}
+                    onPress={() => navigation.navigate('EditProfile')}
+                  >
+                    <Text style={styles.editProfileText}>✏️ Edit Profile</Text>
+                  </TouchableOpacity>
             </View>
 
           {/* Settings Section */}
