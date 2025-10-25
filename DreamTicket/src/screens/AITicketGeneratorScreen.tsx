@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SparkleAnimation } from '../components/SparkleAnimation';
+import { WinnerTicketDisplay } from '../components/WinnerTicketDisplay';
+import { TicketData, getRandomTemplate, captureTicketImage } from '../utils/TicketImageGenerator';
 
 const { width } = Dimensions.get('window');
 
@@ -40,11 +42,26 @@ const AITicketGeneratorScreen: React.FC = () => {
   const [generatedTicket, setGeneratedTicket] = useState<DreamTicket | null>(null);
   const [dailyCount, setDailyCount] = useState<number>(0);
   const [isPremium, setIsPremium] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>('John Doe');
+  const [winnerTicketData, setWinnerTicketData] = useState<TicketData | null>(null);
+  const winnerTicketRef = useRef<View>(null);
 
   useEffect(() => {
     checkDailyLimit();
     checkPremiumStatus();
+    loadUserName();
   }, []);
+
+  const loadUserName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem('userName');
+      if (storedName) {
+        setUserName(storedName);
+      }
+    } catch (error) {
+      console.error('Error loading user name:', error);
+    }
+  };
 
   const checkDailyLimit = async () => {
     try {
@@ -220,28 +237,55 @@ const AITicketGeneratorScreen: React.FC = () => {
 
     // Simulate AI processing
     setTimeout(async () => {
-      const ticket: DreamTicket = {
-        id: Date.now().toString(),
-        luckyNumber: generateLuckyNumber(),
-        imageUri: selectedMedia,
-        createdAt: new Date().toISOString(),
-        message: getLuckyMessage(),
-        type: mediaType || 'image',
+      const luckyNumber = generateLuckyNumber();
+      const message = getLuckyMessage();
+      const template = getRandomTemplate();
+
+      // Create winner ticket data for display
+      const ticketData: TicketData = {
+        userName: userName,
+        luckyNumber: luckyNumber,
+        templateTheme: template,
+        motivationalQuote: message,
+        userPhotoUri: selectedMedia,
       };
 
-      setGeneratedTicket(ticket);
+      setWinnerTicketData(ticketData);
       setIsGenerating(false);
       
       // Keep sparkles showing for a bit longer
       setTimeout(() => setShowSparkles(false), 2000);
 
-      // Update daily count
-      const newCount = dailyCount + 1;
-      setDailyCount(newCount);
-      await AsyncStorage.setItem('dailyTicketCount', newCount.toString());
+      // Wait for the view to render, then capture it
+      setTimeout(async () => {
+        try {
+          if (winnerTicketRef.current) {
+            const capturedImageUri = await captureTicketImage(winnerTicketRef.current);
+            
+            const ticket: DreamTicket = {
+              id: Date.now().toString(),
+              luckyNumber: luckyNumber,
+              imageUri: capturedImageUri,
+              createdAt: new Date().toISOString(),
+              message: message,
+              type: mediaType || 'image',
+            };
 
-      // Save ticket to storage
-      await saveTicketToGallery(ticket);
+            setGeneratedTicket(ticket);
+
+            // Update daily count
+            const newCount = dailyCount + 1;
+            setDailyCount(newCount);
+            await AsyncStorage.setItem('dailyTicketCount', newCount.toString());
+
+            // Save ticket to storage
+            await saveTicketToGallery(ticket);
+          }
+        } catch (error) {
+          console.error('Error capturing winner ticket:', error);
+          Alert.alert('Error', 'Failed to generate winner ticket image');
+        }
+      }, 500);
     }, 3000);
   };
 
@@ -292,6 +336,7 @@ const AITicketGeneratorScreen: React.FC = () => {
     setSelectedMedia(null);
     setMediaType(null);
     setGeneratedTicket(null);
+    setWinnerTicketData(null);
   };
 
   return (
@@ -348,8 +393,15 @@ const AITicketGeneratorScreen: React.FC = () => {
           </View>
         )}
 
+        {/* Hidden Winner Ticket Display for Capture */}
+        {winnerTicketData && (
+          <View style={{ position: 'absolute', left: -10000 }}>
+            <WinnerTicketDisplay ref={winnerTicketRef} ticketData={winnerTicketData} />
+          </View>
+        )}
+
         {/* Preview Selected Media */}
-        {selectedMedia && !generatedTicket && (
+        {selectedMedia && !generatedTicket && !winnerTicketData && (
           <View style={styles.previewSection}>
             <Text style={styles.sectionTitle}>Preview</Text>
             <View style={styles.previewContainer}>
