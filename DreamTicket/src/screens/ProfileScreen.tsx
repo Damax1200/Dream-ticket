@@ -97,7 +97,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
           <View style={styles.settingsSection}>
             {/* Language Selection Card */}
             <TouchableOpacity
-              style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+              style={[styles.settingsCard, { backgroundColor: theme.colors.card }]}
               onPress={() => setShowLanguageModal(true)}
               activeOpacity={0.7}
             >
@@ -115,7 +115,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
             {/* Theme Selection Card */}
             <TouchableOpacity
-              style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+              style={[styles.settingsCard, { backgroundColor: theme.colors.card }]}
               onPress={() => setShowThemeModal(true)}
               activeOpacity={0.7}
             >
@@ -132,7 +132,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
             </TouchableOpacity>
 
             {/* Notifications Toggle Card */}
-            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
+            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card }]}>
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
                   <Text style={styles.cardIcon}>🔔</Text>
@@ -151,7 +151,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
             </View>
 
             {/* Email Updates Toggle Card */}
-            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
+            <View style={[styles.settingsCard, { backgroundColor: theme.colors.card }]}>
               <View style={styles.settingsItemLeft}>
                 <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
                   <Text style={styles.cardIcon}>📧</Text>
@@ -175,7 +175,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.menuCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+                style={[styles.menuCard, { backgroundColor: theme.colors.card }]}
                 onPress={item.onPress}
                 activeOpacity={0.7}
               >
@@ -408,7 +408,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 12,
     borderRadius: 16,
-    borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -456,7 +455,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 12,
     borderRadius: 16,
-    borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
