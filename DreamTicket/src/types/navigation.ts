@@ -14,6 +14,8 @@ export type MainTabParamList = {
   AIGenerator: undefined;
   MyTickets: undefined;
   ProfileTab: undefined;
+  Settings: undefined;
+  Notifications: undefined;
 };
 
 // Auth Screen Navigation Props

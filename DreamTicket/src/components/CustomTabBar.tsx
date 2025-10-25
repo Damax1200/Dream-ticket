@@ -9,14 +9,21 @@ const { width } = Dimensions.get('window');
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { theme } = useTheme();
   
+  // Filter out hidden tabs (like MyTickets, Settings, Notifications)
+  const visibleRoutes = state.routes.filter((route) => {
+    const { options } = descriptors[route.key];
+    return options.tabBarButton !== null && options.tabBarButton !== undefined ? true : options.tabBarButton !== (() => null);
+  }).filter((route) => !['MyTickets', 'Settings', 'Notifications'].includes(route.name)); // Explicitly hide these screens
+  
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
       <View style={styles.tabBar}>
-        {state.routes.map((route, index) => {
+        {visibleRoutes.map((route, visibleIndex) => {
+          const originalIndex = state.routes.indexOf(route);
           const { options } = descriptors[route.key];
           const label = options.tabBarLabel || options.title || route.name;
-          const isFocused = state.index === index;
-          const isCenter = index === 1; // AI Generator in the center
+          const isFocused = state.index === originalIndex;
+          const isCenter = visibleIndex === 1; // AI Generator in the center
 
           const onPress = () => {
             const event = navigation.emit({
@@ -69,14 +76,14 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
 
           // For side buttons
           const getIcon = () => {
-            if (index === 0) return '🏠';
-            if (index === 2) return '👤';
+            if (visibleIndex === 0) return '🏠';
+            if (visibleIndex === 2) return '👤';
             return '•';
           };
 
           const getLabel = () => {
-            if (index === 0) return 'HOME';
-            if (index === 2) return 'PROFILE';
+            if (visibleIndex === 0) return 'HOME';
+            if (visibleIndex === 2) return 'PROFILE';
             return String(label);
           };
 

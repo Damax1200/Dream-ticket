@@ -64,9 +64,9 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
   const menuItems: MenuItem[] = [
     { icon: '🎫', title: t.myTickets, onPress: () => navigation.navigate('MyTickets') },
     { icon: '💳', title: t.paymentMethods, onPress: () => Alert.alert(t.comingSoon, t.paymentMethodsComingSoon) },
-    { icon: '🔔', title: t.notifications, onPress: () => Alert.alert(t.comingSoon, t.notificationSettingsComingSoon) },
+    { icon: '🔔', title: t.notifications, onPress: () => navigation.navigate('Notifications') },
     { icon: '❓', title: t.helpSupport, onPress: () => Alert.alert(t.comingSoon, t.helpSupportComingSoon) },
-    { icon: '⚙️', title: t.settings, onPress: () => Alert.alert(t.comingSoon, t.settingsComingSoon) },
+    { icon: '⚙️', title: t.settings, onPress: () => navigation.navigate('Settings') },
   ];
 
   return (
@@ -81,143 +81,119 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                   {name.split(' ').map(n => n[0]).join('')}
                 </Text>
               </LinearGradient>
-              <Text style={[styles.profileName, { color: theme.colors.text }]}>{name}</Text>
-              <Text style={[styles.profileEmail, { color: theme.colors.textSecondary }]}>{email}</Text>
+              <Text style={[styles.profileName, { color: '#ffffff' }]}>{name}</Text>
+              <Text style={[styles.profileEmail, { color: 'rgba(255, 255, 255, 0.7)' }]}>{email}</Text>
+              
+              {/* Edit Profile Button */}
+              <TouchableOpacity 
+                style={[styles.editProfileButton, { backgroundColor: theme.colors.accent }]}
+                onPress={handleSave}
+              >
+                <Text style={styles.editProfileText}>✏️ Edit Profile</Text>
+              </TouchableOpacity>
             </View>
 
-          {/* Language & Theme */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.preferences}</Text>
-            
+          {/* Settings Section */}
+          <View style={styles.settingsSection}>
             {/* Language Selection */}
             <TouchableOpacity
-              style={[styles.preferenceButton, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+              style={styles.settingsItem}
               onPress={() => setShowLanguageModal(true)}
             >
-              <Text style={styles.preferenceIcon}>🌐</Text>
-              <View style={styles.preferenceTextContainer}>
-                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.changeLanguage}</Text>
-                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>
-                  {getLanguageName(language)}
-                </Text>
+              <View style={styles.settingsItemLeft}>
+                <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
+                  <Text style={styles.cardIcon}>🌐</Text>
+                </View>
+                <View style={styles.settingsTextContainer}>
+                  <Text style={styles.settingsTitle}>{t.changeLanguage}</Text>
+                  <Text style={styles.settingsSubtitle}>{getLanguageName(language)}</Text>
+                </View>
               </View>
-              <Text style={[styles.menuArrow, { color: theme.colors.textSecondary }]}>›</Text>
+              <Text style={styles.settingsArrow}>›</Text>
             </TouchableOpacity>
 
             {/* Theme Selection */}
             <TouchableOpacity
-              style={[styles.preferenceButton, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+              style={styles.settingsItem}
               onPress={() => setShowThemeModal(true)}
             >
-              <Text style={styles.preferenceIcon}>🎨</Text>
-              <View style={styles.preferenceTextContainer}>
-                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.changeTheme}</Text>
-                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>
-                  {themes[currentTheme].name}
-                </Text>
+              <View style={styles.settingsItemLeft}>
+                <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
+                  <Text style={styles.cardIcon}>🎨</Text>
+                </View>
+                <View style={styles.settingsTextContainer}>
+                  <Text style={styles.settingsTitle}>{t.changeTheme}</Text>
+                  <Text style={styles.settingsSubtitle}>{themes[currentTheme].name}</Text>
+                </View>
               </View>
-              <Text style={[styles.menuArrow, { color: theme.colors.textSecondary }]}>›</Text>
+              <Text style={styles.settingsArrow}>›</Text>
             </TouchableOpacity>
-          </View>
 
-          {/* Personal Information */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.personalInfo}</Text>
-            
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { color: theme.colors.text }]}>{t.fullName}</Text>
-              <TextInput
-                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter your full name"
-                placeholderTextColor={theme.colors.textSecondary}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { color: theme.colors.text }]}>{t.email}</Text>
-              <TextInput
-                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter your email"
-                placeholderTextColor={theme.colors.textSecondary}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { color: theme.colors.text }]}>Phone Number</Text>
-              <TextInput
-                style={[styles.input, { color: theme.colors.text, backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
-                value={phone}
-                onChangeText={setPhone}
-                placeholder="Enter your phone number"
-                placeholderTextColor={theme.colors.textSecondary}
-                keyboardType="phone-pad"
-              />
-            </View>
-          </View>
-
-          {/* Preferences */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.preferences}</Text>
-            
-            <View style={styles.preferenceRow}>
-              <View style={styles.preferenceInfo}>
-                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.notifications}</Text>
-                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>Receive updates about your tickets</Text>
+            {/* Notifications Toggle */}
+            <View style={styles.settingsItem}>
+              <View style={styles.settingsItemLeft}>
+                <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
+                  <Text style={styles.cardIcon}>🔔</Text>
+                </View>
+                <View style={styles.settingsTextContainer}>
+                  <Text style={styles.settingsTitle}>{t.notifications}</Text>
+                  <Text style={styles.settingsSubtitle}>Receive updates</Text>
+                </View>
               </View>
               <Switch
                 value={notifications}
                 onValueChange={setNotifications}
-                trackColor={{ false: '#e5e7eb', true: theme.colors.accent }}
-                thumbColor={notifications ? '#fff' : '#f3f4f6'}
+                trackColor={{ false: '#4a5568', true: theme.colors.accent }}
+                thumbColor={'#fff'}
               />
             </View>
 
-            <View style={styles.preferenceRow}>
-              <View style={styles.preferenceInfo}>
-                <Text style={[styles.preferenceTitle, { color: theme.colors.text }]}>{t.emailUpdates}</Text>
-                <Text style={[styles.preferenceSubtitle, { color: theme.colors.textSecondary }]}>Receive promotional emails</Text>
+            {/* Email Updates Toggle */}
+            <View style={styles.settingsItem}>
+              <View style={styles.settingsItemLeft}>
+                <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
+                  <Text style={styles.cardIcon}>📧</Text>
+                </View>
+                <View style={styles.settingsTextContainer}>
+                  <Text style={styles.settingsTitle}>{t.emailUpdates}</Text>
+                  <Text style={styles.settingsSubtitle}>Promotional emails</Text>
+                </View>
               </View>
               <Switch
                 value={emailUpdates}
                 onValueChange={setEmailUpdates}
-                trackColor={{ false: '#e5e7eb', true: theme.colors.accent }}
-                thumbColor={emailUpdates ? '#fff' : '#f3f4f6'}
+                trackColor={{ false: '#4a5568', true: theme.colors.accent }}
+                thumbColor={'#fff'}
               />
             </View>
           </View>
 
-          {/* Menu Items */}
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>{t.account}</Text>
+          {/* Account Menu Section */}
+          <View style={styles.menuSection}>
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.menuItem}
                 onPress={item.onPress}
               >
-                <Text style={styles.menuIcon}>{item.icon}</Text>
-                <Text style={styles.menuTitle}>{item.title}</Text>
+                <View style={styles.menuItemLeft}>
+                  <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
+                    <Text style={styles.cardIcon}>{item.icon}</Text>
+                  </View>
+                  <Text style={styles.menuTitle}>{item.title}</Text>
+                </View>
                 <Text style={styles.menuArrow}>›</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Action Buttons */}
-          <View style={styles.actionsContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save Changes</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutButtonText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Logout Button */}
+          <TouchableOpacity 
+            style={[styles.logoutButton, { backgroundColor: '#ef4444' }]} 
+            onPress={handleLogout}
+          >
+            <Text style={styles.logoutButtonText}>🚪 {t.logout}</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -230,7 +206,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
       >
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.colors.card }]}>
-            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t.changeLanguage}</Text>
+            <Text style={[styles.modalTitle, { color: '#ffffff' }]}>{t.changeLanguage}</Text>
             <ScrollView style={styles.modalScroll}>
               {availableLanguages.map((lang) => (
                 <TouchableOpacity
@@ -244,7 +220,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                     setShowLanguageModal(false);
                   }}
                 >
-                  <Text style={[styles.modalItemText, { color: theme.colors.text }]}>
+                  <Text style={[styles.modalItemText, { color: '#ffffff' }]}>
                     {getLanguageName(lang)}
                   </Text>
                   {language === lang && (
@@ -272,7 +248,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
       >
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: theme.colors.card }]}>
-            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t.changeTheme}</Text>
+            <Text style={[styles.modalTitle, { color: '#ffffff' }]}>{t.changeTheme}</Text>
             <ScrollView style={styles.modalScroll}>
               {(Object.keys(themes) as ThemeType[]).map((themeKey) => (
                 <TouchableOpacity
@@ -292,7 +268,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                   />
-                  <Text style={[styles.modalItemText, { color: theme.colors.text }]}>
+                  <Text style={[styles.modalItemText, { color: '#ffffff' }]}>
                     {themes[themeKey].name}
                   </Text>
                   {currentTheme === themeKey && (
@@ -407,54 +383,103 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748b',
   },
+  editProfileButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  editProfileText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  settingsSection: {
+    marginBottom: 20,
+  },
+  settingsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+  },
+  settingsItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingsTextContainer: {
+    flex: 1,
+  },
+  settingsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 2,
+  },
+  settingsSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.6)',
+  },
+  settingsArrow: {
+    fontSize: 24,
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontWeight: '300',
+  },
+  menuSection: {
+    marginBottom: 20,
+  },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    paddingHorizontal: 4,
   },
-  menuIcon: {
-    fontSize: 20,
+  menuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 16,
   },
+  cardIcon: {
+    fontSize: 22,
+  },
   menuTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1e293b',
-  },
-  menuArrow: {
-    fontSize: 20,
-    color: '#9ca3af',
-  },
-  actionsContainer: {
-    marginTop: 20,
-  },
-  saveButton: {
-    backgroundColor: '#10b981',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+    color: '#ffffff',
+  },
+  menuArrow: {
+    fontSize: 24,
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontWeight: '300',
   },
   logoutButton: {
-    backgroundColor: '#ef4444',
     paddingVertical: 16,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 30,
+    shadowColor: '#ef4444',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   logoutButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   preferenceButton: {
     flexDirection: 'row',
