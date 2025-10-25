@@ -30,6 +30,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -112,9 +113,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
                   placeholderTextColor={theme.colors.textSecondary}
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   autoCapitalize="none"
                 />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Text style={styles.eyeIconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -269,6 +276,14 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 16,
     color: '#1e293b',
+  },
+  eyeIcon: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  eyeIconText: {
+    fontSize: 20,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
