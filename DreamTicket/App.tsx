@@ -7,6 +7,7 @@ import * as SplashScreenExpo from 'expo-splash-screen';
 import { Text, View, Image, StyleSheet } from 'react-native';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { LanguageProvider } from './src/contexts/LanguageContext';
+import { CustomTabBar } from './src/components/CustomTabBar';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -120,6 +121,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   
   return (
     <Tab.Navigator
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerStyle: {
           backgroundColor: theme.colors.card,
@@ -128,32 +130,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        tabBarStyle: {
-          backgroundColor: theme.colors.card,
-          borderTopWidth: 2,
-          borderTopColor: theme.colors.cardBorder,
-          elevation: 20,
-          shadowColor: theme.colors.accent,
-          shadowOffset: {
-            width: 0,
-            height: -4,
-          },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          height: 70,
-          paddingBottom: 10,
-          paddingTop: 10,
-        },
-        tabBarActiveTintColor: theme.colors.accent,
-        tabBarInactiveTintColor: theme.colors.textSecondary,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          marginTop: -5,
-        },
-        tabBarIconStyle: {
-          marginTop: 5,
-        },
       }}
     >
       <Tab.Screen
@@ -161,10 +137,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         component={HomeScreen}
         options={{
           title: 'Home',
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon emoji="🏠" focused={!!focused} />
-          ),
           header: () => <CustomHeader title="Dream Ticket" />,
         }}
       />
@@ -173,10 +145,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         component={AITicketGeneratorScreen}
         options={{
           title: 'AI Generator',
-          tabBarLabel: 'AI Ticket',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon emoji="🤖" focused={!!focused} />
-          ),
           header: () => <CustomHeader title="AI Ticket Generator" />,
         }}
       />
@@ -185,10 +153,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         component={TicketScreen}
         options={{
           title: 'My Tickets',
-          tabBarLabel: 'My Tickets',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon emoji="🎫" focused={!!focused} />
-          ),
           header: () => <CustomHeader title="My Tickets" />,
         }}
       />
@@ -196,10 +160,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="ProfileTab"
         options={{
           title: 'Profile',
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon emoji="👤" focused={!!focused} />
-          ),
           header: () => <CustomHeader title="Profile" />,
         }}
       >
