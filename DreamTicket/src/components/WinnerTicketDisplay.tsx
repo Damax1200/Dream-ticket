@@ -74,11 +74,13 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
 
           {/* Three People Holding Check Scene */}
           <View style={styles.winnersScene}>
-            {/* Left Person Silhouette */}
+            {/* Left Person - AI Generated Placeholder */}
             <View style={styles.sidePerson}>
-              <View style={styles.personSilhouette}>
-                <Text style={styles.silhouetteText}>👤</Text>
-              </View>
+              <Image
+                source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+                style={styles.sidePersonPhoto}
+                resizeMode="cover"
+              />
             </View>
 
             {/* Middle Person - User Photo */}
@@ -100,11 +102,13 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
               />
             </View>
 
-            {/* Right Person Silhouette */}
+            {/* Right Person - AI Generated Placeholder */}
             <View style={styles.sidePerson}>
-              <View style={styles.personSilhouette}>
-                <Text style={styles.silhouetteText}>👤</Text>
-              </View>
+              <Image
+                source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+                style={styles.sidePersonPhoto}
+                resizeMode="cover"
+              />
             </View>
           </View>
 
@@ -239,19 +243,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 90,
   },
-  personSilhouette: {
+  sidePersonPhoto: {
     width: 80,
     height: 100,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  silhouetteText: {
-    fontSize: 48,
-    opacity: 0.6,
+    borderWidth: 4,
+    borderColor: '#fff',
+    backgroundColor: '#1a1a2e',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 10,
   },
   centerPerson: {
     alignItems: 'center',
