@@ -146,7 +146,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
                 end={{ x: 1, y: 0 }}
               >
                 <Text style={styles.loginButtonText}>
-                  {isLoading ? 'Signing In...' : t.signIn}
+                  {isLoading ? t.signingIn : t.signIn}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -154,19 +154,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
             {/* Divider */}
             <View style={styles.divider}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR</Text>
+              <Text style={styles.dividerText}>{t.orSignInWith}</Text>
               <View style={styles.dividerLine} />
             </View>
 
             {/* Social Login Buttons */}
             <TouchableOpacity style={[styles.socialButton, styles.facebookButton]}>
               <Text style={[styles.socialIcon, { color: '#fff' }]}>f</Text>
-              <Text style={[styles.socialButtonText, { color: '#fff' }]}>Continue with Facebook</Text>
+              <Text style={[styles.socialButtonText, { color: '#fff' }]}>{t.continueWithFacebook}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
               <Text style={[styles.socialIcon, { color: '#4285F4' }]}>G</Text>
-              <Text style={styles.socialButtonText}>Continue with Google</Text>
+              <Text style={styles.socialButtonText}>{t.continueWithGoogle}</Text>
             </TouchableOpacity>
 
             {/* Sign Up Link */}

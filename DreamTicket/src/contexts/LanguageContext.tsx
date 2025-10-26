@@ -17,9 +17,11 @@ interface Translations {
   dontHaveAccount: string;
   alreadyHaveAccount: string;
   orSignUpWith: string;
+  orSignInWith: string;
   continueWithFacebook: string;
   continueWithGoogle: string;
   creatingAccount: string;
+  signingIn: string;
   
   // Home
   welcome: string;
@@ -157,9 +159,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: "Don't have an account?",
     alreadyHaveAccount: 'Already have an account?',
     orSignUpWith: 'OR SIGN UP WITH',
+    orSignInWith: 'OR SIGN IN WITH',
     continueWithFacebook: 'Continue with Facebook',
     continueWithGoogle: 'Continue with Google',
     creatingAccount: 'Creating Account...',
+    signingIn: 'Signing In...',
     welcome: 'Welcome',
     exploreTickets: 'Explore Tickets',
     myTickets: 'My Tickets',
@@ -269,9 +273,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: '¿No tienes cuenta?',
     alreadyHaveAccount: '¿Ya tienes cuenta?',
     orSignUpWith: 'O REGÍSTRATE CON',
+    orSignInWith: 'O INICIA SESIÓN CON',
     continueWithFacebook: 'Continuar con Facebook',
     continueWithGoogle: 'Continuar con Google',
     creatingAccount: 'Creando Cuenta...',
+    signingIn: 'Iniciando Sesión...',
     welcome: 'Bienvenido',
     exploreTickets: 'Explorar Tickets',
     myTickets: 'Mis Tickets',
@@ -381,9 +387,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: "Vous n'avez pas de compte?",
     alreadyHaveAccount: 'Vous avez déjà un compte?',
     orSignUpWith: 'OU S\'INSCRIRE AVEC',
+    orSignInWith: 'OU SE CONNECTER AVEC',
     continueWithFacebook: 'Continuer avec Facebook',
     continueWithGoogle: 'Continuer avec Google',
     creatingAccount: 'Création du compte...',
+    signingIn: 'Connexion en cours...',
     welcome: 'Bienvenue',
     exploreTickets: 'Explorer les billets',
     myTickets: 'Mes billets',
@@ -493,9 +501,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: 'Haben Sie kein Konto?',
     alreadyHaveAccount: 'Haben Sie bereits ein Konto?',
     orSignUpWith: 'ODER REGISTRIEREN MIT',
+    orSignInWith: 'ODER ANMELDEN MIT',
     continueWithFacebook: 'Mit Facebook fortfahren',
     continueWithGoogle: 'Mit Google fortfahren',
     creatingAccount: 'Konto wird erstellt...',
+    signingIn: 'Anmeldung läuft...',
     welcome: 'Willkommen',
     exploreTickets: 'Tickets erkunden',
     myTickets: 'Meine Tickets',
@@ -605,9 +615,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: 'Não tem uma conta?',
     alreadyHaveAccount: 'Já tem uma conta?',
     orSignUpWith: 'OU REGISTRAR-SE COM',
+    orSignInWith: 'OU ENTRAR COM',
     continueWithFacebook: 'Continuar com Facebook',
     continueWithGoogle: 'Continuar com Google',
     creatingAccount: 'Criando Conta...',
+    signingIn: 'Entrando...',
     welcome: 'Bem-vindo',
     exploreTickets: 'Explorar Bilhetes',
     myTickets: 'Meus Bilhetes',
@@ -717,9 +729,11 @@ const translations: Record<LanguageType, Translations> = {
     dontHaveAccount: '还没有账户？',
     alreadyHaveAccount: '已有账户？',
     orSignUpWith: '或使用以下方式注册',
+    orSignInWith: '或使用以下方式登录',
     continueWithFacebook: '继续使用 Facebook',
     continueWithGoogle: '继续使用 Google',
     creatingAccount: '正在创建账户...',
+    signingIn: '正在登录...',
     welcome: '欢迎',
     exploreTickets: '探索门票',
     myTickets: '我的门票',
