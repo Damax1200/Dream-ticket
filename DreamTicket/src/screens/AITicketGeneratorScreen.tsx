@@ -314,7 +314,7 @@ const AITicketGeneratorScreen: React.FC = () => {
 
       // Step 3: Create winner ticket data with base64 image
       const ticketData: TicketData = {
-        userName: userName,
+        userName: userName || 'Lucky Winner', // Fallback if userName is not set
         luckyNumber: luckyNumber,
         templateTheme: template,
         motivationalQuote: message,
@@ -596,13 +596,7 @@ const AITicketGeneratorScreen: React.FC = () => {
       {/* WinnerTicketDisplay - Rendered for capture */}
       {winnerTicketData && (
         <View style={styles.captureContainer} ref={winnerTicketRef} collapsable={false}>
-          <WinnerTicketDisplay 
-            userName={winnerTicketData.userName}
-            luckyNumber={winnerTicketData.luckyNumber}
-            templateTheme={winnerTicketData.templateTheme}
-            motivationalQuote={winnerTicketData.motivationalQuote}
-            userPhotoUri={winnerTicketData.userPhotoUri}
-          />
+          <WinnerTicketDisplay ticketData={winnerTicketData} />
         </View>
       )}
     </SafeAreaView>
