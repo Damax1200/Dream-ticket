@@ -1,7 +1,8 @@
 import { Alert } from 'react-native';
 
 // Replicate.ai Face Swap Configuration  
-const REPLICATE_API_TOKEN = 'r8_T4vt279y1dg2qrHl403Z9HdOUDa65nq1TupRo'; // ✅ LOCAL ONLY!
+// ⚠️ SECURITY: Add your API token here locally (DO NOT commit to GitHub)
+const REPLICATE_API_TOKEN = 'YOUR_REPLICATE_API_TOKEN_HERE'; // Replace with your token locally
 const FACE_SWAP_VERSION = 'd5900f9ebed33e7ae6f0f192de2f5ba0027bbb49fb73c2f2c7589ee37d455d83'; // Just the version hash
 
 export interface FaceSwapRequest {
