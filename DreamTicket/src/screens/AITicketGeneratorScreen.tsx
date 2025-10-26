@@ -20,6 +20,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { SparkleAnimation } from '../components/SparkleAnimation';
 import { WinnerTicketDisplay } from '../components/WinnerTicketDisplay';
 import { TicketData, getRandomTemplate, captureTicketImage } from '../utils/TicketImageGenerator';
+import { faceSwapService } from '../services/FaceSwapService';
 
 const { width } = Dimensions.get('window');
 
@@ -44,6 +45,7 @@ const AITicketGeneratorScreen: React.FC = () => {
   const [isPremium, setIsPremium] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>('John Doe');
   const [winnerTicketData, setWinnerTicketData] = useState<TicketData | null>(null);
+  const [swappedPhotoUri, setSwappedPhotoUri] = useState<string | null>(null);
   const winnerTicketRef = useRef<View>(null);
 
   useEffect(() => {
@@ -228,6 +230,21 @@ const AITicketGeneratorScreen: React.FC = () => {
     return messages[Math.floor(Math.random() * messages.length)];
   };
 
+  const getTemplateImageUri = (template: string): string => {
+    // Map template names to actual image URIs
+    // These would be your template images with 3 people in suits
+    const templateMap: Record<string, any> = {
+      'dreamGalaxy': require('../../assets/templates/template-galaxy.jpg'),
+      'dreamGold': require('../../assets/templates/template-gold.jpg'),
+      'dreamOcean': require('../../assets/templates/template-ocean.jpg'),
+      'dreamSunset': require('../../assets/templates/template-sunset.jpg'),
+      'dreamForest': require('../../assets/templates/template-forest.jpg'),
+    };
+
+    // Return the template image, or default to dreamGalaxy if not found
+    return templateMap[template] || templateMap['dreamGalaxy'];
+  };
+
   const handleGenerateTicket = async () => {
     if (!selectedMedia) {
       Alert.alert('No Media Selected', 'Please upload a photo or video first.');
@@ -237,19 +254,37 @@ const AITicketGeneratorScreen: React.FC = () => {
     setIsGenerating(true);
     setShowSparkles(true);
 
-    // Simulate AI processing
-    setTimeout(async () => {
+    try {
       const luckyNumber = generateLuckyNumber();
       const message = getLuckyMessage();
       const template = getRandomTemplate();
 
-      // Create winner ticket data for display
+      // Step 1: Perform face swap using Replicate.ai
+      console.log('🎭 Starting face swap process...');
+      
+      // Get template image URI from assets
+      const templateImageUri = getTemplateImageUri(template);
+      
+      // Perform face swap
+      const faceSwapResult = await faceSwapService.swapFace({
+        targetImage: templateImageUri, // Template with 3 people
+        sourceImage: selectedMedia, // User's photo
+      });
+
+      if (!faceSwapResult.success || !faceSwapResult.swappedImageUrl) {
+        throw new Error(faceSwapResult.error || 'Face swap failed');
+      }
+
+      console.log('✅ Face swap completed successfully!');
+      setSwappedPhotoUri(faceSwapResult.swappedImageUrl);
+
+      // Step 2: Create winner ticket data with swapped photo
       const ticketData: TicketData = {
         userName: userName,
         luckyNumber: luckyNumber,
         templateTheme: template,
         motivationalQuote: message,
-        userPhotoUri: selectedMedia,
+        userPhotoUri: faceSwapResult.swappedImageUrl, // Use swapped image
       };
 
       setWinnerTicketData(ticketData);
@@ -258,7 +293,7 @@ const AITicketGeneratorScreen: React.FC = () => {
       // Keep sparkles showing for a bit longer
       setTimeout(() => setShowSparkles(false), 2000);
 
-      // Wait for the view to render, then capture it
+      // Step 3: Wait for the view to render, then capture it
       setTimeout(async () => {
         try {
           if (winnerTicketRef.current) {
@@ -290,7 +325,15 @@ const AITicketGeneratorScreen: React.FC = () => {
           setWinnerTicketData(null); // Hide preview on error
         }
       }, 1500); // Increased timeout to ensure view is fully rendered
-    }, 3000);
+    } catch (error) {
+      console.error('Error in handleGenerateTicket:', error);
+      Alert.alert(
+        'Generation Failed', 
+        error instanceof Error ? error.message : 'Failed to generate ticket. Please try again.'
+      );
+      setIsGenerating(false);
+      setShowSparkles(false);
+    }
   };
 
   const saveTicketToGallery = async (ticket: DreamTicket) => {
