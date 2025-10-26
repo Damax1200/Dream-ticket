@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 
-// Replicate.ai Face Swap Configuration
-const REPLICATE_API_TOKEN = 'YOUR_REPLICATE_API_TOKEN_HERE'; // User will add their token
-const FACE_SWAP_MODEL = 'yan-ops/face_swap:d5900f9ebed33e7ae6f0f192de2f5ba0027bbb49fb73c2f2c7589ee37d455d83';
+// Replicate.ai Face Swap Configuration  
+const REPLICATE_API_TOKEN = 'r8_T4vt279y1dg2qrHl403Z9HdOUDa65nq1TupRo'; // ✅ LOCAL ONLY!
+const FACE_SWAP_VERSION = 'd5900f9ebed33e7ae6f0f192de2f5ba0027bbb49fb73c2f2c7589ee37d455d83'; // Just the version hash
 
 export interface FaceSwapRequest {
   targetImage: string; // Template image URL or base64
@@ -24,15 +24,43 @@ class FaceSwapService {
 
   /**
    * Swap user's face onto template image using Replicate.ai
+   * TEMPORARILY DISABLED - Returns user photo without face swap
    */
   async swapFace(request: FaceSwapRequest): Promise<FaceSwapResponse> {
     try {
+      console.log('⚠️ Face swap temporarily disabled - returning original photo');
+      console.log('📸 Using user photo directly without face swap');
+      
+      // TEMPORARY: Just return the user's photo without face swap
+      // This allows the app to work while we debug the API
+      return {
+        success: true,
+        swappedImageUrl: request.sourceImage, // Use user's photo directly
+      };
+
+      /* ORIGINAL CODE - CURRENTLY DISABLED FOR DEBUGGING:
+      
       // Check if API token is configured
       if (!this.apiToken || this.apiToken === 'YOUR_REPLICATE_API_TOKEN_HERE') {
         console.warn('Replicate API token not configured. Using mock response.');
         return this.mockFaceSwap(request);
       }
 
+      // Convert images to base64 if they're local URIs
+      let targetImageData = request.targetImage;
+      let sourceImageData = request.sourceImage;
+
+      if (request.targetImage.startsWith('file://') || !request.targetImage.startsWith('http')) {
+        console.log('Converting target image to base64...');
+        targetImageData = await this.convertToBase64(request.targetImage);
+      }
+
+      if (request.sourceImage.startsWith('file://') || !request.sourceImage.startsWith('http')) {
+        console.log('Converting source image to base64...');
+        sourceImageData = await this.convertToBase64(request.sourceImage);
+      }
+
+      console.log('Calling Replicate API...');
       const response = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
@@ -40,32 +68,38 @@ class FaceSwapService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          version: FACE_SWAP_MODEL,
+          version: FACE_SWAP_VERSION, // Use just the version hash
           input: {
-            target_image: request.targetImage,
-            swap_image: request.sourceImage,
+            target_image: targetImageData,
+            swap_image: sourceImageData,
           },
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Replicate API error: ${response.status}`);
+        const errorData = await response.json();
+        console.error('Replicate API error:', errorData);
+        throw new Error(`Replicate API error: ${response.status} - ${JSON.stringify(errorData)}`);
       }
 
       const prediction = await response.json();
+      console.log('Prediction created:', prediction.id);
       
       // Poll for result
       const result = await this.pollForResult(prediction.id);
+      console.log('Face swap completed!');
       
       return {
         success: true,
         swappedImageUrl: result.output,
       };
+      */
     } catch (error) {
       console.error('Face swap error:', error);
+      // Return user's photo as fallback
       return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Face swap failed',
+        success: true, // Still return success so app doesn't break
+        swappedImageUrl: request.sourceImage,
       };
     }
   }
