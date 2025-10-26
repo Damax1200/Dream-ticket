@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -108,6 +109,29 @@ const AITicketGeneratorScreen: React.FC = () => {
       return false;
     }
     return true;
+  };
+
+  const convertImageToBase64 = async (uri: string): Promise<string> => {
+    try {
+      // If it's already a base64 string, return it
+      if (uri.startsWith('data:image')) {
+        return uri;
+      }
+      
+      // If it's a file URI, convert to base64
+      if (uri.startsWith('file://')) {
+        const base64 = await FileSystem.readAsStringAsync(uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        return `data:image/jpeg;base64,${base64}`;
+      }
+      
+      // If it's an http/https URL, return as is
+      return uri;
+    } catch (error) {
+      console.error('Error converting image to base64:', error);
+      return uri; // Return original URI as fallback
+    }
   };
 
   const pickImage = async () => {
@@ -283,13 +307,18 @@ const AITicketGeneratorScreen: React.FC = () => {
       console.log('✅ Face swap completed successfully!');
       setSwappedPhotoUri(faceSwapResult.swappedImageUrl);
 
-      // Step 2: Create winner ticket data with swapped photo
+      // Step 2: Convert image to base64 for proper embedding in screenshot
+      console.log('📸 Converting image to base64 for capture...');
+      const base64Image = await convertImageToBase64(faceSwapResult.swappedImageUrl);
+      console.log('✅ Image converted to base64');
+
+      // Step 3: Create winner ticket data with base64 image
       const ticketData: TicketData = {
         userName: userName,
         luckyNumber: luckyNumber,
         templateTheme: template,
         motivationalQuote: message,
-        userPhotoUri: faceSwapResult.swappedImageUrl, // Use swapped image
+        userPhotoUri: base64Image, // Use base64 encoded image
       };
 
       setWinnerTicketData(ticketData);
@@ -298,7 +327,7 @@ const AITicketGeneratorScreen: React.FC = () => {
       // Keep sparkles showing for a bit longer
       setTimeout(() => setShowSparkles(false), 2000);
 
-      // Step 3: Wait for the view to render, then capture it
+      // Step 4: Wait for the view to render, then capture it
       setTimeout(async () => {
         try {
           if (winnerTicketRef.current) {

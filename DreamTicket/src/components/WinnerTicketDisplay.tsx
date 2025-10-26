@@ -87,6 +87,11 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
                 source={{ uri: userPhotoUri }}
                 style={styles.userPhoto}
                 resizeMode="cover"
+                onError={(error) => {
+                  console.log('User photo load error:', error.nativeEvent.error);
+                  console.log('Photo URI:', userPhotoUri);
+                }}
+                onLoad={() => console.log('User photo loaded successfully')}
               />
             </View>
 
@@ -253,6 +258,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 6,
     borderColor: '#fff',
+    backgroundColor: '#1a1a2e', // Fallback background
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
