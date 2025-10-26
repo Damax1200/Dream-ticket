@@ -121,7 +121,7 @@ const AITicketGeneratorScreen: React.FC = () => {
       // If it's a file URI, convert to base64
       if (uri.startsWith('file://')) {
         const base64 = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
+          encoding: 'base64', // Use string instead of enum
         });
         return `data:image/jpeg;base64,${base64}`;
       }
