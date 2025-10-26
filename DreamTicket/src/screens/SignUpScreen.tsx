@@ -92,7 +92,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
           <View style={styles.header}>
             <Text style={[styles.title, { color: theme.colors.text }]}>{t.createAccount}</Text>
             <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-              Join Dream Ticket and start your journey
+              {t.signInToContinue}
             </Text>
           </View>
 
@@ -100,11 +100,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
           <View style={styles.form}>
             {/* Full Name Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Full Name</Text>
+              <Text style={styles.label}>{t.fullName}</Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your full name"
+                  placeholder={t.fullName}
                   placeholderTextColor="#9ca3af"
                   value={fullName}
                   onChangeText={setFullName}
@@ -115,11 +115,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
 
             {/* Email Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email Address</Text>
+              <Text style={styles.label}>{t.email}</Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your email"
+                  placeholder={t.email}
                   placeholderTextColor="#9ca3af"
                   value={email}
                   onChangeText={setEmail}
@@ -132,11 +132,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
 
             {/* Password Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={styles.label}>{t.password}</Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Create a password"
+                  placeholder={t.password}
                   placeholderTextColor="#9ca3af"
                   value={password}
                   onChangeText={setPassword}
@@ -150,16 +150,16 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
                   <Text style={styles.eyeIconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.hint}>At least 6 characters</Text>
+              <Text style={styles.hint}>{t.password}</Text>
             </View>
 
             {/* Confirm Password Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Confirm Password</Text>
+              <Text style={styles.label}>{t.confirmPassword}</Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Confirm your password"
+                  placeholder={t.confirmPassword}
                   placeholderTextColor="#9ca3af"
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
@@ -204,7 +204,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
                 end={{ x: 1, y: 0 }}
               >
                 <Text style={styles.signupButtonText}>
-                  {isLoading ? 'Creating Account...' : t.createAccount}
+                  {isLoading ? t.creatingAccount : t.createAccount}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -212,19 +212,19 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
             {/* Divider */}
             <View style={styles.divider}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR SIGN UP WITH</Text>
+              <Text style={styles.dividerText}>{t.orSignUpWith}</Text>
               <View style={styles.dividerLine} />
             </View>
 
             {/* Social Sign Up Buttons */}
             <TouchableOpacity style={[styles.socialButton, styles.facebookButton]}>
               <Text style={[styles.socialIcon, { color: '#fff' }]}>f</Text>
-              <Text style={[styles.socialButtonText, { color: '#fff' }]}>Continue with Facebook</Text>
+              <Text style={[styles.socialButtonText, { color: '#fff' }]}>{t.continueWithFacebook}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
               <Text style={[styles.socialIcon, { color: '#4285F4' }]}>G</Text>
-              <Text style={styles.socialButtonText}>Continue with Google</Text>
+              <Text style={styles.socialButtonText}>{t.continueWithGoogle}</Text>
             </TouchableOpacity>
 
             {/* Login Link */}

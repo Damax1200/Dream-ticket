@@ -89,7 +89,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                     style={[styles.editProfileButton, { backgroundColor: theme.colors.accent }]}
                     onPress={() => navigation.navigate('EditProfile')}
                   >
-                    <Text style={styles.editProfileText}>✏️ Edit Profile</Text>
+                    <Text style={styles.editProfileText}>✏️ {t.editProfile}</Text>
                   </TouchableOpacity>
             </View>
 
