@@ -392,7 +392,7 @@ const AITicketGeneratorScreen: React.FC = () => {
   };
 
   return (
-    <LinearGradient colors={theme.colors.background} style={styles.container}>
+    <LinearGradient colors={theme.colors.background as any} style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <SparkleAnimation isAnimating={showSparkles} />
         <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -516,6 +516,8 @@ const AITicketGeneratorScreen: React.FC = () => {
                 <Image 
                   source={{ uri: generatedTicket.imageUri }} 
                   style={styles.ticketImage}
+                  resizeMode="cover"
+                  onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
                 />
                 <View style={styles.ticketImageOverlay}>
                   <Text style={styles.overlayNumber}>{generatedTicket.luckyNumber}</Text>
@@ -776,7 +778,7 @@ const styles = StyleSheet.create({
   },
   ticketImage: {
     width: '100%',
-    height: 300,
+    aspectRatio: 1, // Square aspect ratio for better display
     backgroundColor: '#0f0f23',
   },
   ticketImageOverlay: {
