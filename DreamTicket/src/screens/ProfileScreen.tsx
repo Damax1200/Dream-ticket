@@ -44,12 +44,12 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
   const handleLogout = (): void => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      t.logout,
+      t.confirmDeleteMessage,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         { 
-          text: 'Logout', 
+          text: t.logout, 
           style: 'destructive', 
           onPress: () => {
             if (onLogout) {

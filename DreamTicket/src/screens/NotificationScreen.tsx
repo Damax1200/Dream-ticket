@@ -69,7 +69,7 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
   const handleDeleteNotification = (id: string) => {
     Alert.alert(
       `${t.delete} ${t.notifications}`,
-      'Are you sure you want to delete this notification?',
+      t.confirmDeleteMessage,
       [
         { text: t.cancel, style: 'cancel' },
         { 
@@ -83,12 +83,12 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
 
   const handleClearAll = () => {
     Alert.alert(
-      'Clear All',
-      'Are you sure you want to clear all notifications?',
+      t.delete,
+      t.confirmDeleteMessage,
       [
         { text: t.cancel, style: 'cancel' },
         { 
-          text: 'Clear All', 
+          text: t.delete, 
           onPress: () => setNotifications([]),
           style: 'destructive'
         }

@@ -67,11 +67,11 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
 
   const handleSave = async () => {
     if (!fullName.trim()) {
-      Alert.alert('Error', `Please enter your ${t.name.toLowerCase()}`);
+      Alert.alert(t.editProfile, `${t.name} ${t.name}`);
       return;
     }
     if (!email.trim() || !email.includes('@')) {
-      Alert.alert('Error', `Please enter a valid ${t.email.toLowerCase()}`);
+      Alert.alert(t.editProfile, `${t.email} ${t.email}`);
       return;
     }
     
@@ -83,7 +83,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
       console.error('Error saving name:', error);
     }
     
-    Alert.alert('Success', 'Profile updated successfully!', [
+    Alert.alert(t.welcome, t.saveChanges, [
       { text: 'OK', onPress: () => navigation.goBack() }
     ]);
   };
@@ -110,7 +110,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   onPress={() => {
                     Alert.alert(
                       t.selectPhoto,
-                      'Choose an option',
+                      t.uploadPhoto,
                       [
                         { text: t.takePhoto, onPress: handleTakePhoto },
                         { text: t.uploadPhoto, onPress: handleSelectImage },
@@ -122,7 +122,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   <Text style={styles.editPhotoIcon}>📷</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.photoHint}>Tap to change profile photo</Text>
+              <Text style={styles.photoHint}>{t.selectPhoto}</Text>
             </View>
 
             {/* Personal Information */}
@@ -135,7 +135,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={fullName}
                   onChangeText={setFullName}
-                  placeholder={`Enter your ${t.name.toLowerCase()}`}
+                  placeholder={t.name}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 />
               </View>
@@ -146,7 +146,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={email}
                   onChangeText={setEmail}
-                  placeholder={`Enter your ${t.email.toLowerCase()}`}
+                  placeholder={t.email}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -159,7 +159,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={phone}
                   onChangeText={setPhone}
-                  placeholder={`Enter your ${t.phone.toLowerCase()}`}
+                  placeholder={t.phone}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="phone-pad"
                 />
@@ -171,7 +171,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={age}
                   onChangeText={setAge}
-                  placeholder={`Enter your ${t.age.toLowerCase()}`}
+                  placeholder={t.age}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="number-pad"
                   maxLength={3}
@@ -184,7 +184,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={location}
                   onChangeText={setLocation}
-                  placeholder={`Enter your ${t.location.toLowerCase()}`}
+                  placeholder={t.location}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 />
               </View>
@@ -195,7 +195,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.textArea, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={bio}
                   onChangeText={setBio}
-                  placeholder="Tell us about yourself..."
+                  placeholder={t.bio}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   multiline
                   numberOfLines={4}

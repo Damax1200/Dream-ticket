@@ -48,7 +48,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      Alert.alert('Success', 'Welcome back to Dream Ticket!', [
+      Alert.alert(t.welcome, t.welcomeBack, [
         { text: 'OK', onPress: onLogin }
       ]);
     }, 1500);
@@ -56,11 +56,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
 
   const handleForgotPassword = () => {
     Alert.alert(
-      'Reset Password',
-      'A password reset link will be sent to your email.',
+      t.changePassword,
+      t.forgotPassword,
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Send', onPress: () => Alert.alert('Success', 'Check your email for reset instructions!') }
+        { text: t.cancel, style: 'cancel' },
+        { text: t.save, onPress: () => Alert.alert(t.welcome, t.welcomeBack) }
       ]
     );
   };
@@ -92,7 +92,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
               <View style={[styles.inputContainer, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
                 <TextInput
                   style={[styles.input, { color: theme.colors.text }]}
-                  placeholder="Enter your email"
+                  placeholder={t.email}
                   placeholderTextColor={theme.colors.textSecondary}
                   value={email}
                   onChangeText={setEmail}
@@ -109,7 +109,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
               <View style={[styles.inputContainer, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}>
                 <TextInput
                   style={[styles.input, { color: theme.colors.text }]}
-                  placeholder="Enter your password"
+                  placeholder={t.password}
                   placeholderTextColor={theme.colors.textSecondary}
                   value={password}
                   onChangeText={setPassword}
@@ -130,7 +130,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
               style={styles.forgotPassword}
               onPress={handleForgotPassword}
             >
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              <Text style={styles.forgotPasswordText}>{t.forgotPassword}</Text>
             </TouchableOpacity>
 
             {/* Login Button */}
