@@ -227,8 +227,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'center',
-    marginBottom: -20, // Overlap with check
-    zIndex: 20,
+    marginBottom: -80, // More overlap - people behind check
+    zIndex: 10, // Behind check
   },
   personContainer: {
     marginHorizontal: 4,
@@ -237,19 +237,19 @@ const styles = StyleSheet.create({
     width: 100,
     height: 200,
     borderRadius: 8,
-    borderWidth: 3,
-    borderColor: '#fff',
-    backgroundColor: '#1a1a2e',
+    borderWidth: 0, // Remove border for cleaner look
+    borderColor: 'transparent',
+    backgroundColor: 'transparent', // Transparent background
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 12,
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   holdingCheckContainer: {
     width: '100%',
     paddingHorizontal: 10,
-    zIndex: 15,
+    zIndex: 20, // In front of people
   },
   physicalCheck: {
     borderRadius: 12,
