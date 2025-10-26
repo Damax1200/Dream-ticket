@@ -74,10 +74,10 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
 
           {/* Three People Holding Check Scene */}
           <View style={styles.winnersScene}>
-            {/* Left Person - AI Generated Placeholder */}
+            {/* Left Person - Professional Man in Blue Suit */}
             <View style={styles.sidePerson}>
               <Image
-                source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+                source={require('../../assets/placeholders/business-man.jpg')}
                 style={styles.sidePersonPhoto}
                 resizeMode="cover"
               />
@@ -102,10 +102,10 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
               />
             </View>
 
-            {/* Right Person - AI Generated Placeholder */}
+            {/* Right Person - Professional Woman in Yellow Suit */}
             <View style={styles.sidePerson}>
               <Image
-                source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+                source={require('../../assets/placeholders/business-woman.jpg')}
                 style={styles.sidePersonPhoto}
                 resizeMode="cover"
               />
