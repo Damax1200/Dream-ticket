@@ -26,18 +26,18 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
   const handleChangePassword = () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all password fields');
+      Alert.alert(t.error, t.pleaseFillAllPasswordFields);
       return;
     }
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match');
+      Alert.alert(t.error, t.newPasswordsDoNotMatch);
       return;
     }
     if (newPassword.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert(t.error, t.passwordMustBe6Characters);
       return;
     }
-    Alert.alert('Success', 'Password changed successfully!');
+    Alert.alert(t.success, t.passwordChangedSuccessfully);
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -45,13 +45,13 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
   const handleClearCache = () => {
     Alert.alert(
-      'Clear Cache',
-      'Are you sure you want to clear app cache?',
+      t.clearCache,
+      t.areYouSureWantToClearCache,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         { 
-          text: 'Clear', 
-          onPress: () => Alert.alert('Success', 'Cache cleared successfully!'),
+          text: t.clear, 
+          onPress: () => Alert.alert(t.success, t.cacheCleared),
           style: 'destructive'
         }
       ]
@@ -65,39 +65,39 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
           <View style={styles.content}>
             {/* Account Security Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>🔐 Account Security</Text>
+              <Text style={styles.sectionTitle}>🔐 {t.accountSecurity}</Text>
               
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Current Password</Text>
+                <Text style={styles.label}>{t.currentPassword}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={currentPassword}
                   onChangeText={setCurrentPassword}
-                  placeholder="Enter current password"
+                  placeholder={t.enterCurrentPassword}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   secureTextEntry
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>New Password</Text>
+                <Text style={styles.label}>{t.newPassword}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={newPassword}
                   onChangeText={setNewPassword}
-                  placeholder="Enter new password"
+                  placeholder={t.enterNewPassword}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   secureTextEntry
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Confirm New Password</Text>
+                <Text style={styles.label}>{t.confirmNewPassword}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
-                  placeholder="Confirm new password"
+                  placeholder={t.confirmNewPasswordPlaceholder}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   secureTextEntry
                 />
@@ -107,18 +107,18 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                 style={[styles.changePasswordButton, { backgroundColor: theme.colors.accent }]}
                 onPress={handleChangePassword}
               >
-                <Text style={styles.buttonText}>Change Password</Text>
+                <Text style={styles.buttonText}>{t.changePassword}</Text>
               </TouchableOpacity>
             </View>
 
             {/* App Settings Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>⚙️ App Settings</Text>
+              <Text style={styles.sectionTitle}>⚙️ {t.appSettings}</Text>
 
               <View style={styles.settingRow}>
                 <View style={styles.settingInfo}>
-                  <Text style={styles.settingTitle}>Auto Backup</Text>
-                  <Text style={styles.settingSubtitle}>Backup tickets automatically</Text>
+                  <Text style={styles.settingTitle}>{t.autoBackup}</Text>
+                  <Text style={styles.settingSubtitle}>{t.backupTicketsAutomatically}</Text>
                 </View>
                 <Switch
                   value={autoBackup}
@@ -130,8 +130,8 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
               <View style={styles.settingRow}>
                 <View style={styles.settingInfo}>
-                  <Text style={styles.settingTitle}>Sound Effects</Text>
-                  <Text style={styles.settingSubtitle}>Play sounds in app</Text>
+                  <Text style={styles.settingTitle}>{t.soundEffects}</Text>
+                  <Text style={styles.settingSubtitle}>{t.playSoundsInApp}</Text>
                 </View>
                 <Switch
                   value={soundEffects}
@@ -143,8 +143,8 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
               <View style={styles.settingRow}>
                 <View style={styles.settingInfo}>
-                  <Text style={styles.settingTitle}>Haptic Feedback</Text>
-                  <Text style={styles.settingSubtitle}>Vibration on interactions</Text>
+                  <Text style={styles.settingTitle}>{t.hapticFeedback}</Text>
+                  <Text style={styles.settingSubtitle}>{t.vibrationOnInteractions}</Text>
                 </View>
                 <Switch
                   value={hapticFeedback}
@@ -157,7 +157,7 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
             {/* Storage & Data Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>💾 Storage & Data</Text>
+              <Text style={styles.sectionTitle}>💾 {t.storageData}</Text>
 
               <TouchableOpacity
                 style={styles.actionItem}
@@ -168,8 +168,8 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                     <Text style={styles.actionIcon}>🗑️</Text>
                   </View>
                   <View style={styles.actionTextContainer}>
-                    <Text style={styles.actionTitle}>Clear Cache</Text>
-                    <Text style={styles.actionSubtitle}>Free up storage space</Text>
+                    <Text style={styles.actionTitle}>{t.clearCache}</Text>
+                    <Text style={styles.actionSubtitle}>{t.freeUpStorageSpace}</Text>
                   </View>
                 </View>
                 <Text style={styles.actionArrow}>›</Text>
@@ -177,15 +177,15 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
               <TouchableOpacity
                 style={styles.actionItem}
-                onPress={() => Alert.alert('Info', 'Total storage: 42 MB')}
+                onPress={() => Alert.alert(t.info, `${t.totalStorage}: 42 MB`)}
               >
                 <View style={styles.actionItemLeft}>
                   <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
                     <Text style={styles.actionIcon}>📊</Text>
                   </View>
                   <View style={styles.actionTextContainer}>
-                    <Text style={styles.actionTitle}>Storage Usage</Text>
-                    <Text style={styles.actionSubtitle}>42 MB used</Text>
+                    <Text style={styles.actionTitle}>{t.storageUsage}</Text>
+                    <Text style={styles.actionSubtitle}>42 {t.mbUsed}</Text>
                   </View>
                 </View>
                 <Text style={styles.actionArrow}>›</Text>
@@ -194,30 +194,30 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
             {/* About Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>ℹ️ About</Text>
+              <Text style={styles.sectionTitle}>ℹ️ {t.about}</Text>
 
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>App Version</Text>
+                <Text style={styles.infoLabel}>{t.appVersion}</Text>
                 <Text style={styles.infoValue}>1.0.0</Text>
               </View>
 
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Build Number</Text>
+                <Text style={styles.infoLabel}>{t.buildNumber}</Text>
                 <Text style={styles.infoValue}>100</Text>
               </View>
 
               <TouchableOpacity
                 style={styles.linkButton}
-                onPress={() => Alert.alert('Terms', 'Terms & Conditions')}
+                onPress={() => Alert.alert(t.termsConditions, t.termsConditions)}
               >
-                <Text style={[styles.linkText, { color: theme.colors.accent }]}>Terms & Conditions</Text>
+                <Text style={[styles.linkText, { color: theme.colors.accent }]}>{t.termsConditions}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.linkButton}
-                onPress={() => Alert.alert('Privacy', 'Privacy Policy')}
+                onPress={() => Alert.alert(t.privacyPolicy, t.privacyPolicy)}
               >
-                <Text style={[styles.linkText, { color: theme.colors.accent }]}>Privacy Policy</Text>
+                <Text style={[styles.linkText, { color: theme.colors.accent }]}>{t.privacyPolicy}</Text>
               </TouchableOpacity>
             </View>
           </View>
