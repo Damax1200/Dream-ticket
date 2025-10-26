@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
   },
   ticketImage: {
     width: '100%',
-    aspectRatio: 1, // Square aspect ratio for better display
+    aspectRatio: 1 / 1.4, // Portrait aspect ratio to match WinnerTicketDisplay (width * 1.4 height)
     backgroundColor: '#0f0f23',
   },
   ticketImageOverlay: {
