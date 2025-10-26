@@ -173,6 +173,21 @@ interface Translations {
   pushNotifications: string;
   receiveUpdates: string;
   promotionalEmails: string;
+  
+  // Notification Messages
+  unread: string;
+  clearAll: string;
+  hoursAgo: string;
+  dayAgo: string;
+  daysAgo: string;
+  welcomeToDreamTicket: string;
+  thankYouForJoining: string;
+  newFeatureAvailable: string;
+  checkOutNewAiGenerator: string;
+  ticketGenerated: string;
+  yourLuckyTicketCreated: string;
+  premiumUpgrade: string;
+  upgradeToPremiumUnlimited: string;
 }
 
 const translations: Record<LanguageType, Translations> = {
@@ -319,6 +334,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: 'Push Notifications',
     receiveUpdates: 'Receive Updates',
     promotionalEmails: 'Promotional Emails',
+    unread: 'unread',
+    clearAll: 'Clear All',
+    hoursAgo: 'hours ago',
+    dayAgo: 'day ago',
+    daysAgo: 'days ago',
+    welcomeToDreamTicket: '🎉 Welcome to DreamTicket!',
+    thankYouForJoining: 'Thank you for joining us. Create your first lucky ticket now!',
+    newFeatureAvailable: '✨ New Feature Available',
+    checkOutNewAiGenerator: 'Check out our new AI-powered ticket generator with enhanced effects!',
+    ticketGenerated: '🎫 Ticket Generated',
+    yourLuckyTicketCreated: 'Your lucky ticket #12345 has been created successfully!',
+    premiumUpgrade: '⚡ Premium Upgrade',
+    upgradeToPremiumUnlimited: 'Upgrade to premium and unlock unlimited tickets!',
   },
   es: {
     welcomeBack: '¡Bienvenido de nuevo!',
@@ -463,6 +491,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: 'Notificaciones Push',
     receiveUpdates: 'Recibir Actualizaciones',
     promotionalEmails: 'Correos Promocionales',
+    unread: 'no leídos',
+    clearAll: 'Borrar Todo',
+    hoursAgo: 'horas atrás',
+    dayAgo: 'día atrás',
+    daysAgo: 'días atrás',
+    welcomeToDreamTicket: '🎉 ¡Bienvenido a DreamTicket!',
+    thankYouForJoining: 'Gracias por unirte. ¡Crea tu primer ticket de la suerte ahora!',
+    newFeatureAvailable: '✨ Nueva Función Disponible',
+    checkOutNewAiGenerator: '¡Descubre nuestro nuevo generador de tickets con IA y efectos mejorados!',
+    ticketGenerated: '🎫 Ticket Generado',
+    yourLuckyTicketCreated: '¡Tu ticket de la suerte #12345 ha sido creado exitosamente!',
+    premiumUpgrade: '⚡ Actualización Premium',
+    upgradeToPremiumUnlimited: '¡Actualiza a premium y desbloquea tickets ilimitados!',
   },
   fr: {
     welcomeBack: 'Bon retour!',
@@ -607,6 +648,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: 'Notifications Push',
     receiveUpdates: 'Recevoir les Mises à Jour',
     promotionalEmails: 'E-mails Promotionnels',
+    unread: 'non lus',
+    clearAll: 'Tout Effacer',
+    hoursAgo: 'il y a des heures',
+    dayAgo: 'il y a un jour',
+    daysAgo: 'il y a des jours',
+    welcomeToDreamTicket: '🎉 Bienvenue sur DreamTicket!',
+    thankYouForJoining: 'Merci de nous rejoindre. Créez votre premier billet chanceux maintenant!',
+    newFeatureAvailable: '✨ Nouvelle Fonctionnalité Disponible',
+    checkOutNewAiGenerator: 'Découvrez notre nouveau générateur de billets alimenté par IA avec des effets améliorés!',
+    ticketGenerated: '🎫 Billet Généré',
+    yourLuckyTicketCreated: 'Votre billet chanceux #12345 a été créé avec succès!',
+    premiumUpgrade: '⚡ Mise à Niveau Premium',
+    upgradeToPremiumUnlimited: 'Passez à premium et débloquez des billets illimités!',
   },
   de: {
     welcomeBack: 'Willkommen zurück!',
@@ -751,6 +805,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: 'Push-Benachrichtigungen',
     receiveUpdates: 'Updates Erhalten',
     promotionalEmails: 'Werbe-E-Mails',
+    unread: 'ungelesen',
+    clearAll: 'Alle Löschen',
+    hoursAgo: 'Stunden her',
+    dayAgo: 'Tag her',
+    daysAgo: 'Tage her',
+    welcomeToDreamTicket: '🎉 Willkommen bei DreamTicket!',
+    thankYouForJoining: 'Danke, dass Sie sich uns angeschlossen haben. Erstellen Sie jetzt Ihr erstes Glücksticket!',
+    newFeatureAvailable: '✨ Neue Funktion Verfügbar',
+    checkOutNewAiGenerator: 'Schauen Sie sich unseren neuen KI-gestützten Ticket-Generator mit verbesserten Effekten an!',
+    ticketGenerated: '🎫 Ticket Generiert',
+    yourLuckyTicketCreated: 'Ihr Glücksticket #12345 wurde erfolgreich erstellt!',
+    premiumUpgrade: '⚡ Premium-Upgrade',
+    upgradeToPremiumUnlimited: 'Upgraden Sie auf Premium und schalten Sie unbegrenzte Tickets frei!',
   },
   pt: {
     welcomeBack: 'Bem-vindo de volta!',
@@ -895,6 +962,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: 'Notificações Push',
     receiveUpdates: 'Receber Atualizações',
     promotionalEmails: 'E-mails Promocionais',
+    unread: 'não lidos',
+    clearAll: 'Limpar Tudo',
+    hoursAgo: 'horas atrás',
+    dayAgo: 'dia atrás',
+    daysAgo: 'dias atrás',
+    welcomeToDreamTicket: '🎉 Bem-vindo ao DreamTicket!',
+    thankYouForJoining: 'Obrigado por se juntar a nós. Crie seu primeiro bilhete da sorte agora!',
+    newFeatureAvailable: '✨ Nova Funcionalidade Disponível',
+    checkOutNewAiGenerator: 'Confira nosso novo gerador de bilhetes com IA e efeitos aprimorados!',
+    ticketGenerated: '🎫 Bilhete Gerado',
+    yourLuckyTicketCreated: 'Seu bilhete da sorte #12345 foi criado com sucesso!',
+    premiumUpgrade: '⚡ Atualização Premium',
+    upgradeToPremiumUnlimited: 'Atualize para premium e desbloqueie bilhetes ilimitados!',
   },
   zh: {
     welcomeBack: '欢迎回来！',
@@ -1039,6 +1119,19 @@ const translations: Record<LanguageType, Translations> = {
     pushNotifications: '推送通知',
     receiveUpdates: '接收更新',
     promotionalEmails: '促销电子邮件',
+    unread: '未读',
+    clearAll: '全部清除',
+    hoursAgo: '小时前',
+    dayAgo: '天前',
+    daysAgo: '天前',
+    welcomeToDreamTicket: '🎉 欢迎来到DreamTicket！',
+    thankYouForJoining: '感谢您加入我们。现在就创建您的第一张幸运票吧！',
+    newFeatureAvailable: '✨ 新功能可用',
+    checkOutNewAiGenerator: '查看我们新的AI驱动门票生成器，带有增强效果！',
+    ticketGenerated: '🎫 门票已生成',
+    yourLuckyTicketCreated: '您的幸运票 #12345 已成功创建！',
+    premiumUpgrade: '⚡ 高级升级',
+    upgradeToPremiumUnlimited: '升级到高级版并解锁无限门票！',
   },
 };
 

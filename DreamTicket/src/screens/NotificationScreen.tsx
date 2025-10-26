@@ -28,33 +28,33 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
-      title: '🎉 Welcome to DreamTicket!',
-      message: 'Thank you for joining us. Create your first lucky ticket now!',
-      time: '2 hours ago',
+      title: t.welcomeToDreamTicket,
+      message: t.thankYouForJoining,
+      time: `2 ${t.hoursAgo}`,
       type: 'success',
       read: false,
     },
     {
       id: '2',
-      title: '✨ New Feature Available',
-      message: 'Check out our new AI-powered ticket generator with enhanced effects!',
-      time: '1 day ago',
+      title: t.newFeatureAvailable,
+      message: t.checkOutNewAiGenerator,
+      time: `1 ${t.dayAgo}`,
       type: 'info',
       read: false,
     },
     {
       id: '3',
-      title: '🎫 Ticket Generated',
-      message: 'Your lucky ticket #12345 has been created successfully!',
-      time: '2 days ago',
+      title: t.ticketGenerated,
+      message: t.yourLuckyTicketCreated,
+      time: `2 ${t.daysAgo}`,
       type: 'success',
       read: true,
     },
     {
       id: '4',
-      title: '⚡ Premium Upgrade',
-      message: 'Upgrade to premium and unlock unlimited tickets!',
-      time: '3 days ago',
+      title: t.premiumUpgrade,
+      message: t.upgradeToPremiumUnlimited,
+      time: `3 ${t.daysAgo}`,
       type: 'warning',
       read: true,
     },
@@ -114,12 +114,12 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
           <View>
             <Text style={styles.headerTitle}>{t.notifications}</Text>
             {unreadCount > 0 && (
-              <Text style={styles.unreadText}>{unreadCount} unread</Text>
+              <Text style={styles.unreadText}>{unreadCount} {t.unread}</Text>
             )}
           </View>
           {notifications.length > 0 && (
             <TouchableOpacity onPress={handleClearAll}>
-              <Text style={[styles.clearButton, { color: theme.colors.accent }]}>Clear All</Text>
+              <Text style={[styles.clearButton, { color: theme.colors.accent }]}>{t.clearAll}</Text>
             </TouchableOpacity>
           )}
         </View>
