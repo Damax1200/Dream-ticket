@@ -592,6 +592,19 @@ const AITicketGeneratorScreen: React.FC = () => {
           </View>
         )}
       </ScrollView>
+
+      {/* WinnerTicketDisplay - Rendered for capture */}
+      {winnerTicketData && (
+        <View style={styles.captureContainer} ref={winnerTicketRef} collapsable={false}>
+          <WinnerTicketDisplay 
+            userName={winnerTicketData.userName}
+            luckyNumber={winnerTicketData.luckyNumber}
+            templateTheme={winnerTicketData.templateTheme}
+            motivationalQuote={winnerTicketData.motivationalQuote}
+            userPhotoUri={winnerTicketData.userPhotoUri}
+          />
+        </View>
+      )}
     </SafeAreaView>
     </LinearGradient>
   );
