@@ -3,11 +3,13 @@ import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-nati
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
 export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   
   // Filter out hidden tabs (like MyTickets, Settings, Notifications, EditProfile)
   const visibleRoutes = state.routes.filter((route) => {
@@ -67,7 +69,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
                       <View style={[styles.pingWave, styles.pingWaveOuter, { borderColor: 'rgba(255, 255, 255, 0.3)' }]} />
                     </View>
                     <Text style={styles.centerButtonText}>AI</Text>
-                    <Text style={styles.centerButtonSubtext}>GENERATOR</Text>
+                    <Text style={styles.centerButtonSubtext}>{t.generator}</Text>
                   </LinearGradient>
                 </View>
               </TouchableOpacity>
@@ -82,8 +84,8 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
           };
 
           const getLabel = () => {
-            if (visibleIndex === 0) return 'HOME';
-            if (visibleIndex === 2) return 'PROFILE';
+            if (visibleIndex === 0) return t.home;
+            if (visibleIndex === 2) return t.profile;
             return String(label);
           };
 

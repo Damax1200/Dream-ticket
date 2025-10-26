@@ -23,6 +23,11 @@ interface Translations {
   creatingAccount: string;
   signingIn: string;
   
+  // Navigation
+  home: string;
+  aiGenerator: string;
+  generator: string;
+  
   // Home
   welcome: string;
   exploreTickets: string;
@@ -209,6 +214,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: 'Continue with Google',
     creatingAccount: 'Creating Account...',
     signingIn: 'Signing In...',
+    home: 'HOME',
+    aiGenerator: 'AI Ticket Generator',
+    generator: 'GENERATOR',
     welcome: 'Welcome',
     exploreTickets: 'Explore Tickets',
     myTickets: 'My Tickets',
@@ -366,6 +374,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: 'Continuar con Google',
     creatingAccount: 'Creando Cuenta...',
     signingIn: 'Iniciando Sesión...',
+    home: 'INICIO',
+    aiGenerator: 'Generador de Tickets IA',
+    generator: 'GENERADOR',
     welcome: 'Bienvenido',
     exploreTickets: 'Explorar Tickets',
     myTickets: 'Mis Tickets',
@@ -523,6 +534,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: 'Continuer avec Google',
     creatingAccount: 'Création du compte...',
     signingIn: 'Connexion en cours...',
+    home: 'ACCUEIL',
+    aiGenerator: 'Générateur de Billets IA',
+    generator: 'GÉNÉRATEUR',
     welcome: 'Bienvenue',
     exploreTickets: 'Explorer les billets',
     myTickets: 'Mes billets',
@@ -680,6 +694,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: 'Mit Google fortfahren',
     creatingAccount: 'Konto wird erstellt...',
     signingIn: 'Anmeldung läuft...',
+    home: 'STARTSEITE',
+    aiGenerator: 'KI-Ticket-Generator',
+    generator: 'GENERATOR',
     welcome: 'Willkommen',
     exploreTickets: 'Tickets erkunden',
     myTickets: 'Meine Tickets',
@@ -837,6 +854,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: 'Continuar com Google',
     creatingAccount: 'Criando Conta...',
     signingIn: 'Entrando...',
+    home: 'INÍCIO',
+    aiGenerator: 'Gerador de Bilhetes IA',
+    generator: 'GERADOR',
     welcome: 'Bem-vindo',
     exploreTickets: 'Explorar Bilhetes',
     myTickets: 'Meus Bilhetes',
@@ -994,6 +1014,9 @@ const translations: Record<LanguageType, Translations> = {
     continueWithGoogle: '继续使用 Google',
     creatingAccount: '正在创建账户...',
     signingIn: '正在登录...',
+    home: '首页',
+    aiGenerator: 'AI门票生成器',
+    generator: '生成器',
     welcome: '欢迎',
     exploreTickets: '探索门票',
     myTickets: '我的门票',

@@ -7,7 +7,7 @@ import * as SplashScreenExpo from 'expo-splash-screen';
 import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
-import { LanguageProvider } from './src/contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './src/contexts/LanguageContext';
 import { CustomTabBar } from './src/components/CustomTabBar';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
@@ -165,6 +165,7 @@ const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
 // Main Bottom Tab Navigator
 const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   
   return (
     <Tab.Navigator
@@ -183,7 +184,7 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="HomeTab"
         component={HomeScreen}
         options={{
-          title: 'Home',
+          title: t.home,
           header: () => <CustomHeader title="Dream Ticket" />,
         }}
       />
@@ -191,16 +192,16 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="AIGenerator"
         component={AITicketGeneratorScreen}
         options={{
-          title: 'AI Generator',
-          header: () => <CustomHeader title="AI Ticket Generator" />,
+          title: t.aiGenerator,
+          header: () => <CustomHeader title={t.aiGenerator} />,
         }}
       />
       <Tab.Screen
         name="MyTickets"
         component={TicketScreen}
         options={{
-          title: 'My Tickets',
-          header: () => <CustomHeader title="My Tickets" />,
+          title: t.myTickets,
+          header: () => <CustomHeader title={t.myTickets} />,
           tabBarButton: () => null, // Hide from tab bar
         }}
       />
@@ -208,8 +209,8 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          title: 'Settings',
-          header: () => <CustomHeader title="Settings" />,
+          title: t.settings,
+          header: () => <CustomHeader title={t.settings} />,
           tabBarButton: () => null, // Hide from tab bar
         }}
       />
@@ -217,8 +218,8 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="Notifications"
         component={NotificationScreen}
         options={{
-          title: 'Notifications',
-          header: () => <CustomHeader title="Notifications" />,
+          title: t.notifications,
+          header: () => <CustomHeader title={t.notifications} />,
           tabBarButton: () => null, // Hide from tab bar
         }}
       />
@@ -226,16 +227,16 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         name="EditProfile"
         component={EditProfileScreen}
         options={{
-          title: 'Edit Profile',
-          header: () => <CustomHeader title="Edit Profile" />,
+          title: t.editProfile,
+          header: () => <CustomHeader title={t.editProfile} />,
           tabBarButton: () => null, // Hide from tab bar
         }}
       />
       <Tab.Screen
         name="ProfileTab"
         options={{
-          title: 'Profile',
-          header: () => <CustomHeader title="Profile" />,
+          title: t.profile,
+          header: () => <CustomHeader title={t.profile} />,
         }}
       >
         {(props: any) => <ProfileScreen {...props} onLogout={onLogout} />}
