@@ -232,13 +232,18 @@ const AITicketGeneratorScreen: React.FC = () => {
 
   const getTemplateImageUri = (template: string): string => {
     // Map template names to actual image URIs
-    // These would be your template images with 3 people in suits
+    // These are your professional winner template images with 3 people in suits holding checks!
     const templateMap: Record<string, any> = {
       'dreamGalaxy': require('../../assets/templates/template-galaxy.jpg'),
       'dreamGold': require('../../assets/templates/template-gold.jpg'),
       'dreamOcean': require('../../assets/templates/template-ocean.jpg'),
-      'dreamSunset': require('../../assets/templates/template-sunset.jpg'),
+      'dreamSunset': require('../../assets/templates/template-sunrise.jpg'), // Using sunrise for sunset theme
       'dreamForest': require('../../assets/templates/template-forest.jpg'),
+      // Bonus templates available:
+      'dreamCheque': require('../../assets/templates/template-cheque.jpg'),
+      'dreamNight': require('../../assets/templates/template-night.jpg'),
+      'dreamDream': require('../../assets/templates/template-dream.jpg'),
+      'dreamWater': require('../../assets/templates/template-water.jpg'),
     };
 
     // Return the template image, or default to dreamGalaxy if not found
