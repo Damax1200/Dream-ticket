@@ -413,18 +413,18 @@ const AITicketGeneratorScreen: React.FC = () => {
         {/* Upload Options */}
         {!selectedMedia && !generatedTicket && (
           <View style={styles.uploadSection}>
-            <Text style={styles.sectionTitle}>Choose Your Media</Text>
+            <Text style={styles.sectionTitle}>{t.uploadMedia}</Text>
             
             <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
               <Text style={styles.uploadIcon}>📸</Text>
-              <Text style={styles.uploadButtonText}>Upload Photo</Text>
-              <Text style={styles.uploadSubtext}>From Gallery</Text>
+              <Text style={styles.uploadButtonText}>{t.uploadPhoto}</Text>
+              <Text style={styles.uploadSubtext}>{t.uploadPhotoVideo}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.uploadButton} onPress={takePhoto}>
               <Text style={styles.uploadIcon}>📷</Text>
-              <Text style={styles.uploadButtonText}>Take Photo</Text>
-              <Text style={styles.uploadSubtext}>Use Camera</Text>
+              <Text style={styles.uploadButtonText}>{t.takePhoto}</Text>
+              <Text style={styles.uploadSubtext}>{t.uploadPhotoVideo}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -432,15 +432,15 @@ const AITicketGeneratorScreen: React.FC = () => {
               onPress={pickVideo}
             >
               <Text style={styles.uploadIcon}>🎥</Text>
-              <Text style={styles.uploadButtonText}>Upload Video</Text>
+              <Text style={styles.uploadButtonText}>{t.uploadVideo}</Text>
               <Text style={styles.uploadSubtext}>
-                {isPremium ? '5-10 seconds' : '⭐ Premium Only'}
+                {isPremium ? t.photoOrVideo : `⭐ ${t.premiumMember}`}
               </Text>
             </TouchableOpacity>
 
             {!isPremium && (
               <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
-                <Text style={styles.upgradeButtonText}>⭐ Upgrade to Premium</Text>
+                <Text style={styles.upgradeButtonText}>⭐ {t.upgradeToPremium}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -449,7 +449,7 @@ const AITicketGeneratorScreen: React.FC = () => {
         {/* Winner Ticket Display for Capture - Shown during generation */}
         {winnerTicketData && !generatedTicket && (
           <View style={styles.winnerTicketPreview}>
-            <Text style={styles.capturingText}>✨ Creating your winner image...</Text>
+            <Text style={styles.capturingText}>✨ {t.createLuckyTicket}...</Text>
             <View style={styles.captureContainer}>
               <WinnerTicketDisplay ref={winnerTicketRef} ticketData={winnerTicketData} />
             </View>
@@ -459,12 +459,12 @@ const AITicketGeneratorScreen: React.FC = () => {
         {/* Preview Selected Media */}
         {selectedMedia && !generatedTicket && !winnerTicketData && !isGenerating && (
           <View style={styles.previewSection}>
-            <Text style={styles.sectionTitle}>Preview</Text>
+            <Text style={styles.sectionTitle}>{t.uploadMedia}</Text>
             <View style={styles.previewContainer}>
               <Image source={{ uri: selectedMedia }} style={styles.previewImage} />
               <View style={styles.previewOverlay}>
                 <Text style={styles.previewType}>
-                  {mediaType === 'video' ? '🎥 Video' : '📸 Photo'}
+                  {mediaType === 'video' ? `🎥 ${t.uploadVideo}` : `📸 ${t.uploadPhoto}`}
                 </Text>
               </View>
             </View>
@@ -477,15 +477,15 @@ const AITicketGeneratorScreen: React.FC = () => {
               {isGenerating ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator color="#fff" size="small" />
-                  <Text style={styles.buttonText}>Creating Magic...</Text>
+                  <Text style={styles.buttonText}>{t.createLuckyTicket}...</Text>
                 </View>
               ) : (
-                <Text style={styles.buttonText}>✨ Generate Lucky Ticket</Text>
+                <Text style={styles.buttonText}>✨ {t.generateLuckyTicket}</Text>
               )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
-              <Text style={styles.clearButtonText}>🔄 Choose Different Media</Text>
+              <Text style={styles.clearButtonText}>🔄 {t.uploadMedia}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -493,12 +493,12 @@ const AITicketGeneratorScreen: React.FC = () => {
         {/* Generated Ticket */}
         {generatedTicket && (
           <View style={styles.ticketSection}>
-            <Text style={styles.sectionTitle}>Your DreamTicket</Text>
+            <Text style={styles.sectionTitle}>{t.personalizedDreamTicket}</Text>
             
             <View style={styles.ticketCard}>
               {/* Ticket Header */}
               <View style={styles.ticketHeader}>
-                <Text style={styles.ticketLogo}>🎫 DreamTicket</Text>
+                <Text style={styles.ticketLogo}>🎫 {t.dreamTicketGenerator}</Text>
                 <Text style={styles.ticketDate}>
                   {new Date(generatedTicket.createdAt).toLocaleDateString()}
                 </Text>
@@ -506,7 +506,7 @@ const AITicketGeneratorScreen: React.FC = () => {
 
               {/* Lucky Number */}
               <View style={styles.luckyNumberContainer}>
-                <Text style={styles.luckyNumberLabel}>Your Lucky Number</Text>
+                <Text style={styles.luckyNumberLabel}>{t.yourLuckyNumber}</Text>
                 <Text style={styles.luckyNumber}>{generatedTicket.luckyNumber}</Text>
                 <Text style={styles.luckyMessage}>{generatedTicket.message}</Text>
               </View>
@@ -527,10 +527,10 @@ const AITicketGeneratorScreen: React.FC = () => {
               {/* Actions */}
               <View style={styles.ticketActions}>
                 <TouchableOpacity style={styles.shareButton} onPress={handleShareTicket}>
-                  <Text style={styles.shareButtonText}>📤 Share</Text>
+                  <Text style={styles.shareButtonText}>📤 {t.share}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.newTicketButton} onPress={handleClear}>
-                  <Text style={styles.newTicketButtonText}>✨ Create New</Text>
+                  <Text style={styles.newTicketButtonText}>✨ {t.createNew}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -538,7 +538,7 @@ const AITicketGeneratorScreen: React.FC = () => {
             {/* Info */}
             <View style={styles.infoBox}>
               <Text style={styles.infoText}>
-                💡 This is a symbolic lucky ticket for entertainment only. No real lottery or prizes.
+                {t.disclaimerText}
               </Text>
             </View>
           </View>
@@ -547,18 +547,18 @@ const AITicketGeneratorScreen: React.FC = () => {
         {/* How It Works */}
         {!selectedMedia && !generatedTicket && (
           <View style={styles.howItWorks}>
-            <Text style={styles.howItWorksTitle}>How It Works</Text>
+            <Text style={styles.howItWorksTitle}>{t.howItWorks}</Text>
             <View style={styles.step}>
               <Text style={styles.stepNumber}>1</Text>
-              <Text style={styles.stepText}>Upload a photo or video (5-10 seconds)</Text>
+              <Text style={styles.stepText}>{t.photoOrVideo}</Text>
             </View>
             <View style={styles.step}>
               <Text style={styles.stepNumber}>2</Text>
-              <Text style={styles.stepText}>AI creates your personalized lucky ticket</Text>
+              <Text style={styles.stepText}>{t.generatesLuckyNumber}</Text>
             </View>
             <View style={styles.step}>
               <Text style={styles.stepNumber}>3</Text>
-              <Text style={styles.stepText}>View, save, and share your DreamTicket</Text>
+              <Text style={styles.stepText}>{t.saveShareFriends}</Text>
             </View>
           </View>
         )}
