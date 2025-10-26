@@ -89,14 +89,16 @@ export const getTemplateDisplayName = (template: TicketTemplate): string => {
 
 export const captureTicketImage = async (viewRef: any): Promise<string> => {
   try {
+    console.log('📸 Capturing ticket image...');
     const uri = await captureRef(viewRef, {
-      format: 'jpg',
+      format: 'png', // Changed to PNG for better quality with embedded images
       quality: 1.0,
       result: 'tmpfile',
     });
+    console.log('✅ Ticket image captured:', uri);
     return uri;
   } catch (error) {
-    console.error('Error capturing ticket image:', error);
+    console.error('❌ Error capturing ticket image:', error);
     throw error;
   }
 };

@@ -358,7 +358,7 @@ const AITicketGeneratorScreen: React.FC = () => {
           Alert.alert('Error', 'Failed to generate winner ticket image');
           setWinnerTicketData(null); // Hide preview on error
         }
-      }, 1500); // Increased timeout to ensure view is fully rendered
+      }, 3000); // Increased timeout to 3s to ensure base64 image is fully loaded
     } catch (error) {
       console.error('Error in handleGenerateTicket:', error);
       Alert.alert(

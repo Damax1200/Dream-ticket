@@ -88,10 +88,15 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
                 style={styles.userPhoto}
                 resizeMode="cover"
                 onError={(error) => {
-                  console.log('User photo load error:', error.nativeEvent.error);
+                  console.log('❌ User photo load error:', error.nativeEvent.error);
                   console.log('Photo URI:', userPhotoUri);
                 }}
-                onLoad={() => console.log('User photo loaded successfully')}
+                onLoad={() => {
+                  console.log('✅ User photo loaded successfully!');
+                  console.log('Photo URI length:', userPhotoUri?.length);
+                }}
+                onLoadStart={() => console.log('📸 Starting to load user photo...')}
+                onLoadEnd={() => console.log('🎉 Photo load ended')}
               />
             </View>
 
