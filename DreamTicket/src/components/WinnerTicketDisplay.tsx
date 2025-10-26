@@ -160,14 +160,14 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: width * 1.4, // Portrait aspect ratio similar to reference
+    width: width - 40,
+    height: (width - 40) * 1.5, // Taller portrait aspect ratio to fit all content
     backgroundColor: '#000',
   },
   gradient: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'space-between',
+    padding: 15,
+    justifyContent: 'flex-start', // Changed to flex-start to prevent content spreading
   },
   confettiContainer: {
     position: 'absolute',
@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
     zIndex: 10,
   },
   logoCloud: {
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'flex-end',
-    marginVertical: 20,
+    marginVertical: 12,
     paddingHorizontal: 10,
     zIndex: 10,
   },
@@ -288,14 +289,14 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   checkContainer: {
-    marginTop: 10,
-    marginBottom: 30,
+    marginTop: 8,
+    marginBottom: 15,
     zIndex: 10,
   },
   giantCheck: {
-    borderRadius: 20,
-    padding: 18,
-    borderWidth: 8,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 6,
     borderColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
@@ -324,9 +325,9 @@ const styles = StyleSheet.create({
   },
   nameSection: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 8,
   },
   nameLabel: {
     fontSize: 12,
@@ -344,9 +345,9 @@ const styles = StyleSheet.create({
   },
   amountSection: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 8,
   },
   prizeAmount: {
     fontSize: 42,
