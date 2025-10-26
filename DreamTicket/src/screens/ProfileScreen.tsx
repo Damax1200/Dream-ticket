@@ -236,7 +236,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               style={[styles.modalCloseButton, { backgroundColor: theme.colors.accent }]}
               onPress={() => setShowLanguageModal(false)}
             >
-              <Text style={styles.modalCloseText}>Close</Text>
+              <Text style={styles.modalCloseText}>{t.close}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -284,7 +284,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
               style={[styles.modalCloseButton, { backgroundColor: theme.colors.accent }]}
               onPress={() => setShowThemeModal(false)}
             >
-              <Text style={styles.modalCloseText}>Close</Text>
+              <Text style={styles.modalCloseText}>{t.close}</Text>
             </TouchableOpacity>
           </View>
         </View>

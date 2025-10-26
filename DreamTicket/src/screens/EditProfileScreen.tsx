@@ -65,14 +65,22 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!fullName.trim()) {
-      Alert.alert('Error', 'Please enter your full name');
+      Alert.alert('Error', `Please enter your ${t.name.toLowerCase()}`);
       return;
     }
     if (!email.trim() || !email.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid email');
+      Alert.alert('Error', `Please enter a valid ${t.email.toLowerCase()}`);
       return;
+    }
+    
+    // Save the name to AsyncStorage so it can be used elsewhere
+    try {
+      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+      await AsyncStorage.setItem('userName', fullName);
+    } catch (error) {
+      console.error('Error saving name:', error);
     }
     
     Alert.alert('Success', 'Profile updated successfully!', [
@@ -101,12 +109,12 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={[styles.editPhotoButton, { backgroundColor: theme.colors.accent }]}
                   onPress={() => {
                     Alert.alert(
-                      'Change Photo',
+                      t.selectPhoto,
                       'Choose an option',
                       [
-                        { text: 'Take Photo', onPress: handleTakePhoto },
-                        { text: 'Choose from Library', onPress: handleSelectImage },
-                        { text: 'Cancel', style: 'cancel' }
+                        { text: t.takePhoto, onPress: handleTakePhoto },
+                        { text: t.uploadPhoto, onPress: handleSelectImage },
+                        { text: t.cancel, style: 'cancel' }
                       ]
                     );
                   }}
@@ -119,26 +127,26 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
 
             {/* Personal Information */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Personal Information</Text>
+              <Text style={styles.sectionTitle}>{t.personalInfo}</Text>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Full Name *</Text>
+                <Text style={styles.label}>{t.fullName} *</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={fullName}
                   onChangeText={setFullName}
-                  placeholder="Enter your full name"
+                  placeholder={`Enter your ${t.name.toLowerCase()}`}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email Address *</Text>
+                <Text style={styles.label}>{t.email} *</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={email}
                   onChangeText={setEmail}
-                  placeholder="Enter your email"
+                  placeholder={`Enter your ${t.email.toLowerCase()}`}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -146,24 +154,24 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Phone Number</Text>
+                <Text style={styles.label}>{t.phone}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={phone}
                   onChangeText={setPhone}
-                  placeholder="Enter your phone number"
+                  placeholder={`Enter your ${t.phone.toLowerCase()}`}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="phone-pad"
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Age</Text>
+                <Text style={styles.label}>{t.age}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={age}
                   onChangeText={setAge}
-                  placeholder="Enter your age"
+                  placeholder={`Enter your ${t.age.toLowerCase()}`}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                   keyboardType="number-pad"
                   maxLength={3}
@@ -171,18 +179,18 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Location</Text>
+                <Text style={styles.label}>{t.location}</Text>
                 <TextInput
                   style={[styles.input, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={location}
                   onChangeText={setLocation}
-                  placeholder="Enter your location"
+                  placeholder={`Enter your ${t.location.toLowerCase()}`}
                   placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 />
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Bio</Text>
+                <Text style={styles.label}>{t.bio}</Text>
                 <TextInput
                   style={[styles.textArea, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
                   value={bio}
@@ -202,14 +210,14 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
                 style={[styles.saveButton, { backgroundColor: theme.colors.accent }]}
                 onPress={handleSave}
               >
-                <Text style={styles.saveButtonText}>💾 Save Changes</Text>
+                <Text style={styles.saveButtonText}>💾 {t.saveChanges}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.cancelButton, { borderColor: theme.colors.cardBorder }]}
                 onPress={() => navigation.goBack()}
               >
-                <Text style={[styles.cancelButtonText, { color: theme.colors.text }]}>Cancel</Text>
+                <Text style={[styles.cancelButtonText, { color: theme.colors.text }]}>{t.cancel}</Text>
               </TouchableOpacity>
             </View>
           </View>

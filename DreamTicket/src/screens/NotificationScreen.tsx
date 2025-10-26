@@ -68,12 +68,12 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
 
   const handleDeleteNotification = (id: string) => {
     Alert.alert(
-      'Delete Notification',
+      `${t.delete} ${t.notifications}`,
       'Are you sure you want to delete this notification?',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         { 
-          text: 'Delete', 
+          text: t.delete, 
           onPress: () => setNotifications(notifications.filter(n => n.id !== id)),
           style: 'destructive'
         }
@@ -86,7 +86,7 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
       'Clear All',
       'Are you sure you want to clear all notifications?',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         { 
           text: 'Clear All', 
           onPress: () => setNotifications([]),
@@ -112,7 +112,7 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerTitle}>Notifications</Text>
+            <Text style={styles.headerTitle}>{t.notifications}</Text>
             {unreadCount > 0 && (
               <Text style={styles.unreadText}>{unreadCount} unread</Text>
             )}
@@ -128,9 +128,9 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
           {notifications.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🔔</Text>
-              <Text style={styles.emptyTitle}>No Notifications</Text>
+              <Text style={styles.emptyTitle}>{t.noNewNotifications}</Text>
               <Text style={styles.emptyMessage}>
-                You're all caught up! We'll notify you when something new happens.
+                {t.youreAllCaughtUp}
               </Text>
             </View>
           ) : (

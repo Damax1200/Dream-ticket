@@ -103,6 +103,40 @@ interface Translations {
   notificationSettingsComingSoon: string;
   helpSupportComingSoon: string;
   settingsComingSoon: string;
+  
+  // Additional Auth & Legal
+  termsConditions: string;
+  privacyPolicy: string;
+  changePassword: string;
+  
+  // Notifications Screen
+  youreAllCaughtUp: string;
+  noNewNotifications: string;
+  
+  // Settings Screen
+  storageData: string;
+  appVersion: string;
+  buildNumber: string;
+  
+  // Edit Profile
+  editProfile: string;
+  name: string;
+  age: string;
+  phone: string;
+  location: string;
+  bio: string;
+  selectPhoto: string;
+  
+  // Common Actions
+  close: string;
+  save: string;
+  edit: string;
+  update: string;
+  
+  // Notifications Settings
+  pushNotifications: string;
+  receiveUpdates: string;
+  promotionalEmails: string;
 }
 
 const translations: Record<LanguageType, Translations> = {
@@ -191,6 +225,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: 'Notification settings coming soon!',
     helpSupportComingSoon: 'Help & support coming soon!',
     settingsComingSoon: 'Settings coming soon!',
+    termsConditions: 'Terms & Conditions',
+    privacyPolicy: 'Privacy Policy',
+    changePassword: 'Change Password',
+    youreAllCaughtUp: "You're all caught up!",
+    noNewNotifications: 'No new notifications',
+    storageData: 'Storage & Data',
+    appVersion: 'App Version',
+    buildNumber: 'Build Number',
+    editProfile: 'Edit Profile',
+    name: 'Name',
+    age: 'Age',
+    phone: 'Phone',
+    location: 'Location',
+    bio: 'Bio',
+    selectPhoto: 'Select Photo',
+    close: 'Close',
+    save: 'Save',
+    edit: 'Edit',
+    update: 'Update',
+    pushNotifications: 'Push Notifications',
+    receiveUpdates: 'Receive Updates',
+    promotionalEmails: 'Promotional Emails',
   },
   es: {
     welcomeBack: '¡Bienvenido de nuevo!',
@@ -277,6 +333,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: '¡La configuración de notificaciones llegará pronto!',
     helpSupportComingSoon: '¡Ayuda y soporte llegarán pronto!',
     settingsComingSoon: '¡La configuración llegará pronto!',
+    termsConditions: 'Términos y Condiciones',
+    privacyPolicy: 'Política de Privacidad',
+    changePassword: 'Cambiar Contraseña',
+    youreAllCaughtUp: '¡Estás al día!',
+    noNewNotifications: 'No hay nuevas notificaciones',
+    storageData: 'Almacenamiento y Datos',
+    appVersion: 'Versión de la Aplicación',
+    buildNumber: 'Número de Compilación',
+    editProfile: 'Editar Perfil',
+    name: 'Nombre',
+    age: 'Edad',
+    phone: 'Teléfono',
+    location: 'Ubicación',
+    bio: 'Biografía',
+    selectPhoto: 'Seleccionar Foto',
+    close: 'Cerrar',
+    save: 'Guardar',
+    edit: 'Editar',
+    update: 'Actualizar',
+    pushNotifications: 'Notificaciones Push',
+    receiveUpdates: 'Recibir Actualizaciones',
+    promotionalEmails: 'Correos Promocionales',
   },
   fr: {
     welcomeBack: 'Bon retour!',
@@ -363,6 +441,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: 'Les paramètres de notification arrivent bientôt!',
     helpSupportComingSoon: 'Aide & support arrivent bientôt!',
     settingsComingSoon: 'Les paramètres arrivent bientôt!',
+    termsConditions: 'Termes et Conditions',
+    privacyPolicy: 'Politique de Confidentialité',
+    changePassword: 'Changer le Mot de Passe',
+    youreAllCaughtUp: 'Vous êtes à jour!',
+    noNewNotifications: 'Aucune nouvelle notification',
+    storageData: 'Stockage et Données',
+    appVersion: "Version de l'Application",
+    buildNumber: 'Numéro de Build',
+    editProfile: 'Modifier le Profil',
+    name: 'Nom',
+    age: 'Âge',
+    phone: 'Téléphone',
+    location: 'Localisation',
+    bio: 'Biographie',
+    selectPhoto: 'Sélectionner une Photo',
+    close: 'Fermer',
+    save: 'Enregistrer',
+    edit: 'Modifier',
+    update: 'Mettre à Jour',
+    pushNotifications: 'Notifications Push',
+    receiveUpdates: 'Recevoir les Mises à Jour',
+    promotionalEmails: 'E-mails Promotionnels',
   },
   de: {
     welcomeBack: 'Willkommen zurück!',
@@ -449,6 +549,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: 'Benachrichtigungseinstellungen kommen bald!',
     helpSupportComingSoon: 'Hilfe & Support kommen bald!',
     settingsComingSoon: 'Einstellungen kommen bald!',
+    termsConditions: 'Allgemeine Geschäftsbedingungen',
+    privacyPolicy: 'Datenschutzrichtlinie',
+    changePassword: 'Passwort Ändern',
+    youreAllCaughtUp: 'Sie sind auf dem neuesten Stand!',
+    noNewNotifications: 'Keine neuen Benachrichtigungen',
+    storageData: 'Speicher & Daten',
+    appVersion: 'App-Version',
+    buildNumber: 'Build-Nummer',
+    editProfile: 'Profil Bearbeiten',
+    name: 'Name',
+    age: 'Alter',
+    phone: 'Telefon',
+    location: 'Ort',
+    bio: 'Biografie',
+    selectPhoto: 'Foto Auswählen',
+    close: 'Schließen',
+    save: 'Speichern',
+    edit: 'Bearbeiten',
+    update: 'Aktualisieren',
+    pushNotifications: 'Push-Benachrichtigungen',
+    receiveUpdates: 'Updates Erhalten',
+    promotionalEmails: 'Werbe-E-Mails',
   },
   pt: {
     welcomeBack: 'Bem-vindo de volta!',
@@ -535,6 +657,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: 'Configurações de notificação em breve!',
     helpSupportComingSoon: 'Ajuda & suporte em breve!',
     settingsComingSoon: 'Configurações em breve!',
+    termsConditions: 'Termos e Condições',
+    privacyPolicy: 'Política de Privacidade',
+    changePassword: 'Alterar Senha',
+    youreAllCaughtUp: 'Você está em dia!',
+    noNewNotifications: 'Sem novas notificações',
+    storageData: 'Armazenamento e Dados',
+    appVersion: 'Versão do Aplicativo',
+    buildNumber: 'Número da Build',
+    editProfile: 'Editar Perfil',
+    name: 'Nome',
+    age: 'Idade',
+    phone: 'Telefone',
+    location: 'Localização',
+    bio: 'Biografia',
+    selectPhoto: 'Selecionar Foto',
+    close: 'Fechar',
+    save: 'Salvar',
+    edit: 'Editar',
+    update: 'Atualizar',
+    pushNotifications: 'Notificações Push',
+    receiveUpdates: 'Receber Atualizações',
+    promotionalEmails: 'E-mails Promocionais',
   },
   zh: {
     welcomeBack: '欢迎回来！',
@@ -621,6 +765,28 @@ const translations: Record<LanguageType, Translations> = {
     notificationSettingsComingSoon: '通知设置即将推出！',
     helpSupportComingSoon: '帮助与支持即将推出！',
     settingsComingSoon: '设置即将推出！',
+    termsConditions: '条款与条件',
+    privacyPolicy: '隐私政策',
+    changePassword: '更改密码',
+    youreAllCaughtUp: '您已查看所有内容！',
+    noNewNotifications: '没有新通知',
+    storageData: '存储和数据',
+    appVersion: '应用版本',
+    buildNumber: '构建编号',
+    editProfile: '编辑个人资料',
+    name: '姓名',
+    age: '年龄',
+    phone: '电话',
+    location: '位置',
+    bio: '简介',
+    selectPhoto: '选择照片',
+    close: '关闭',
+    save: '保存',
+    edit: '编辑',
+    update: '更新',
+    pushNotifications: '推送通知',
+    receiveUpdates: '接收更新',
+    promotionalEmails: '促销电子邮件',
   },
 };
 
