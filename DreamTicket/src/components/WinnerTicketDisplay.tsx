@@ -72,81 +72,68 @@ export const WinnerTicketDisplay = React.forwardRef<View, WinnerTicketDisplayPro
             </View>
           </View>
 
-          {/* Three People Holding Check Scene */}
-          <View style={styles.winnersScene}>
-            {/* Left Person - Professional Man in Blue Suit */}
-            <View style={styles.sidePerson}>
-              <Image
-                source={require('../../assets/placeholders/business-man.jpg')}
-                style={styles.sidePersonPhoto}
-                resizeMode="cover"
-              />
+          {/* Three People Holding Giant Check - Photoshoot Style */}
+          <View style={styles.photoshootScene}>
+            {/* People Row */}
+            <View style={styles.peopleRow}>
+              {/* Left Person - Full Body */}
+              <View style={styles.personContainer}>
+                <Image
+                  source={require('../../assets/placeholders/business-man.jpg')}
+                  style={styles.personImage}
+                  resizeMode="cover"
+                />
+              </View>
+
+              {/* Middle Person - User (Full Body) */}
+              <View style={styles.personContainer}>
+                <Image
+                  source={{ uri: userPhotoUri }}
+                  style={styles.personImage}
+                  resizeMode="cover"
+                  onError={(error) => console.log('❌ User photo load error:', error.nativeEvent.error)}
+                  onLoad={() => console.log('✅ User photo loaded successfully!')}
+                />
+              </View>
+
+              {/* Right Person - Full Body */}
+              <View style={styles.personContainer}>
+                <Image
+                  source={require('../../assets/placeholders/business-woman.jpg')}
+                  style={styles.personImage}
+                  resizeMode="cover"
+                />
+              </View>
             </View>
 
-            {/* Middle Person - User Photo */}
-            <View style={styles.centerPerson}>
-              <Image
-                source={{ uri: userPhotoUri }}
-                style={styles.userPhoto}
-                resizeMode="cover"
-                onError={(error) => {
-                  console.log('❌ User photo load error:', error.nativeEvent.error);
-                  console.log('Photo URI:', userPhotoUri);
-                }}
-                onLoad={() => {
-                  console.log('✅ User photo loaded successfully!');
-                  console.log('Photo URI length:', userPhotoUri?.length);
-                }}
-                onLoadStart={() => console.log('📸 Starting to load user photo...')}
-                onLoadEnd={() => console.log('🎉 Photo load ended')}
-              />
-            </View>
+            {/* Giant Check They're Holding */}
+            <View style={styles.holdingCheckContainer}>
+              <LinearGradient
+                colors={[colors.primary, colors.primary]}
+                style={styles.physicalCheck}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                {/* Check Border */}
+                <View style={styles.checkBorder}>
+                  {/* Template Name & Icon */}
+                  <View style={styles.checkHeader}>
+                    <Text style={styles.checkTemplateIcon}>{themeIcons[templateTheme]}</Text>
+                    <Text style={styles.checkTemplateName}>{templateName}</Text>
+                  </View>
 
-            {/* Right Person - Professional Woman in Yellow Suit */}
-            <View style={styles.sidePerson}>
-              <Image
-                source={require('../../assets/placeholders/business-woman.jpg')}
-                style={styles.sidePersonPhoto}
-                resizeMode="cover"
-              />
+                  {/* Prize Amount - Huge */}
+                  <View style={styles.checkAmountContainer}>
+                    <Text style={styles.checkAmount}>{formatPrizeAmount(luckyNumber)}</Text>
+                  </View>
+                </View>
+              </LinearGradient>
             </View>
           </View>
 
-          {/* Motivational Quote Above Check */}
+          {/* Motivational Quote Below */}
           <View style={styles.quoteContainer}>
             <Text style={styles.quoteText}>{motivationalQuote}</Text>
-          </View>
-
-          {/* Giant Winning Check/Banner */}
-          <View style={styles.checkContainer}>
-            <LinearGradient
-              colors={[colors.primary, colors.primary]}
-              style={styles.giantCheck}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              {/* Check Header with Template Icon */}
-              <View style={styles.checkTopRow}>
-                <Text style={styles.templateIcon}>{themeIcons[templateTheme]}</Text>
-                <Text style={styles.checkTitle}>{templateName}</Text>
-              </View>
-
-              {/* Winner Name Section */}
-              <View style={styles.nameSection}>
-                <Text style={styles.nameLabel}>YOUR NAME</Text>
-                <Text style={styles.winnerName}>{userName.toUpperCase()}</Text>
-              </View>
-
-              {/* Prize Amount - Big and Bold */}
-              <View style={styles.amountSection}>
-                <Text style={styles.prizeAmount}>{formatPrizeAmount(luckyNumber)}</Text>
-              </View>
-
-              {/* Disclaimer */}
-              <View style={styles.disclaimerSection}>
-                <Text style={styles.disclaimerText}>FOR VISUALIZATION ONLY</Text>
-              </View>
-            </LinearGradient>
           </View>
 
           {/* Fireworks */}
@@ -231,48 +218,82 @@ const styles = StyleSheet.create({
   bedEmoji: {
     fontSize: 24,
   },
-  winnersScene: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'flex-end',
-    marginVertical: 8,
-    paddingHorizontal: 10,
+  photoshootScene: {
+    alignItems: 'center',
+    marginVertical: 10,
     zIndex: 10,
   },
-  sidePerson: {
-    alignItems: 'center',
-    width: 90,
+  peopleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    marginBottom: -20, // Overlap with check
+    zIndex: 20,
   },
-  sidePersonPhoto: {
-    width: 70,
-    height: 85,
-    borderRadius: 10,
+  personContainer: {
+    marginHorizontal: 4,
+  },
+  personImage: {
+    width: 100,
+    height: 200,
+    borderRadius: 8,
     borderWidth: 3,
     borderColor: '#fff',
     backgroundColor: '#1a1a2e',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  centerPerson: {
-    alignItems: 'center',
-    width: 120,
-    marginHorizontal: 5,
-  },
-  userPhoto: {
-    width: 110,
-    height: 140,
-    borderRadius: 12,
-    borderWidth: 5,
-    borderColor: '#fff',
-    backgroundColor: '#1a1a2e', // Fallback background
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 15,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+  holdingCheckContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+    zIndex: 15,
+  },
+  physicalCheck: {
+    borderRadius: 12,
+    borderWidth: 8,
+    borderColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+    elevation: 20,
+  },
+  checkBorder: {
+    padding: 12,
+  },
+  checkHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  checkTemplateIcon: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  checkTemplateName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  checkAmountContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  checkAmount: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#000',
+    letterSpacing: 1,
   },
   quoteContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -291,86 +312,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
-  },
-  checkContainer: {
-    marginTop: 8,
-    marginBottom: 15,
-    zIndex: 10,
-  },
-  giantCheck: {
-    borderRadius: 16,
-    padding: 14,
-    borderWidth: 6,
-    borderColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 15,
-    elevation: 15,
-  },
-  checkTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  templateIcon: {
-    fontSize: 24,
-    marginRight: 6,
-  },
-  checkTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  nameSection: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 8,
-  },
-  nameLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 3,
-  },
-  winnerName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-    letterSpacing: 1,
-  },
-  amountSection: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 6,
-  },
-  prizeAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-    letterSpacing: 1,
-  },
-  disclaimerSection: {
-    backgroundColor: 'rgba(255, 193, 7, 0.95)',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-  },
-  disclaimerText: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
   },
   fireworksContainer: {
     position: 'absolute',
