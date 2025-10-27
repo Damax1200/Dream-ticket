@@ -139,7 +139,13 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                   <ActivityIndicator size="large" color="#fff" />
                 </View>
               ) : avatarUrl ? (
-                <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+                <Image 
+                  source={{ uri: avatarUrl }} 
+                  style={styles.avatarImage}
+                  onLoad={() => console.log('Avatar image loaded successfully:', avatarUrl)}
+                  onError={(error) => console.log('Avatar image failed to load:', error.nativeEvent.error, 'URL:', avatarUrl)}
+                  onLoadStart={() => console.log('Avatar image loading started:', avatarUrl)}
+                />
               ) : (
                 <LinearGradient colors={theme.colors.primary as any} style={styles.avatar}>
                   <Text style={styles.avatarText}>

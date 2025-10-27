@@ -196,6 +196,9 @@ export const getOrCreateUserProfile = async (userId: string, email: string, full
  */
 export const updateUserProfile = async (userId: string, updates: Partial<User>) => {
   try {
+    console.log('Updating user profile for:', userId);
+    console.log('Updates:', updates);
+    
     const { data, error } = await supabase
       .from('users')
       .update({
@@ -206,9 +209,15 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+    
+    console.log('Profile updated successfully:', data);
     return { success: true, data };
   } catch (error: any) {
+    console.error('Failed to update profile:', error);
     return { success: false, error: error.message };
   }
 };

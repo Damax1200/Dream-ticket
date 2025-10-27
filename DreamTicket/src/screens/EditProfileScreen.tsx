@@ -126,16 +126,20 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
       // Upload avatar if a new image was selected
       let newAvatarUrl = avatarUrl;
       if (profileImage) {
+        console.log('Uploading new avatar...');
         const uploadResult = await uploadAvatar(user.id, profileImage);
         if (uploadResult.success) {
           newAvatarUrl = uploadResult.url;
+          console.log('Avatar uploaded successfully, URL:', newAvatarUrl);
         } else {
+          console.log('Avatar upload failed:', uploadResult.error);
           Alert.alert(t.error || 'Error', 'Failed to upload avatar');
           return;
         }
       }
 
       // Update user profile in Supabase
+      console.log('Updating profile with avatar URL:', newAvatarUrl);
       const updateResult = await updateUserProfile(user.id, {
         full_name: fullName.trim(),
         email: email.trim(),
@@ -147,6 +151,7 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
       });
 
       if (updateResult.success) {
+        console.log('Profile updated successfully with avatar URL:', newAvatarUrl);
         // Save to AsyncStorage for offline access
         const AsyncStorage = require('@react-native-async-storage/async-storage').default;
         await AsyncStorage.setItem('userName', fullName.trim());
