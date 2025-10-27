@@ -48,8 +48,18 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
   // Load user profile on component mount
   useEffect(() => {
-    loadUserProfile();
-  }, [user]);
+    if (user?.id) {
+      console.log('User ID available, loading profile:', user.id);
+      loadUserProfile();
+    } else {
+      console.log('No user ID available, clearing profile data');
+      setName('');
+      setEmail('');
+      setPhone('');
+      setAvatarUrl('');
+      setLoading(false);
+    }
+  }, [user?.id]);
 
   // Reload profile when screen comes into focus (e.g., returning from EditProfile)
   useFocusEffect(
@@ -62,9 +72,12 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
 
   const loadUserProfile = async () => {
     if (!user?.id) {
+      console.log('loadUserProfile: No user ID, skipping');
       setLoading(false);
       return;
     }
+    
+    console.log('loadUserProfile: Starting for user:', user.id);
     
     try {
       setLoading(true);
@@ -74,13 +87,17 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
         user.user_metadata?.full_name
       );
       
+      console.log('loadUserProfile: Profile result:', profile);
+      
       if (profile) {
         setName(profile.full_name || '');
         setEmail(profile.email || '');
         setPhone(profile.phone || '');
         setAvatarUrl(profile.avatar_url);
         console.log('Profile loaded - Avatar URL:', profile.avatar_url);
+        console.log('Profile loaded - Full profile:', profile);
       } else {
+        console.log('loadUserProfile: No profile returned');
         // Fallback to auth user data
         setName(user.user_metadata?.full_name || '');
         setEmail(user.email || '');
