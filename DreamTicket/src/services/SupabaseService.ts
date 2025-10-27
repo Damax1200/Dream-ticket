@@ -533,23 +533,50 @@ export const updateUserSettings = async (userId: string, settings: {
     console.log('Updating user settings for:', userId);
     console.log('Settings:', settings);
 
-    const { data, error } = await supabase
+    // First, try to get existing settings
+    const { data: existingSettings, error: fetchError } = await supabase
       .from('user_settings')
-      .upsert({
-        user_id: userId,
-        ...settings,
-        updated_at: new Date().toISOString(),
-      })
-      .select()
+      .select('*')
+      .eq('user_id', userId)
       .single();
 
-    if (error) {
-      console.error('Error updating settings:', error);
-      throw error;
+    let result;
+    if (fetchError && fetchError.code === 'PGRST116') {
+      // No existing settings, create new ones
+      console.log('No existing settings found, creating new ones...');
+      result = await supabase
+        .from('user_settings')
+        .insert({
+          user_id: userId,
+          ...settings,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+    } else if (fetchError) {
+      throw fetchError;
+    } else {
+      // Update existing settings
+      console.log('Updating existing settings...');
+      result = await supabase
+        .from('user_settings')
+        .update({
+          ...settings,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId)
+        .select()
+        .single();
     }
 
-    console.log('Settings updated successfully:', data);
-    return { success: true, data };
+    if (result.error) {
+      console.error('Error updating settings:', result.error);
+      throw result.error;
+    }
+
+    console.log('Settings updated successfully:', result.data);
+    return { success: true, data: result.data };
   } catch (error: any) {
     console.error('Failed to update settings:', error);
     return { success: false, error: error.message };
