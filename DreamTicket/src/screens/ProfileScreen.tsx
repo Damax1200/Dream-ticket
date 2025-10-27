@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 import { ProfileScreenProps } from '../types/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, themes, ThemeType } from '../contexts/ThemeContext';
@@ -50,6 +51,15 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
     loadUserProfile();
   }, [user]);
 
+  // Reload profile when screen comes into focus (e.g., returning from EditProfile)
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user?.id) {
+        loadUserProfile();
+      }
+    }, [user?.id])
+  );
+
   const loadUserProfile = async () => {
     if (!user?.id) {
       setLoading(false);
@@ -69,6 +79,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
         setEmail(profile.email || '');
         setPhone(profile.phone || '');
         setAvatarUrl(profile.avatar_url);
+        console.log('Profile loaded - Avatar URL:', profile.avatar_url);
       } else {
         // Fallback to auth user data
         setName(user.user_metadata?.full_name || '');
