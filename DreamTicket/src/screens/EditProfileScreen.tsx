@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,59 @@ import {
   TextInput,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { getUserProfile, updateUserProfile, uploadAvatar } from '../services/SupabaseService';
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfileScreen: React.FC<any> = ({ navigation }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const [fullName, setFullName] = useState('John Doe');
-  const [email, setEmail] = useState('john.doe@example.com');
-  const [phone, setPhone] = useState('+1 234 567 8900');
-  const [age, setAge] = useState('25');
-  const [location, setLocation] = useState('New York, USA');
-  const [bio, setBio] = useState('Dream big, win big! 🎫✨');
+  const { user } = useAuth();
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState('');
+  const [location, setLocation] = useState('');
+  const [bio, setBio] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Load user profile on component mount
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setLoading(true);
+      const profile = await getUserProfile(user.id);
+      
+      if (profile) {
+        setFullName(profile.full_name || '');
+        setEmail(profile.email || '');
+        setPhone(profile.phone || '');
+        setAge(profile.age?.toString() || '');
+        setLocation(profile.location || '');
+        setBio(profile.bio || '');
+        setAvatarUrl(profile.avatar_url);
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      Alert.alert(t.error || 'Error', 'Failed to load profile');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSelectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,27 +102,79 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
   };
 
   const handleSave = async () => {
+    if (!user?.id) {
+      Alert.alert(t.error || 'Error', 'User not authenticated');
+      return;
+    }
+
     if (!fullName.trim()) {
-      Alert.alert(t.editProfile, `${t.name} ${t.name}`);
+      Alert.alert(t.error || 'Error', 'Please enter your full name');
       return;
     }
     if (!email.trim() || !email.includes('@')) {
-      Alert.alert(t.editProfile, `${t.email} ${t.email}`);
+      Alert.alert(t.error || 'Error', 'Please enter a valid email address');
       return;
     }
     
-    // Save the name to AsyncStorage so it can be used elsewhere
-    try {
-      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-      await AsyncStorage.setItem('userName', fullName);
-    } catch (error) {
-      console.error('Error saving name:', error);
-    }
+    setSaving(true);
     
-    Alert.alert(t.welcome, t.saveChanges, [
-      { text: 'OK', onPress: () => navigation.goBack() }
-    ]);
+    try {
+      // Upload avatar if a new image was selected
+      let newAvatarUrl = avatarUrl;
+      if (profileImage) {
+        const uploadResult = await uploadAvatar(user.id, profileImage);
+        if (uploadResult.success) {
+          newAvatarUrl = uploadResult.url;
+        } else {
+          Alert.alert(t.error || 'Error', 'Failed to upload avatar');
+          return;
+        }
+      }
+
+      // Update user profile in Supabase
+      const updateResult = await updateUserProfile(user.id, {
+        full_name: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim() || null,
+        age: age ? parseInt(age) : null,
+        location: location.trim() || null,
+        bio: bio.trim() || null,
+        avatar_url: newAvatarUrl,
+      });
+
+      if (updateResult.success) {
+        // Save to AsyncStorage for offline access
+        const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+        await AsyncStorage.setItem('userName', fullName.trim());
+        
+        Alert.alert(t.success || 'Success', 'Profile updated successfully!', [
+          { text: 'OK', onPress: () => navigation.goBack() }
+        ]);
+      } else {
+        Alert.alert(t.error || 'Error', updateResult.error || 'Failed to update profile');
+      }
+    } catch (error: any) {
+      console.error('Error saving profile:', error);
+      Alert.alert(t.error || 'Error', error.message || 'An unexpected error occurred');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <LinearGradient colors={theme.colors.background as any} style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.colors.accent} />
+            <Text style={[styles.loadingText, { color: theme.colors.text }]}>
+              Loading profile...
+            </Text>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient colors={theme.colors.background as any} style={styles.container}>
@@ -98,6 +186,8 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
               <View style={styles.avatarContainer}>
                 {profileImage ? (
                   <Image source={{ uri: profileImage }} style={styles.avatarImage} />
+                ) : avatarUrl ? (
+                  <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
                 ) : (
                   <LinearGradient colors={theme.colors.primary as any} style={styles.avatar}>
                     <Text style={styles.avatarText}>
@@ -207,10 +297,18 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
             {/* Action Buttons */}
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={[styles.saveButton, { backgroundColor: theme.colors.accent }]}
+                style={[
+                  styles.saveButton, 
+                  { backgroundColor: saving ? theme.colors.textSecondary : theme.colors.accent }
+                ]}
                 onPress={handleSave}
+                disabled={saving}
               >
-                <Text style={styles.saveButtonText}>💾 {t.saveChanges}</Text>
+                {saving ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.saveButtonText}>💾 {t.saveChanges}</Text>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -233,6 +331,16 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    fontWeight: '500',
   },
   scrollContent: {
     flexGrow: 1,
