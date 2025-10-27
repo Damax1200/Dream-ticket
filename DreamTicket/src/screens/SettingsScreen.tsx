@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,84 @@ import {
   TextInput,
   Alert,
   Switch,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { 
+  changePassword, 
+  getUserSettings, 
+  updateUserSettings, 
+  clearUserCache, 
+  getUserStorageUsage 
+} from '../services/SupabaseService';
 
 const SettingsScreen: React.FC<any> = ({ navigation }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { user } = useAuth();
+  
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [autoBackup, setAutoBackup] = useState(true);
   const [soundEffects, setSoundEffects] = useState(true);
   const [hapticFeedback, setHapticFeedback] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [storageUsage, setStorageUsage] = useState({ totalSizeMB: 0, fileCount: 0 });
 
-  const handleChangePassword = () => {
+  // Load user settings on mount
+  useEffect(() => {
+    if (user?.id) {
+      loadUserSettings();
+      loadStorageUsage();
+    }
+  }, [user?.id]);
+
+  const loadUserSettings = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setLoading(true);
+      const result = await getUserSettings(user.id);
+      if (result.success && result.data) {
+        setAutoBackup(result.data.auto_backup ?? true);
+        setSoundEffects(result.data.sound_effects ?? true);
+        setHapticFeedback(result.data.haptic_feedback ?? false);
+      }
+    } catch (error) {
+      console.error('Error loading user settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadStorageUsage = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const result = await getUserStorageUsage(user.id);
+      if (result.success && result.data) {
+        setStorageUsage({
+          totalSizeMB: result.data.totalSizeMB,
+          fileCount: result.data.fileCount,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading storage usage:', error);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!user?.id) {
+      Alert.alert(t.error, 'User not authenticated');
+      return;
+    }
+
     if (!currentPassword || !newPassword || !confirmPassword) {
       Alert.alert(t.error, t.pleaseFillAllPasswordFields);
       return;
@@ -37,13 +98,33 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
       Alert.alert(t.error, t.passwordMustBe6Characters);
       return;
     }
-    Alert.alert(t.success, t.passwordChangedSuccessfully);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+
+    setChangingPassword(true);
+    
+    try {
+      const result = await changePassword(currentPassword, newPassword);
+      if (result.success) {
+        Alert.alert(t.success, t.passwordChangedSuccessfully);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        Alert.alert(t.error, result.error || 'Failed to change password');
+      }
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      Alert.alert(t.error, error.message || 'An unexpected error occurred');
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
-  const handleClearCache = () => {
+  const handleClearCache = async () => {
+    if (!user?.id) {
+      Alert.alert(t.error, 'User not authenticated');
+      return;
+    }
+
     Alert.alert(
       t.clearCache,
       t.areYouSureWantToClearCache,
@@ -51,11 +132,68 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
         { text: t.cancel, style: 'cancel' },
         { 
           text: t.clear, 
-          onPress: () => Alert.alert(t.success, t.cacheCleared),
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const result = await clearUserCache(user.id);
+              if (result.success) {
+                Alert.alert(t.success, t.cacheCleared);
+                // Reload storage usage
+                await loadStorageUsage();
+              } else {
+                Alert.alert(t.error, result.error || 'Failed to clear cache');
+              }
+            } catch (error: any) {
+              console.error('Error clearing cache:', error);
+              Alert.alert(t.error, error.message || 'An unexpected error occurred');
+            } finally {
+              setLoading(false);
+            }
+          },
           style: 'destructive'
         }
       ]
     );
+  };
+
+  const handleSettingChange = async (setting: string, value: boolean) => {
+    if (!user?.id) return;
+
+    try {
+      const settingsUpdate: any = {};
+      settingsUpdate[setting] = value;
+      
+      const result = await updateUserSettings(user.id, settingsUpdate);
+      if (!result.success) {
+        console.error('Failed to update setting:', result.error);
+        // Revert the change
+        switch (setting) {
+          case 'auto_backup':
+            setAutoBackup(!value);
+            break;
+          case 'sound_effects':
+            setSoundEffects(!value);
+            break;
+          case 'haptic_feedback':
+            setHapticFeedback(!value);
+            break;
+        }
+      }
+    } catch (error) {
+      console.error('Error updating setting:', error);
+      // Revert the change
+      switch (setting) {
+        case 'auto_backup':
+          setAutoBackup(!value);
+          break;
+        case 'sound_effects':
+          setSoundEffects(!value);
+          break;
+        case 'haptic_feedback':
+          setHapticFeedback(!value);
+          break;
+      }
+    }
   };
 
   return (
@@ -106,8 +244,13 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
               <TouchableOpacity
                 style={[styles.changePasswordButton, { backgroundColor: theme.colors.accent }]}
                 onPress={handleChangePassword}
+                disabled={changingPassword}
               >
-                <Text style={styles.buttonText}>{t.changePassword}</Text>
+                {changingPassword ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>{t.changePassword}</Text>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -122,7 +265,10 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                 </View>
                 <Switch
                   value={autoBackup}
-                  onValueChange={setAutoBackup}
+                  onValueChange={(value) => {
+                    setAutoBackup(value);
+                    handleSettingChange('auto_backup', value);
+                  }}
                   trackColor={{ false: '#4a5568', true: theme.colors.accent }}
                   thumbColor={'#fff'}
                 />
@@ -135,7 +281,10 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                 </View>
                 <Switch
                   value={soundEffects}
-                  onValueChange={setSoundEffects}
+                  onValueChange={(value) => {
+                    setSoundEffects(value);
+                    handleSettingChange('sound_effects', value);
+                  }}
                   trackColor={{ false: '#4a5568', true: theme.colors.accent }}
                   thumbColor={'#fff'}
                 />
@@ -148,7 +297,10 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                 </View>
                 <Switch
                   value={hapticFeedback}
-                  onValueChange={setHapticFeedback}
+                  onValueChange={(value) => {
+                    setHapticFeedback(value);
+                    handleSettingChange('haptic_feedback', value);
+                  }}
                   trackColor={{ false: '#4a5568', true: theme.colors.accent }}
                   thumbColor={'#fff'}
                 />
@@ -177,7 +329,7 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
 
               <TouchableOpacity
                 style={styles.actionItem}
-                onPress={() => Alert.alert(t.info, `${t.totalStorage}: 42 MB`)}
+                onPress={() => Alert.alert(t.info, `${t.totalStorage}: ${storageUsage.totalSizeMB} MB`)}
               >
                 <View style={styles.actionItemLeft}>
                   <View style={[styles.iconCircle, { backgroundColor: theme.colors.accent + '20' }]}>
@@ -185,7 +337,7 @@ const SettingsScreen: React.FC<any> = ({ navigation }) => {
                   </View>
                   <View style={styles.actionTextContainer}>
                     <Text style={styles.actionTitle}>{t.storageUsage}</Text>
-                    <Text style={styles.actionSubtitle}>42 {t.mbUsed}</Text>
+                    <Text style={styles.actionSubtitle}>{storageUsage.totalSizeMB} {t.mbUsed} ({storageUsage.fileCount} {t.files})</Text>
                   </View>
                 </View>
                 <Text style={styles.actionArrow}>›</Text>

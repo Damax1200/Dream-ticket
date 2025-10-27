@@ -462,3 +462,187 @@ export const subscribeToNotifications = (
     .subscribe();
 };
 
+// ============================================
+// ACCOUNT SETTINGS SERVICES
+// ============================================
+
+/**
+ * Change user password
+ */
+export const changePassword = async (currentPassword: string, newPassword: string) => {
+  try {
+    console.log('Changing password...');
+    
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Update password using Supabase Auth
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      console.error('Password change error:', error);
+      throw error;
+    }
+
+    console.log('Password changed successfully');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to change password:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get user settings
+ */
+export const getUserSettings = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('user_settings')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+      throw error;
+    }
+
+    return { success: true, data: data || null };
+  } catch (error: any) {
+    console.error('Error fetching user settings:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Update user settings
+ */
+export const updateUserSettings = async (userId: string, settings: {
+  auto_backup?: boolean;
+  sound_effects?: boolean;
+  haptic_feedback?: boolean;
+  notifications_enabled?: boolean;
+  theme_preference?: string;
+}) => {
+  try {
+    console.log('Updating user settings for:', userId);
+    console.log('Settings:', settings);
+
+    const { data, error } = await supabase
+      .from('user_settings')
+      .upsert({
+        user_id: userId,
+        ...settings,
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating settings:', error);
+      throw error;
+    }
+
+    console.log('Settings updated successfully:', data);
+    return { success: true, data };
+  } catch (error: any) {
+    console.error('Failed to update settings:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Clear user cache/data
+ */
+export const clearUserCache = async (userId: string) => {
+  try {
+    console.log('Clearing cache for user:', userId);
+    
+    // Clear cached tickets (optional - you might want to keep some)
+    const { error: ticketsError } = await supabase
+      .from('tickets')
+      .delete()
+      .eq('user_id', userId)
+      .eq('is_cached', true); // Assuming you have an is_cached field
+
+    if (ticketsError) {
+      console.warn('Error clearing cached tickets:', ticketsError);
+    }
+
+    // Clear cached images from storage (optional)
+    const { data: files, error: listError } = await supabase.storage
+      .from('ticket-images')
+      .list(userId);
+
+    if (!listError && files) {
+      const fileNames = files.map(file => file.name);
+      if (fileNames.length > 0) {
+        const { error: deleteError } = await supabase.storage
+          .from('ticket-images')
+          .remove(fileNames);
+        
+        if (deleteError) {
+          console.warn('Error clearing cached images:', deleteError);
+        }
+      }
+    }
+
+    console.log('Cache cleared successfully');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to clear cache:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get storage usage for user
+ */
+export const getUserStorageUsage = async (userId: string) => {
+  try {
+    console.log('Getting storage usage for user:', userId);
+    
+    // Get ticket images
+    const { data: ticketImages, error: ticketError } = await supabase.storage
+      .from('ticket-images')
+      .list(userId);
+
+    // Get avatar
+    const { data: avatarFiles, error: avatarError } = await supabase.storage
+      .from('user-avatars')
+      .list(userId);
+
+    let totalSize = 0;
+    let fileCount = 0;
+
+    if (!ticketError && ticketImages) {
+      totalSize += ticketImages.reduce((sum, file) => sum + (file.metadata?.size || 0), 0);
+      fileCount += ticketImages.length;
+    }
+
+    if (!avatarError && avatarFiles) {
+      totalSize += avatarFiles.reduce((sum, file) => sum + (file.metadata?.size || 0), 0);
+      fileCount += avatarFiles.length;
+    }
+
+    const usage = {
+      totalSizeBytes: totalSize,
+      totalSizeMB: Math.round((totalSize / (1024 * 1024)) * 100) / 100,
+      fileCount,
+      ticketImages: ticketImages?.length || 0,
+      avatarFiles: avatarFiles?.length || 0,
+    };
+
+    console.log('Storage usage:', usage);
+    return { success: true, data: usage };
+  } catch (error: any) {
+    console.error('Failed to get storage usage:', error);
+    return { success: false, error: error.message };
+  }
+};
+

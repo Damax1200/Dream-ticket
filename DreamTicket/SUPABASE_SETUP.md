@@ -151,6 +151,46 @@ CREATE INDEX notifications_user_id_idx ON notifications(user_id);
 CREATE INDEX notifications_created_at_idx ON notifications(created_at DESC);
 ```
 
+### 4. User Settings Table
+```sql
+-- Create user_settings table
+CREATE TABLE user_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL UNIQUE,
+  auto_backup BOOLEAN DEFAULT TRUE,
+  sound_effects BOOLEAN DEFAULT TRUE,
+  haptic_feedback BOOLEAN DEFAULT FALSE,
+  notifications_enabled BOOLEAN DEFAULT TRUE,
+  theme_preference TEXT DEFAULT 'dark',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE user_settings ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own settings
+CREATE POLICY "Users can view own settings"
+  ON user_settings
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Policy: Users can insert their own settings
+CREATE POLICY "Users can insert own settings"
+  ON user_settings
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can update their own settings
+CREATE POLICY "Users can update own settings"
+  ON user_settings
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Create index for faster queries
+CREATE INDEX user_settings_user_id_idx ON user_settings(user_id);
+```
+
 ## 📦 Step 4: Set Up Storage Buckets
 
 Go to **Storage** in your Supabase dashboard and create two buckets:
