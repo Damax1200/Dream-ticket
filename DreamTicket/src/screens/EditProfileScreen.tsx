@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserProfile, updateUserProfile, uploadAvatar } from '../services/SupabaseService';
+import { getOrCreateUserProfile, updateUserProfile, uploadAvatar } from '../services/SupabaseService';
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfileScreen: React.FC<any> = ({ navigation }) => {
@@ -43,7 +43,11 @@ const EditProfileScreen: React.FC<any> = ({ navigation }) => {
     
     try {
       setLoading(true);
-      const profile = await getUserProfile(user.id);
+      const profile = await getOrCreateUserProfile(
+        user.id, 
+        user.email || '', 
+        user.user_metadata?.full_name
+      );
       
       if (profile) {
         setFullName(profile.full_name || '');

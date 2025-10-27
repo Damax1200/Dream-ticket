@@ -18,7 +18,7 @@ import { ProfileScreenProps } from '../types/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, themes, ThemeType } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserProfile } from '../services/SupabaseService';
+import { getOrCreateUserProfile } from '../services/SupabaseService';
 import type { LanguageType } from '../contexts/LanguageContext';
 
 interface MenuItem {
@@ -58,7 +58,11 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
     
     try {
       setLoading(true);
-      const profile = await getUserProfile(user.id);
+      const profile = await getOrCreateUserProfile(
+        user.id, 
+        user.email || '', 
+        user.user_metadata?.full_name
+      );
       
       if (profile) {
         setName(profile.full_name || '');
@@ -66,7 +70,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
         setPhone(profile.phone || '');
         setAvatarUrl(profile.avatar_url);
       } else {
-        // If no profile exists, use auth user data
+        // Fallback to auth user data
         setName(user.user_metadata?.full_name || '');
         setEmail(user.email || '');
       }

@@ -131,12 +131,62 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
       .from('users')
       .select('*')
       .eq('id', userId)
-      .single();
+      .maybeSingle(); // Use maybeSingle() instead of single() to handle no rows gracefully
 
     if (error) throw error;
     return data;
   } catch (error) {
     console.error('Error fetching user profile:', error);
+    return null;
+  }
+};
+
+/**
+ * Create user profile if it doesn't exist
+ */
+export const createUserProfile = async (userId: string, email: string, fullName?: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .insert([
+        {
+          id: userId,
+          email: email,
+          full_name: fullName || '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get or create user profile (handles both cases)
+ */
+export const getOrCreateUserProfile = async (userId: string, email: string, fullName?: string): Promise<User | null> => {
+  try {
+    // First try to get existing profile
+    let profile = await getUserProfile(userId);
+    
+    // If no profile exists, create one
+    if (!profile) {
+      console.log('No profile found, creating new one...');
+      const createResult = await createUserProfile(userId, email, fullName);
+      if (createResult.success) {
+        profile = createResult.data;
+      }
+    }
+    
+    return profile;
+  } catch (error) {
+    console.error('Error getting or creating user profile:', error);
     return null;
   }
 };
