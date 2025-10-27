@@ -221,28 +221,26 @@ export const uploadAvatar = async (userId: string, imageUri: string) => {
     console.log('Starting avatar upload for user:', userId);
     console.log('Image URI:', imageUri);
     
-    // Convert image to blob
-    const response = await fetch(imageUri);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.status}`);
-    }
-    
-    const blob = await response.blob();
-    console.log('Blob created, size:', blob.size);
-    
     // Generate unique filename
     const fileExt = imageUri.split('.').pop() || 'jpg';
     const fileName = `${userId}_${Date.now()}.${fileExt}`;
-    const filePath = fileName; // Upload directly to bucket root, not in subfolder
+    
+    console.log('Uploading file:', fileName);
 
-    console.log('Uploading to path:', filePath);
+    // For React Native, create a file object that Supabase can handle
+    const file = {
+      uri: imageUri,
+      type: `image/${fileExt}`,
+      name: fileName,
+    };
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
       .from('user-avatars')
-      .upload(filePath, blob, {
+      .upload(fileName, file as any, {
         cacheControl: '3600',
         upsert: true,
+        contentType: `image/${fileExt}`,
       });
 
     if (error) {
@@ -255,7 +253,7 @@ export const uploadAvatar = async (userId: string, imageUri: string) => {
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('user-avatars')
-      .getPublicUrl(filePath);
+      .getPublicUrl(fileName);
 
     console.log('Public URL:', publicUrl);
 
