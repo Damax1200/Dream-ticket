@@ -16,6 +16,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../types/navigation';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { resetPassword } from '../services/SupabaseService';
 
 type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -27,6 +29,7 @@ interface LoginScreenProps {
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,33 +37,56 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t.error || 'Error', 'Please fill in all fields');
       return;
     }
 
     if (!email || !email.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      Alert.alert(t.error || 'Error', 'Please enter a valid email address');
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const result = await signIn(email, password);
+      
+      if (result.success) {
+        Alert.alert(t.success || 'Success', t.welcomeBack, [
+          { text: 'OK', onPress: onLogin }
+        ]);
+      } else {
+        Alert.alert(t.error || 'Error', result.error || 'Failed to sign in');
+      }
+    } catch (error: any) {
+      Alert.alert(t.error || 'Error', error.message || 'An unexpected error occurred');
+    } finally {
       setIsLoading(false);
-      Alert.alert(t.welcome, t.welcomeBack, [
-        { text: 'OK', onPress: onLogin }
-      ]);
-    }, 1500);
+    }
   };
 
   const handleForgotPassword = () => {
+    if (!email) {
+      Alert.alert(t.error || 'Error', 'Please enter your email address first');
+      return;
+    }
+
     Alert.alert(
       t.changePassword,
-      t.forgotPassword,
+      'Send password reset email?',
       [
         { text: t.cancel, style: 'cancel' },
-        { text: t.save, onPress: () => Alert.alert(t.welcome, t.welcomeBack) }
+        { 
+          text: t.save, 
+          onPress: async () => {
+            const result = await resetPassword(email);
+            if (result.success) {
+              Alert.alert(t.success || 'Success', 'Password reset email sent! Check your inbox.');
+            } else {
+              Alert.alert(t.error || 'Error', result.error || 'Failed to send reset email');
+            }
+          }
+        }
       ]
     );
   };

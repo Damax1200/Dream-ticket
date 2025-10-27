@@ -16,6 +16,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../types/navigation';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 type SignUpScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'SignUp'>;
 
@@ -27,6 +28,7 @@ interface SignUpScreenProps {
 const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { signUp } = useAuth();
   const [fullName, setFullName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -39,45 +41,56 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
   const handleSignUp = async () => {
     // Validation
     if (!fullName || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t.error || 'Error', 'Please fill in all fields');
       return;
     }
 
     if (!email || !email.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      Alert.alert(t.error || 'Error', 'Please enter a valid email address');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      Alert.alert(t.error || 'Error', 'Password must be at least 6 characters long');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert(t.error || 'Error', 'Passwords do not match');
       return;
     }
 
     if (!agreedToTerms) {
-      Alert.alert('Error', 'Please agree to the Terms & Conditions');
+      Alert.alert(t.error || 'Error', 'Please agree to the Terms & Conditions');
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const result = await signUp(email, password, fullName);
+      
+      if (result.success) {
+        Alert.alert(
+          t.success || 'Success!',
+          'Your account has been created successfully!',
+          [{ text: 'Get Started', onPress: onSignUp }]
+        );
+      } else {
+        Alert.alert(t.error || 'Error', result.error || 'Failed to create account');
+      }
+    } catch (error: any) {
+      Alert.alert(t.error || 'Error', error.message || 'An unexpected error occurred');
+    } finally {
       setIsLoading(false);
-      Alert.alert(
-        'Success!',
-        'Your account has been created successfully!',
-        [{ text: 'Get Started', onPress: onSignUp }]
-      );
-    }, 1500);
+    }
   };
 
   return (
-    <LinearGradient colors={theme.colors.background} style={styles.container}>
+    <LinearGradient
+      colors={theme.colors.background as [string, string, ...string[]]}
+      style={styles.container}
+    >
       <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -198,7 +211,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation, onSignUp }) => 
               style={styles.signupButtonContainer}
             >
               <LinearGradient
-                colors={isLoading ? ['#9ca3af', '#9ca3af'] : theme.colors.secondary}
+                colors={isLoading ? ['#9ca3af', '#9ca3af'] as [string, string] : theme.colors.secondary as [string, string]}
                 style={styles.signupButton}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}

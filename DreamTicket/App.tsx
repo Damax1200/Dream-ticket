@@ -8,6 +8,7 @@ import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './src/contexts/LanguageContext';
+import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import { CustomTabBar } from './src/components/CustomTabBar';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
@@ -245,21 +246,50 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   );
 };
 
+// Main App Wrapper with Auth
+const AppContent: React.FC = () => {
+  const [showSplash, setShowSplash] = useState<boolean>(true);
+  const { isAuthenticated, loading } = useAuth();
+
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
+
+  const handleLogin = () => {
+    // Auth state is now managed by AuthContext
+  };
+
+  const handleLogout = () => {
+    // Auth state is now managed by AuthContext
+  };
+
+  if (loading) {
+    return null; // Or a loading spinner
+  }
+
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashFinish} />;
+  }
+
+  return (
+    <NavigationContainer>
+      {isAuthenticated ? (
+        <MainTabNavigator onLogout={handleLogout} />
+      ) : (
+        <AuthNavigator onLogin={handleLogin} />
+      )}
+    </NavigationContainer>
+  );
+};
+
 const App: React.FC = () => {
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, check auth token, make any API calls you need here
-        // Simulate loading time
+        // Pre-load resources
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Check if user is already logged in (you would check AsyncStorage or similar)
-        // const userToken = await AsyncStorage.getItem('userToken');
-        // setIsAuthenticated(!!userToken);
       } catch (e) {
         console.warn(e);
       } finally {
@@ -271,38 +301,18 @@ const App: React.FC = () => {
     prepare();
   }, []);
 
-  const handleSplashFinish = () => {
-    setShowSplash(false);
-  };
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-  };
-
   if (!isReady) {
     return null;
-  }
-
-  if (showSplash) {
-    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            {isAuthenticated ? (
-              <MainTabNavigator onLogout={handleLogout} />
-            ) : (
-              <AuthNavigator onLogin={handleLogin} />
-            )}
-          </NavigationContainer>
-        </SafeAreaProvider>
+        <AuthProvider>
+          <SafeAreaProvider>
+            <AppContent />
+          </SafeAreaProvider>
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

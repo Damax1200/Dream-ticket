@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ProfileScreenProps } from '../types/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, themes, ThemeType } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import type { LanguageType } from '../contexts/LanguageContext';
 
 interface MenuItem {
@@ -30,6 +31,7 @@ interface ProfileScreenPropsExtended extends ProfileScreenProps {
 const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLogout }) => {
   const { language, t, setLanguage, getLanguageName, availableLanguages } = useLanguage();
   const { currentTheme, theme, setTheme } = useTheme();
+  const { signOut, user } = useAuth();
   const [name, setName] = useState<string>('John Doe');
   const [email, setEmail] = useState<string>('john.doe@example.com');
   const [phone, setPhone] = useState<string>('+1 (555) 123-4567');
@@ -42,7 +44,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
     Alert.alert('Success', 'Profile updated successfully!');
   };
 
-  const handleLogout = (): void => {
+  const handleLogout = async (): Promise<void> => {
     Alert.alert(
       t.logout,
       t.confirmDeleteMessage,
@@ -51,7 +53,8 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
         { 
           text: t.logout, 
           style: 'destructive', 
-          onPress: () => {
+          onPress: async () => {
+            await signOut();
             if (onLogout) {
               onLogout();
             }
