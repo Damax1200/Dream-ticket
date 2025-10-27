@@ -218,12 +218,24 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
  */
 export const uploadAvatar = async (userId: string, imageUri: string) => {
   try {
+    console.log('Starting avatar upload for user:', userId);
+    console.log('Image URI:', imageUri);
+    
     // Convert image to blob
     const response = await fetch(imageUri);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`);
+    }
+    
     const blob = await response.blob();
-    const fileExt = imageUri.split('.').pop();
+    console.log('Blob created, size:', blob.size);
+    
+    // Generate unique filename
+    const fileExt = imageUri.split('.').pop() || 'jpg';
     const fileName = `${userId}_${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${fileName}`;
+    const filePath = fileName; // Upload directly to bucket root, not in subfolder
+
+    console.log('Uploading to path:', filePath);
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
@@ -233,15 +245,23 @@ export const uploadAvatar = async (userId: string, imageUri: string) => {
         upsert: true,
       });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+
+    console.log('Upload successful:', data);
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('user-avatars')
       .getPublicUrl(filePath);
 
+    console.log('Public URL:', publicUrl);
+
     return { success: true, url: publicUrl };
   } catch (error: any) {
+    console.error('Avatar upload failed:', error);
     return { success: false, error: error.message };
   }
 };
