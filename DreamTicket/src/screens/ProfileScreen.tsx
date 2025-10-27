@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Alert,
   Switch,
   Modal,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +18,7 @@ import { ProfileScreenProps } from '../types/navigation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme, themes, ThemeType } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { getUserProfile } from '../services/SupabaseService';
 import type { LanguageType } from '../contexts/LanguageContext';
 
 interface MenuItem {
@@ -32,13 +35,50 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
   const { language, t, setLanguage, getLanguageName, availableLanguages } = useLanguage();
   const { currentTheme, theme, setTheme } = useTheme();
   const { signOut, user } = useAuth();
-  const [name, setName] = useState<string>('John Doe');
-  const [email, setEmail] = useState<string>('john.doe@example.com');
-  const [phone, setPhone] = useState<string>('+1 (555) 123-4567');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [notifications, setNotifications] = useState<boolean>(true);
   const [emailUpdates, setEmailUpdates] = useState<boolean>(false);
   const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
   const [showThemeModal, setShowThemeModal] = useState<boolean>(false);
+
+  // Load user profile on component mount
+  useEffect(() => {
+    loadUserProfile();
+  }, [user]);
+
+  const loadUserProfile = async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const profile = await getUserProfile(user.id);
+      
+      if (profile) {
+        setName(profile.full_name || '');
+        setEmail(profile.email || '');
+        setPhone(profile.phone || '');
+        setAvatarUrl(profile.avatar_url);
+      } else {
+        // If no profile exists, use auth user data
+        setName(user.user_metadata?.full_name || '');
+        setEmail(user.email || '');
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      // Fallback to auth user data
+      setName(user.user_metadata?.full_name || '');
+      setEmail(user.email || '');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSave = (): void => {
     Alert.alert('Success', 'Profile updated successfully!');
@@ -79,13 +119,25 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
           <View style={styles.content}>
             {/* Profile Header */}
             <View style={styles.profileHeader}>
-              <LinearGradient colors={theme.colors.primary as any} style={styles.avatar}>
-                <Text style={styles.avatarText}>
-                  {name.split(' ').map(n => n[0]).join('')}
-                </Text>
-              </LinearGradient>
-              <Text style={[styles.profileName, { color: '#ffffff' }]}>{name}</Text>
-              <Text style={[styles.profileEmail, { color: 'rgba(255, 255, 255, 0.7)' }]}>{email}</Text>
+              {loading ? (
+                <View style={styles.avatar}>
+                  <ActivityIndicator size="large" color="#fff" />
+                </View>
+              ) : avatarUrl ? (
+                <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+              ) : (
+                <LinearGradient colors={theme.colors.primary as any} style={styles.avatar}>
+                  <Text style={styles.avatarText}>
+                    {name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
+                  </Text>
+                </LinearGradient>
+              )}
+              <Text style={[styles.profileName, { color: '#ffffff' }]}>
+                {loading ? 'Loading...' : name || 'User'}
+              </Text>
+              <Text style={[styles.profileEmail, { color: 'rgba(255, 255, 255, 0.7)' }]}>
+                {loading ? 'Loading...' : email || 'No email'}
+              </Text>
               
                   {/* Edit Profile Button */}
                   <TouchableOpacity
@@ -323,6 +375,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#6366f1',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 16,
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginBottom: 16,
   },
   avatarText: {
