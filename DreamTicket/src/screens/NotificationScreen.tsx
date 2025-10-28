@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,19 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { 
+  getNotifications, 
+  markNotificationAsRead, 
+  deleteNotification,
+  clearAllNotifications 
+} from '../services/SupabaseService';
 
 interface Notification {
   id: string;
@@ -24,46 +32,45 @@ interface Notification {
 const NotificationScreen: React.FC<any> = ({ navigation }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { user } = useAuth();
   
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      title: t.welcomeToDreamTicket,
-      message: t.thankYouForJoining,
-      time: `2 ${t.hoursAgo}`,
-      type: 'success',
-      read: false,
-    },
-    {
-      id: '2',
-      title: t.newFeatureAvailable,
-      message: t.checkOutNewAiGenerator,
-      time: `1 ${t.dayAgo}`,
-      type: 'info',
-      read: false,
-    },
-    {
-      id: '3',
-      title: t.ticketGenerated,
-      message: t.yourLuckyTicketCreated,
-      time: `2 ${t.daysAgo}`,
-      type: 'success',
-      read: true,
-    },
-    {
-      id: '4',
-      title: t.premiumUpgrade,
-      message: t.upgradeToPremiumUnlimited,
-      time: `3 ${t.daysAgo}`,
-      type: 'warning',
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleMarkAsRead = (id: string) => {
-    setNotifications(notifications.map(notif => 
-      notif.id === id ? { ...notif, read: true } : notif
-    ));
+  // Load notifications on mount
+  useEffect(() => {
+    if (user?.id) {
+      loadNotifications();
+    }
+  }, [user?.id]);
+
+  const loadNotifications = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setLoading(true);
+      const result = await getNotifications(user.id);
+      if (result.success && result.data) {
+        setNotifications(result.data);
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      const result = await markNotificationAsRead(id);
+      if (result.success) {
+        setNotifications(notifications.map(notif => 
+          notif.id === id ? { ...notif, is_read: true } : notif
+        ));
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   };
 
   const handleDeleteNotification = (id: string) => {
@@ -74,7 +81,16 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
         { text: t.cancel, style: 'cancel' },
         { 
           text: t.delete, 
-          onPress: () => setNotifications(notifications.filter(n => n.id !== id)),
+          onPress: async () => {
+            try {
+              const result = await deleteNotification(id);
+              if (result.success) {
+                setNotifications(notifications.filter(n => n.id !== id));
+              }
+            } catch (error) {
+              console.error('Error deleting notification:', error);
+            }
+          },
           style: 'destructive'
         }
       ]
@@ -89,7 +105,16 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
         { text: t.cancel, style: 'cancel' },
         { 
           text: t.delete, 
-          onPress: () => setNotifications([]),
+          onPress: async () => {
+            try {
+              const result = await clearAllNotifications(user?.id || '');
+              if (result.success) {
+                setNotifications([]);
+              }
+            } catch (error) {
+              console.error('Error clearing notifications:', error);
+            }
+          },
           style: 'destructive'
         }
       ]
@@ -105,7 +130,20 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  if (loading) {
+    return (
+      <LinearGradient colors={theme.colors.background as any} style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.colors.accent} />
+            <Text style={styles.loadingText}>{t.loading}...</Text>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient colors={theme.colors.background as any} style={styles.container}>
@@ -141,7 +179,7 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
                   style={[
                     styles.notificationCard,
                     { backgroundColor: theme.colors.card + '90' },
-                    !notification.read && styles.unreadCard
+                    !notification.is_read && styles.unreadCard
                   ]}
                   onPress={() => handleMarkAsRead(notification.id)}
                   onLongPress={() => handleDeleteNotification(notification.id)}
@@ -157,7 +195,7 @@ const NotificationScreen: React.FC<any> = ({ navigation }) => {
                     <View style={styles.notificationTextContainer}>
                       <View style={styles.notificationHeader}>
                         <Text style={styles.notificationTitle}>{notification.title}</Text>
-                        {!notification.read && (
+                        {!notification.is_read && (
                           <View style={[styles.unreadDot, { backgroundColor: theme.colors.accent }]} />
                         )}
                       </View>
@@ -292,6 +330,16 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.6)',
     textAlign: 'center',
     lineHeight: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: 16,
   },
 });
 
