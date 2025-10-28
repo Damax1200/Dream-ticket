@@ -259,6 +259,15 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         }}
       />
       <Tab.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{
+          title: t.paymentMethods,
+          header: () => <CustomHeader title={t.paymentMethods} />,
+          tabBarButton: () => null, // Hide from tab bar
+        }}
+      />
+      <Tab.Screen
         name="ProfileTab"
         options={{
           title: t.profile,
