@@ -137,7 +137,7 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
   };
 
   const menuItems: MenuItem[] = [
-    { icon: '🎫', title: t.myTickets, onPress: () => navigation.navigate('MyTickets') },
+    { icon: '🎫', title: t.myTickets, onPress: () => Alert.alert(t.comingSoon, t.myTicketsComingSoon) },
     { icon: '💳', title: t.paymentMethods, onPress: () => navigation.navigate('Payment') },
     { icon: '🔔', title: t.notifications, onPress: () => navigation.navigate('Notifications') },
     { icon: '❓', title: t.helpSupport, onPress: () => Alert.alert(t.comingSoon, t.helpSupportComingSoon) },

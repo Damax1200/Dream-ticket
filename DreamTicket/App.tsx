@@ -223,15 +223,6 @@ const MainTabNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         }}
       />
       <Tab.Screen
-        name="MyTickets"
-        component={TicketScreen}
-        options={{
-          title: t.myTickets,
-          header: () => <CustomHeader title={t.myTickets} />,
-          tabBarButton: () => null, // Hide from tab bar
-        }}
-      />
-      <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{

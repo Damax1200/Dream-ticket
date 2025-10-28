@@ -12,7 +12,6 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   HomeTab: undefined;
   AIGenerator: undefined;
-  MyTickets: undefined;
   ProfileTab: undefined;
   Settings: undefined;
   Notifications: undefined;
