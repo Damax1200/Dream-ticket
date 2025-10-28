@@ -359,6 +359,15 @@ const translations: Record<LanguageType, Translations> = {
     price: 'Price',
     month: 'month',
     subscribeNow: 'Subscribe Now',
+    
+    // Wallet Integration
+    premiumActivated: 'Premium Activated',
+    enjoyPremiumFeatures: 'Enjoy your premium features!',
+    insufficientBalance: 'Insufficient Balance',
+    needFundWallet: 'You need to fund your wallet with',
+    forPremiumUpgrade: 'for premium upgrade',
+    fundWallet: 'Fund Wallet',
+    addedToWallet: 'added to wallet',
     storageData: 'Storage & Data',
     appVersion: 'App Version',
     buildNumber: 'Build Number',
