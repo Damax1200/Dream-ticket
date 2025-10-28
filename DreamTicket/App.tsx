@@ -56,11 +56,13 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
   const { user } = useAuth();
   const navigation = useNavigation<any>();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [walletBalance, setWalletBalance] = useState(0.00);
   
-  // Load notification count when component mounts
+  // Load notification count and wallet balance when component mounts
   useEffect(() => {
     if (user?.id) {
       loadNotificationCount();
+      loadWalletBalance();
     }
   }, [user?.id]);
 
@@ -73,6 +75,17 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
       }
     } catch (error) {
       console.error('Error loading notification count:', error);
+    }
+  };
+
+  const loadWalletBalance = async () => {
+    try {
+      // TODO: Replace with actual wallet balance API call
+      // For now, using mock data
+      const mockBalance = 0.00;
+      setWalletBalance(mockBalance);
+    } catch (error) {
+      console.error('Error loading wallet balance:', error);
     }
   };
   
@@ -96,18 +109,33 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
         <Text style={[headerStyles.title, { color: theme.colors.text }]}>{title}</Text>
       </View>
       
-      <TouchableOpacity 
-        style={headerStyles.notificationButton}
-        onPress={() => navigation.navigate('Notifications')}
-        activeOpacity={0.7}
-      >
-        <Text style={headerStyles.notificationIcon}>🔔</Text>
-        {unreadCount > 0 && (
-          <View style={[headerStyles.notificationBadge, { backgroundColor: theme.colors.accent }]}>
-            <Text style={headerStyles.badgeText}>{unreadCount}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      <View style={headerStyles.rightSection}>
+        {/* Wallet Balance */}
+        <TouchableOpacity 
+          style={headerStyles.walletButton}
+          onPress={() => navigation.navigate('Payment')}
+          activeOpacity={0.7}
+        >
+          <Text style={headerStyles.walletIcon}>💰</Text>
+          <Text style={[headerStyles.walletBalance, { color: theme.colors.accent }]}>
+            ${walletBalance.toFixed(2)}
+          </Text>
+        </TouchableOpacity>
+        
+        {/* Notification Button */}
+        <TouchableOpacity 
+          style={headerStyles.notificationButton}
+          onPress={() => navigation.navigate('Notifications')}
+          activeOpacity={0.7}
+        >
+          <Text style={headerStyles.notificationIcon}>🔔</Text>
+          {unreadCount > 0 && (
+            <View style={[headerStyles.notificationBadge, { backgroundColor: theme.colors.accent }]}>
+              <Text style={headerStyles.badgeText}>{unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -145,10 +173,32 @@ const headerStyles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.5,
   },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  walletButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  walletIcon: {
+    fontSize: 16,
+    marginRight: 4,
+  },
+  walletBalance: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   notificationButton: {
     position: 'relative',
     padding: 8,
-    marginLeft: 12,
   },
   notificationIcon: {
     fontSize: 24,
