@@ -174,7 +174,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <Text style={[styles.priceAmount, { color: theme.colors.accent }]}>$9.99</Text>
                 <Text style={[styles.priceText, { color: theme.colors.textSecondary }]}>{t.perMonth}</Text>
               </View>
-              <TouchableOpacity style={[styles.upgradeButton, { backgroundColor: theme.colors.accent }]}>
+              <TouchableOpacity 
+                style={[styles.upgradeButton, { backgroundColor: theme.colors.accent }]}
+                onPress={() => navigation.navigate('Payment')}
+              >
                 <Text style={styles.upgradeButtonText}>{t.upgradeNow}</Text>
               </TouchableOpacity>
             </View>
