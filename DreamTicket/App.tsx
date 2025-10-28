@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './src/contexts/LanguageContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { getNotifications } from './src/services/SupabaseService';
 import { CustomTabBar } from './src/components/CustomTabBar';
 import HomeScreen from './src/screens/HomeScreen';
 import TicketScreen from './src/screens/TicketScreen';
@@ -51,7 +52,28 @@ const TabBarIcon: React.FC<{ emoji: string; focused?: boolean }> = ({ emoji, foc
 const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { user } = useAuth();
   const navigation = useNavigation<any>();
+  const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Load notification count when component mounts
+  useEffect(() => {
+    if (user?.id) {
+      loadNotificationCount();
+    }
+  }, [user?.id]);
+
+  const loadNotificationCount = async () => {
+    try {
+      const result = await getNotifications(user?.id || '');
+      if (result.success && result.data) {
+        const unreadNotifications = result.data.filter((notif: any) => !notif.is_read);
+        setUnreadCount(unreadNotifications.length);
+      }
+    } catch (error) {
+      console.error('Error loading notification count:', error);
+    }
+  };
   
   return (
     <View style={[
@@ -79,9 +101,11 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
         activeOpacity={0.7}
       >
         <Text style={headerStyles.notificationIcon}>🔔</Text>
-        <View style={[headerStyles.notificationBadge, { backgroundColor: theme.colors.accent }]}>
-          <Text style={headerStyles.badgeText}>3</Text>
-        </View>
+        {unreadCount > 0 && (
+          <View style={[headerStyles.notificationBadge, { backgroundColor: theme.colors.accent }]}>
+            <Text style={headerStyles.badgeText}>{unreadCount}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -384,6 +384,24 @@ export const getUserNotifications = async (userId: string): Promise<Notification
 };
 
 /**
+ * Get notifications for a user
+ */
+export const getNotifications = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Mark notification as read
  */
 export const markNotificationAsRead = async (notificationId: string) => {
