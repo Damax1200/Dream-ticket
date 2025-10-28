@@ -124,9 +124,34 @@ interface Translations {
   youreAllCaughtUp: string;
   noNewNotifications: string;
   
-  // Settings Screen
-  storageData: string;
-  appVersion: string;
+  // Payment Screen
+  selectPaymentMethod: string;
+  choosePaymentMethod: string;
+  creditDebitCard: string;
+  payWithCard: string;
+  payWithPayPal: string;
+  cardDetails: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  cardholderName: string;
+  enterCardholderName: string;
+  saveCardForFuture: string;
+  paypalPayment: string;
+  paypalSecure: string;
+  paypalDescription: string;
+  payNow: string;
+  processing: string;
+  securePayment: string;
+  redirectingToPayPal: string;
+  pleaseWait: string;
+  paymentSuccessful: string;
+  paymentFailed: string;
+  paypalPaymentSuccessful: string;
+  paypalPaymentFailed: string;
+  pleaseFillAllFields: string;
+  invalidCardNumber: string;
+  invalidCvv: string;
   buildNumber: string;
   accountSecurity: string;
   currentPassword: string;
@@ -295,6 +320,35 @@ const translations: Record<LanguageType, Translations> = {
     changePassword: 'Change Password',
     youreAllCaughtUp: "You're all caught up!",
     noNewNotifications: 'No new notifications',
+    
+    // Payment Screen
+    selectPaymentMethod: 'Select Payment Method',
+    choosePaymentMethod: 'Choose Payment Method',
+    creditDebitCard: 'Credit/Debit Card',
+    payWithCard: 'Pay with your card',
+    payWithPayPal: 'Pay with PayPal',
+    cardDetails: 'Card Details',
+    cardNumber: 'Card Number',
+    expiryDate: 'Expiry Date',
+    cvv: 'CVV',
+    cardholderName: 'Cardholder Name',
+    enterCardholderName: 'Enter cardholder name',
+    saveCardForFuture: 'Save card for future payments',
+    paypalPayment: 'PayPal Payment',
+    paypalSecure: 'PayPal - Secure & Fast',
+    paypalDescription: 'Pay securely with your PayPal account. No need to enter card details.',
+    payNow: 'Pay Now',
+    processing: 'Processing...',
+    securePayment: 'Your payment is secure and encrypted',
+    redirectingToPayPal: 'Redirecting to PayPal',
+    pleaseWait: 'Please wait while we redirect you',
+    paymentSuccessful: 'Payment Successful!',
+    paymentFailed: 'Payment Failed',
+    paypalPaymentSuccessful: 'PayPal Payment Successful!',
+    paypalPaymentFailed: 'PayPal Payment Failed',
+    pleaseFillAllFields: 'Please fill in all fields',
+    invalidCardNumber: 'Invalid card number',
+    invalidCvv: 'Invalid CVV',
     storageData: 'Storage & Data',
     appVersion: 'App Version',
     buildNumber: 'Build Number',

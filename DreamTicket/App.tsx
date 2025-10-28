@@ -21,6 +21,7 @@ import AITicketGeneratorScreen from './src/screens/AITicketGeneratorScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import NotificationScreen from './src/screens/NotificationScreen';
 import EditProfileScreen from './src/screens/EditProfileScreen';
+import PaymentScreen from './src/screens/PaymentScreen';
 import { AuthStackParamList, MainTabParamList } from './src/types/navigation';
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
