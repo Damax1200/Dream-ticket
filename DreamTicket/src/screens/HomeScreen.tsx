@@ -13,10 +13,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useWallet } from '../contexts/WalletContext';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { walletBalance, deductFromWallet } = useWallet();
   const [ticketCount, setTicketCount] = useState(0);
   const [dailyCount, setDailyCount] = useState(0);
   const [isPremium, setIsPremium] = useState(false);
@@ -45,6 +47,36 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       setIsPremium(premium === 'true');
     } catch (error) {
       console.error('Error loading stats:', error);
+    }
+  };
+
+  const handleUpgrade = async () => {
+    const premiumPrice = 9.99;
+    
+    if (walletBalance >= premiumPrice) {
+      // User has enough balance, deduct from wallet
+      const success = await deductFromWallet(premiumPrice);
+      if (success) {
+        Alert.alert(
+          t.success,
+          `${t.premiumActivated}! ${t.enjoyPremiumFeatures}`,
+          [{ text: t.ok }]
+        );
+        setIsPremium(true);
+        await AsyncStorage.setItem('isPremium', 'true');
+      } else {
+        Alert.alert(t.error, t.paymentFailed);
+      }
+    } else {
+      // Insufficient balance, redirect to payment
+      Alert.alert(
+        t.insufficientBalance,
+        `${t.needFundWallet} $${premiumPrice.toFixed(2)} ${t.forPremiumUpgrade}`,
+        [
+          { text: t.cancel },
+          { text: t.fundWallet, onPress: () => navigation.navigate('Payment') }
+        ]
+      );
     }
   };
 
@@ -176,7 +208,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </View>
               <TouchableOpacity 
                 style={[styles.upgradeButton, { backgroundColor: theme.colors.accent }]}
-                onPress={() => navigation.navigate('Payment')}
+                onPress={handleUpgrade}
               >
                 <Text style={styles.upgradeButtonText}>{t.upgradeNow}</Text>
               </TouchableOpacity>

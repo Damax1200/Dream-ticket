@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './src/contexts/LanguageContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { WalletProvider, useWallet } from './src/contexts/WalletContext';
 import { getNotifications } from './src/services/SupabaseService';
 import { CustomTabBar } from './src/components/CustomTabBar';
 import HomeScreen from './src/screens/HomeScreen';
@@ -54,15 +55,14 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const { user } = useAuth();
+  const { walletBalance } = useWallet();
   const navigation = useNavigation<any>();
   const [unreadCount, setUnreadCount] = useState(0);
-  const [walletBalance, setWalletBalance] = useState(0.00);
   
-  // Load notification count and wallet balance when component mounts
+  // Load notification count when component mounts
   useEffect(() => {
     if (user?.id) {
       loadNotificationCount();
-      loadWalletBalance();
     }
   }, [user?.id]);
 
@@ -78,16 +78,6 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
     }
   };
 
-  const loadWalletBalance = async () => {
-    try {
-      // TODO: Replace with actual wallet balance API call
-      // For now, using mock data
-      const mockBalance = 0.00;
-      setWalletBalance(mockBalance);
-    } catch (error) {
-      console.error('Error loading wallet balance:', error);
-    }
-  };
   
   return (
     <View style={[
@@ -116,7 +106,6 @@ const CustomHeader: React.FC<{ title: string }> = ({ title }) => {
           onPress={() => navigation.navigate('Payment')}
           activeOpacity={0.7}
         >
-          <Text style={headerStyles.walletIcon}>💰</Text>
           <Text style={[headerStyles.walletBalance, { color: theme.colors.accent }]}>
             ${walletBalance.toFixed(2)}
           </Text>
@@ -178,7 +167,6 @@ const headerStyles = StyleSheet.create({
     alignItems: 'center',
   },
   walletButton: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(139, 92, 246, 0.1)',
     paddingHorizontal: 12,
@@ -187,10 +175,6 @@ const headerStyles = StyleSheet.create({
     marginRight: 8,
     borderWidth: 1,
     borderColor: 'rgba(139, 92, 246, 0.3)',
-  },
-  walletIcon: {
-    fontSize: 16,
-    marginRight: 4,
   },
   walletBalance: {
     fontSize: 14,
@@ -384,9 +368,11 @@ const App: React.FC = () => {
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <SafeAreaProvider>
-            <AppContent />
-          </SafeAreaProvider>
+          <WalletProvider>
+            <SafeAreaProvider>
+              <AppContent />
+            </SafeAreaProvider>
+          </WalletProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>

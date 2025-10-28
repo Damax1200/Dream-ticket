@@ -18,6 +18,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useWallet } from '../contexts/WalletContext';
 import { SparkleAnimation } from '../components/SparkleAnimation';
 import { WinnerTicketDisplay } from '../components/WinnerTicketDisplay';
 import { TicketData, getRandomTemplate, captureTicketImage } from '../utils/TicketImageGenerator';
@@ -40,6 +41,7 @@ interface DreamTicket {
 const AITicketGeneratorScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { walletBalance, deductFromWallet } = useWallet();
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
@@ -403,17 +405,34 @@ const AITicketGeneratorScreen: React.FC = () => {
     }
   };
 
-  const handleUpgrade = () => {
-    Alert.alert(
-      t.upgradeToPremium,
-      `${t.premiumFeatures}:\n• 3 ${t.videoTicketsPerDay} (5-10 seconds)\n• ${t.unlimitedImageTickets}\n• ${t.priorityAIProcessing}\n• ${t.exclusiveEffects}\n\n${t.price}: $9.99/${t.month}`,
-      [
-        { text: t.cancel },
-        { text: t.subscribeNow, onPress: () => {
-          navigation.navigate('Payment');
-        }}
-      ]
-    );
+  const handleUpgrade = async () => {
+    const premiumPrice = 9.99;
+    
+    if (walletBalance >= premiumPrice) {
+      // User has enough balance, deduct from wallet
+      const success = await deductFromWallet(premiumPrice);
+      if (success) {
+        Alert.alert(
+          t.success,
+          `${t.premiumActivated}! ${t.enjoyPremiumFeatures}`,
+          [{ text: t.ok }]
+        );
+        setIsPremium(true);
+        await AsyncStorage.setItem('isPremium', 'true');
+      } else {
+        Alert.alert(t.error, t.paymentFailed);
+      }
+    } else {
+      // Insufficient balance, redirect to payment
+      Alert.alert(
+        t.insufficientBalance,
+        `${t.needFundWallet} $${premiumPrice.toFixed(2)} ${t.forPremiumUpgrade}`,
+        [
+          { text: t.cancel },
+          { text: t.fundWallet, onPress: () => navigation.navigate('Payment') }
+        ]
+      );
+    }
   };
 
   const handleClear = () => {

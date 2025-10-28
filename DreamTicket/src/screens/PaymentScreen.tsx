@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useWallet } from '../contexts/WalletContext';
 import { PayPalLogo } from '../components/PayPalLogo';
 
 interface PaymentMethod {
@@ -29,6 +30,7 @@ const PaymentScreen: React.FC<any> = ({ navigation }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { addToWallet } = useWallet();
   
   const [selectedMethod, setSelectedMethod] = useState<'card' | 'paypal'>('card');
   const [cardNumber, setCardNumber] = useState('');
@@ -38,6 +40,9 @@ const PaymentScreen: React.FC<any> = ({ navigation }) => {
   const [saveCard, setSaveCard] = useState(false);
   const [showPayPalModal, setShowPayPalModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [fundingAmount, setFundingAmount] = useState(10.00);
+  const [customAmount, setCustomAmount] = useState('');
+  const [isCustomAmount, setIsCustomAmount] = useState(false);
 
   const paymentMethods: PaymentMethod[] = [
     {
@@ -90,9 +95,12 @@ const PaymentScreen: React.FC<any> = ({ navigation }) => {
       // Here you would integrate with Stripe, Square, or other payment processor
       console.log('Processing card payment...');
       
+      // Add money to wallet
+      await addToWallet(fundingAmount);
+      
       Alert.alert(
         t.success,
-        t.paymentSuccessful,
+        `$${fundingAmount.toFixed(2)} added to wallet`,
         [
           {
             text: t.ok,
@@ -123,9 +131,12 @@ const PaymentScreen: React.FC<any> = ({ navigation }) => {
       
       setShowPayPalModal(false);
       
+      // Add money to wallet
+      await addToWallet(fundingAmount);
+      
       Alert.alert(
         t.success,
-        t.paypalPaymentSuccessful,
+        `$${fundingAmount.toFixed(2)} added to wallet`,
         [
           {
             text: t.ok,
@@ -168,6 +179,76 @@ const PaymentScreen: React.FC<any> = ({ navigation }) => {
             <View style={styles.header}>
               <Text style={styles.headerTitle}>💳 {t.paymentMethods}</Text>
               <Text style={styles.headerSubtitle}>{t.selectPaymentMethod}</Text>
+            </View>
+
+            {/* Funding Amount Selection */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Funding Amount</Text>
+              <View style={styles.amountButtons}>
+                {[10, 25, 50, 100].map((amount) => (
+                  <TouchableOpacity
+                    key={amount}
+                    style={[
+                      styles.amountButton,
+                      { backgroundColor: theme.colors.card },
+                      fundingAmount === amount && !isCustomAmount && styles.selectedAmountButton
+                    ]}
+                    onPress={() => {
+                      setFundingAmount(amount);
+                      setIsCustomAmount(false);
+                      setCustomAmount('');
+                    }}
+                  >
+                    <Text style={[
+                      styles.amountText,
+                      { color: theme.colors.text },
+                      fundingAmount === amount && !isCustomAmount && { color: theme.colors.accent }
+                    ]}>
+                      ${amount}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              
+              {/* Custom Amount Option */}
+              <TouchableOpacity
+                style={[
+                  styles.customAmountButton,
+                  { backgroundColor: theme.colors.card },
+                  isCustomAmount && styles.selectedAmountButton
+                ]}
+                onPress={() => setIsCustomAmount(true)}
+              >
+                <Text style={[
+                  styles.customAmountText,
+                  { color: theme.colors.text },
+                  isCustomAmount && { color: theme.colors.accent }
+                ]}>
+                  Custom Amount
+                </Text>
+              </TouchableOpacity>
+              
+              {/* Custom Amount Input */}
+              {isCustomAmount && (
+                <View style={styles.customAmountInput}>
+                  <Text style={styles.customAmountLabel}>Enter Amount ($)</Text>
+                  <TextInput
+                    style={[styles.customAmountField, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
+                    value={customAmount}
+                    onChangeText={(text) => {
+                      setCustomAmount(text);
+                      const amount = parseFloat(text);
+                      if (!isNaN(amount) && amount > 0) {
+                        setFundingAmount(amount);
+                      }
+                    }}
+                    placeholder="0.00"
+                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    keyboardType="numeric"
+                    maxLength={10}
+                  />
+                </View>
+              )}
             </View>
 
             {/* Payment Method Selection */}
@@ -482,6 +563,57 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: 20,
+  },
+  amountButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+  amountButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  selectedAmountButton: {
+    borderColor: '#8b5cf6',
+    borderWidth: 2,
+  },
+  amountText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  customAmountButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  customAmountText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  customAmountInput: {
+    marginTop: 12,
+  },
+  customAmountLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: 8,
+  },
+  customAmountField: {
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: '#ffffff',
+    borderWidth: 1,
   },
   paymentButton: {
     paddingVertical: 16,
