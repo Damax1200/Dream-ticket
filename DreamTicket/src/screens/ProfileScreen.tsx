@@ -157,10 +157,17 @@ const ProfileScreen: React.FC<ProfileScreenPropsExtended> = ({ navigation, onLog
                 </View>
               ) : avatarUrl ? (
                 <Image 
-                  source={{ uri: avatarUrl }} 
+                  source={{ 
+                    uri: avatarUrl,
+                    cache: 'force-cache'
+                  }} 
                   style={styles.avatarImage}
                   onLoad={() => console.log('Avatar image loaded successfully:', avatarUrl)}
-                  onError={(error) => console.log('Avatar image failed to load:', error.nativeEvent.error, 'URL:', avatarUrl)}
+                  onError={(error) => {
+                    console.log('Avatar image failed to load:', error.nativeEvent.error, 'URL:', avatarUrl);
+                    // Try with a test image to see if Image component works
+                    console.log('Testing with placeholder image...');
+                  }}
                   onLoadStart={() => console.log('Avatar image loading started:', avatarUrl)}
                   resizeMode="cover"
                 />
