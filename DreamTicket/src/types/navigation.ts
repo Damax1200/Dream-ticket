@@ -17,6 +17,7 @@ export type MainTabParamList = {
   Settings: undefined;
   Notifications: undefined;
   EditProfile: undefined;
+  Payment: undefined;
 };
 
 // Auth Screen Navigation Props

@@ -22,6 +22,9 @@ import { SparkleAnimation } from '../components/SparkleAnimation';
 import { WinnerTicketDisplay } from '../components/WinnerTicketDisplay';
 import { TicketData, getRandomTemplate, captureTicketImage } from '../utils/TicketImageGenerator';
 import { faceSwapService } from '../services/FaceSwapService';
+import { useNavigation } from '@react-navigation/native';
+import { MainTabParamList } from '../types/navigation';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 const { width } = Dimensions.get('window');
 
@@ -37,6 +40,7 @@ interface DreamTicket {
 const AITicketGeneratorScreen: React.FC = () => {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -401,13 +405,12 @@ const AITicketGeneratorScreen: React.FC = () => {
 
   const handleUpgrade = () => {
     Alert.alert(
-      'Upgrade to Premium',
-      'Premium Features:\n• 3 video tickets per day (5-10 seconds)\n• Unlimited image tickets\n• Priority AI processing\n• Exclusive effects\n\nPrice: $9.99/month',
+      t.upgradeToPremium,
+      `${t.premiumFeatures}:\n• 3 ${t.videoTicketsPerDay} (5-10 seconds)\n• ${t.unlimitedImageTickets}\n• ${t.priorityAIProcessing}\n• ${t.exclusiveEffects}\n\n${t.price}: $9.99/${t.month}`,
       [
-        { text: 'Cancel' },
-        { text: 'Subscribe Now', onPress: () => {
-          // TODO: Implement Stripe/PayPal payment
-          Alert.alert('Coming Soon', 'Payment integration will be available soon!');
+        { text: t.cancel },
+        { text: t.subscribeNow, onPress: () => {
+          navigation.navigate('Payment');
         }}
       ]
     );

@@ -349,6 +349,16 @@ const translations: Record<LanguageType, Translations> = {
     pleaseFillAllFields: 'Please fill in all fields',
     invalidCardNumber: 'Invalid card number',
     invalidCvv: 'Invalid CVV',
+    
+    // Premium Features
+    premiumFeatures: 'Premium Features',
+    videoTicketsPerDay: 'video tickets per day',
+    unlimitedImageTickets: 'Unlimited image tickets',
+    priorityAIProcessing: 'Priority AI processing',
+    exclusiveEffects: 'Exclusive effects',
+    price: 'Price',
+    month: 'month',
+    subscribeNow: 'Subscribe Now',
     storageData: 'Storage & Data',
     appVersion: 'App Version',
     buildNumber: 'Build Number',
