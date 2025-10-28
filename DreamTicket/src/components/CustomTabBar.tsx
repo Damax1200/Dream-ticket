@@ -11,11 +11,11 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
   const { theme } = useTheme();
   const { t } = useLanguage();
   
-  // Filter out hidden tabs (like MyTickets, Settings, Notifications, EditProfile)
+  // Filter out hidden tabs (like MyTickets, Settings, Notifications, EditProfile, ProfileTab)
   const visibleRoutes = state.routes.filter((route) => {
     const { options } = descriptors[route.key];
     return options.tabBarButton !== null && options.tabBarButton !== undefined ? true : options.tabBarButton !== (() => null);
-  }).filter((route) => !['MyTickets', 'Settings', 'Notifications', 'EditProfile'].includes(route.name)); // Explicitly hide these screens
+  }).filter((route) => !['MyTickets', 'Settings', 'Notifications', 'EditProfile', 'ProfileTab'].includes(route.name)); // Explicitly hide these screens
   
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
@@ -25,7 +25,7 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
           const { options } = descriptors[route.key];
           const label = options.tabBarLabel || options.title || route.name;
           const isFocused = state.index === originalIndex;
-          const isCenter = visibleIndex === 1; // AI Generator in the center
+          const isCenter = visibleIndex === 1; // AI Generator as the second tab
 
           const onPress = () => {
             const event = navigation.emit({
@@ -76,16 +76,14 @@ export const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, 
             );
           }
 
-          // For side buttons
+          // For side buttons (only Home tab now)
           const getIcon = () => {
             if (visibleIndex === 0) return '🏠';
-            if (visibleIndex === 2) return '👤';
             return '•';
           };
 
           const getLabel = () => {
             if (visibleIndex === 0) return t.home;
-            if (visibleIndex === 2) return t.profile;
             return String(label);
           };
 
