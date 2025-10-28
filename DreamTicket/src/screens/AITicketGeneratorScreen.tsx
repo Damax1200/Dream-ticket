@@ -100,12 +100,10 @@ const AITicketGeneratorScreen: React.FC = () => {
   };
 
   const canCreateTicket = () => {
-    // Temporarily disabled daily limit
-    return true;
-    // if (isPremium) {
-    //   return dailyCount < 3; // Premium: 3 tickets per day
-    // }
-    // return dailyCount < 1; // Free: 1 ticket per day
+    if (isPremium) {
+      return dailyCount < 3; // Premium: 3 tickets per day
+    }
+    return dailyCount < 1; // Free: 1 ticket per day
   };
 
   const requestPermissions = async () => {
