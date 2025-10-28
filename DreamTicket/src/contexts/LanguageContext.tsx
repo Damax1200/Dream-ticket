@@ -218,6 +218,19 @@ interface Translations {
   yourLuckyTicketCreated: string;
   premiumUpgrade: string;
   upgradeToPremiumUnlimited: string;
+  
+  // My Tickets Screen
+  loadingTickets: string;
+  ticket: string;
+  tickets: string;
+  noTicketsYet: string;
+  createYourFirstTicket: string;
+  yourLuckyNumber: string;
+  deleteTicket: string;
+  deleteTicketConfirm: string;
+  delete: string;
+  share: string;
+  savedTickets: string;
 }
 
 const translations: Record<LanguageType, Translations> = {
@@ -428,6 +441,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: 'Your lucky ticket #12345 has been created successfully!',
     premiumUpgrade: '⚡ Premium Upgrade',
     upgradeToPremiumUnlimited: 'Upgrade to premium and unlock unlimited tickets!',
+    
+    // My Tickets Screen
+    loadingTickets: 'Loading tickets',
+    ticket: 'ticket',
+    tickets: 'tickets',
+    noTicketsYet: 'No tickets yet',
+    createYourFirstTicket: 'Create your first lucky ticket to get started!',
+    yourLuckyNumber: 'Your Lucky Number',
+    deleteTicket: 'Delete Ticket',
+    deleteTicketConfirm: 'Are you sure you want to delete this ticket?',
+    delete: 'Delete',
+    share: 'Share',
+    savedTickets: 'saved tickets',
   },
   es: {
     welcomeBack: '¡Bienvenido de nuevo!',
@@ -588,6 +614,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: '¡Tu ticket de la suerte #12345 ha sido creado exitosamente!',
     premiumUpgrade: '⚡ Actualización Premium',
     upgradeToPremiumUnlimited: '¡Actualiza a premium y desbloquea tickets ilimitados!',
+    
+    // My Tickets Screen
+    loadingTickets: 'Cargando tickets',
+    ticket: 'ticket',
+    tickets: 'tickets',
+    noTicketsYet: 'Aún no hay tickets',
+    createYourFirstTicket: '¡Crea tu primer ticket de la suerte para comenzar!',
+    yourLuckyNumber: 'Tu Número de la Suerte',
+    deleteTicket: 'Eliminar Ticket',
+    deleteTicketConfirm: '¿Estás seguro de que quieres eliminar este ticket?',
+    delete: 'Eliminar',
+    share: 'Compartir',
+    savedTickets: 'tickets guardados',
   },
   fr: {
     welcomeBack: 'Bon retour!',
@@ -748,6 +787,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: 'Votre billet chanceux #12345 a été créé avec succès!',
     premiumUpgrade: '⚡ Mise à Niveau Premium',
     upgradeToPremiumUnlimited: 'Passez à premium et débloquez des billets illimités!',
+    
+    // My Tickets Screen
+    loadingTickets: 'Chargement des billets',
+    ticket: 'billet',
+    tickets: 'billets',
+    noTicketsYet: 'Pas encore de billets',
+    createYourFirstTicket: 'Créez votre premier billet chanceux pour commencer!',
+    yourLuckyNumber: 'Votre Numéro Chanceux',
+    deleteTicket: 'Supprimer le Billet',
+    deleteTicketConfirm: 'Êtes-vous sûr de vouloir supprimer ce billet?',
+    delete: 'Supprimer',
+    share: 'Partager',
+    savedTickets: 'billets sauvegardés',
   },
   de: {
     welcomeBack: 'Willkommen zurück!',
@@ -908,6 +960,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: 'Ihr Glücksticket #12345 wurde erfolgreich erstellt!',
     premiumUpgrade: '⚡ Premium-Upgrade',
     upgradeToPremiumUnlimited: 'Upgraden Sie auf Premium und schalten Sie unbegrenzte Tickets frei!',
+    
+    // My Tickets Screen
+    loadingTickets: 'Tickets laden',
+    ticket: 'Ticket',
+    tickets: 'Tickets',
+    noTicketsYet: 'Noch keine Tickets',
+    createYourFirstTicket: 'Erstellen Sie Ihr erstes Glücksticket, um zu beginnen!',
+    yourLuckyNumber: 'Ihre Glückszahl',
+    deleteTicket: 'Ticket Löschen',
+    deleteTicketConfirm: 'Sind Sie sicher, dass Sie dieses Ticket löschen möchten?',
+    delete: 'Löschen',
+    share: 'Teilen',
+    savedTickets: 'gespeicherte Tickets',
   },
   pt: {
     welcomeBack: 'Bem-vindo de volta!',
@@ -1068,6 +1133,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: 'Seu bilhete da sorte #12345 foi criado com sucesso!',
     premiumUpgrade: '⚡ Atualização Premium',
     upgradeToPremiumUnlimited: 'Atualize para premium e desbloqueie bilhetes ilimitados!',
+    
+    // My Tickets Screen
+    loadingTickets: 'Carregando bilhetes',
+    ticket: 'bilhete',
+    tickets: 'bilhetes',
+    noTicketsYet: 'Ainda não há bilhetes',
+    createYourFirstTicket: 'Crie seu primeiro bilhete da sorte para começar!',
+    yourLuckyNumber: 'Seu Número da Sorte',
+    deleteTicket: 'Excluir Bilhete',
+    deleteTicketConfirm: 'Tem certeza de que deseja excluir este bilhete?',
+    delete: 'Excluir',
+    share: 'Compartilhar',
+    savedTickets: 'bilhetes salvos',
   },
   zh: {
     welcomeBack: '欢迎回来！',
@@ -1228,6 +1306,19 @@ const translations: Record<LanguageType, Translations> = {
     yourLuckyTicketCreated: '您的幸运票 #12345 已成功创建！',
     premiumUpgrade: '⚡ 高级升级',
     upgradeToPremiumUnlimited: '升级到高级版并解锁无限门票！',
+    
+    // My Tickets Screen
+    loadingTickets: '正在加载门票',
+    ticket: '门票',
+    tickets: '门票',
+    noTicketsYet: '还没有门票',
+    createYourFirstTicket: '创建您的第一张幸运票开始吧！',
+    yourLuckyNumber: '您的幸运号码',
+    deleteTicket: '删除门票',
+    deleteTicketConfirm: '您确定要删除这张门票吗？',
+    delete: '删除',
+    share: '分享',
+    savedTickets: '已保存的门票',
   },
 };
 

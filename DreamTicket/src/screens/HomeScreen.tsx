@@ -137,7 +137,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
           <TouchableOpacity
             style={[styles.secondaryAction, { backgroundColor: theme.colors.card, borderColor: theme.colors.cardBorder }]}
-            onPress={() => Alert.alert(t.comingSoon, t.myTicketsComingSoon)}
+            onPress={() => navigation.navigate('MyTickets')}
           >
             <View style={styles.actionContent}>
               <View style={styles.actionLeft}>
